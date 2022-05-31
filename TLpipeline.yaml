@@ -2,16 +2,16 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - bash=4.24.26
-  - samtools=1.12
-  - htseq=0.13.5
-  - parallel=20210222
-  - pigz=2.6
-  - cutadapt=3.2
-  - bcftools=1.11
-  - fastuniq=1.1
-  - r-base=4.0.3
-  - star=2.7.7a
-  - gawk
-  - python=3.8.6
-  - pysam=0.16.0.1
+  - bash =4.24.26
+  - samtools =1.12
+  - htseq =0.13.5
+  - parallel =20210222
+  - pigz =2.6
+  - cutadapt =3.2
+  - bcftools =1.11
+  - fastuniq =1.1
+  - r-base =4.0.3
+  - star =2.7.7a
+  - gawk =4.2.1
+  - python =3.8.6
+  - pysam =0.16.0.1
