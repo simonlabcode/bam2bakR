@@ -60,7 +60,7 @@ format=${10}
 
 # remove any remaining sam files:
 
-    rm -f *.sam
+    #rm -f *.sam
 
 #!/bin/bash
 # Main sript for mutation calling in samples

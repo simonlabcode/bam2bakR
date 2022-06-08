@@ -6,7 +6,8 @@ def get_input_bams(wildcards):
 
 rule all:
     input:
-        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+        "results/cB/master.csv.gz",
+        "results/cB/cB.csv.gz"
 
 rule sort_filter:
     input:
@@ -37,3 +38,14 @@ rule cnt_muts:
         "logs/fragment_bam/{sample}.log"
     shell:
         "workflow/scripts/fragment.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
+
+rule makecB:
+    input:
+        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+    output:
+        "results/cB/master.csv.gz",
+        "results/cB/cB.csv.gz"
+    log:
+        "logs/makecB/master.log"
+    shell:
+        "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]} "
