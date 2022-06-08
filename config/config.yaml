@@ -1,2 +1,64 @@
-samples:
 
+### Parameters you MUST set
+
+# location of bam files
+samples:
+  WT_1: data/samples/DCP2_subsample1Aligned.out.bam
+  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+
+# location of annotation gtf file
+annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
+
+
+### Parameters you should probably double check
+
+# Organism
+SPECIES: "Hs" # (Mm, Dm, Hs) [default: Mm]
+
+# Sequencing reads strandness relative to RNA transcript [depends on library prep and sequencing output]
+READS: "RF" # (FR, RF, F)
+                    # [FR - STL-seq]
+                    # [RF - Clonetech v2]
+
+# Format of reads
+FORMAT: "PE" # (PE, SE, NU)
+                    # [SE - single end reads]
+                    # [NU - including non-unique] (not tested)
+
+# STL experiment data analysis
+STL: "FALSE"
+
+# Use HISAT-3N 3-base aligner
+three_base: "TRUE"
+
+# TRUE if you want information about mutation by position in addition to mutation by read.
+mut_pos: "FALSE"
+
+# Type of browser tracks to generate
+mut_tracks: "TC" # ("TC", "GA", "TC,GA")
+
+# Program used for creating browser tracks
+track_prog: "STAR" # (STAR, bedtools)
+
+# Add a 'chr' to each chromosome number during alignment. [Useful when aliner index is number-based, but GTF annotation is chr-based]
+chr_tag: "TRUE"
+
+# Minimum base quality to call mutation
+minqual: 40
+
+# Which columns to keep in final cB.csv.gz file
+keepcols: "sample,sj,io,ei,ai,GF,XF,rname"
+
+cpus: 2 # Number of CPUs used by whole pipeline or by each job task if using SLURM scheduler
+mem: 8G # Ammount of memory used by whole pipeline or by each job task
+email: "isaac.vock@yale.edu" # Email for status reports (SLURM only)
+JOB_NAME: "TimeLapse" # Name of job on cluster and base for output .txt file (SLURM only)
+SLURM: "TRUE" # Use SLURM scheduler. If not, pipeline will analyze samples sequentially.
+
+# Number of reads per fragment when splitting up bam file
+fragment_size: 25000
+
+### Parameters you should NEVER alter
+awkscript: workflow/scripts/fragment_sam.awk
+mutcall: workflow/scripts/mut_call.py
+mutcnt: workflow/scripts/count_triple.py

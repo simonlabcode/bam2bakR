@@ -1,0 +1,14 @@
+name: pipeline-env-tmp2
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - bash =5.0.018
+  - samtools =1.12
+  - gawk =4.2.1
+  - python =3.8.6
+  - snakemake-minimal >=5.24.1
+  - htseq =0.13.5
+  - parallel =20210222
+  - pigz =2.6
+  - pysam =0.16.0.1

@@ -1,1 +1,39 @@
 configfile: "config/config.yaml"
+
+
+def get_input_bams(wildcards):
+    return config["samples"][wildcards.sample]
+
+rule all:
+    input:
+        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+
+rule sort_filter:
+    input:
+        get_input_bams
+    output:
+        "results/sf_reads/{sample}.s.sam"
+    log:
+        "logs/sort_filter/{sample}.log"
+    shell:
+        "workflow/scripts/sort_filter.sh {config[cpus]} {wildcards.sample} {input} {output} {config[FORMAT]}"
+
+rule htseq_cnt:
+    input:
+        "results/sf_reads/{sample}.s.sam"
+    output:
+        "results/bams/{sample}_tl.bam"
+    log:
+        "logs/htseq_cnt/{sample}.log"
+    shell:
+        "workflow/scripts/htseq.sh {config[cpus]} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
+
+rule cnt_muts:
+    input:
+        "results/bams/{sample}_tl.bam"
+    output:
+        "results/counts/{sample}_counts.csv.gz"
+    log:
+        "logs/fragment_bam/{sample}.log"
+    shell:
+        "workflow/scripts/fragment.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"

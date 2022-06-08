@@ -8,3 +8,14 @@
 .Rhistory
 *.rds
 *.swp
+data/**
+*.log
+*.bam
+*.csv
+*.gz
+*.sam
+*.txt
+results/**
+.snakemake/**
+
+
