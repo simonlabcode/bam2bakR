@@ -16,6 +16,7 @@ rule sort_filter:
         "results/sf_reads/{sample}.s.sam"
     log:
         "logs/sort_filter/{sample}.log"
+    threads: 20
     shell:
         "workflow/scripts/sort_filter.sh {config[cpus]} {wildcards.sample} {input} {output} {config[FORMAT]}"
 
@@ -26,6 +27,7 @@ rule htseq_cnt:
         "results/bams/{sample}_tl.bam"
     log:
         "logs/htseq_cnt/{sample}.log"
+    threads: 20
     shell:
         "workflow/scripts/htseq.sh {config[cpus]} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
@@ -36,6 +38,7 @@ rule cnt_muts:
         "results/counts/{sample}_counts.csv.gz"
     log:
         "logs/fragment_bam/{sample}.log"
+    threads: 20
     shell:
         "workflow/scripts/fragment.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
 
@@ -47,5 +50,6 @@ rule makecB:
         "results/cB/cB.csv.gz"
     log:
         "logs/makecB/master.log"
+    threads: 20
     shell:
         "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]} "
