@@ -74,7 +74,7 @@ Inside the repo, you will find a file named `current_env.yaml`. This is a YAML f
 $ conda activate base
 $ mamba env create --file current_env.yaml
 ```
-The first line activates the so-called base environment in your installation of M This will create a new environment called pipeline-env-tmp2. If you don't like that environment name, you can change it by editing the first line of `current_env.yaml`, which looks like:
+The first line activates the so-called `base` conda environment, which is what allows you to call `mamba` in the next line. This will create a new environment called pipeline-env-tmp2. If you don't like that environment name, you can change it by editing the first line of `current_env.yaml`, which looks like:
 ```
 name: pipeline-env-tmp2
 ```
@@ -90,4 +90,39 @@ $ conda activate pipeline-env-tmp2
 replacing `pipeline-env-tmp2` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
 
 ### Edit the config file
+In the `config/` directory you will find a file named `config.yaml`. If you open it in a text editor, you will see several parameters which you can alter to your heart's content. The first and arguably most important parameter is at the top of the file:
 
+```
+samples:
+  WT_1: data/samples/DCP2_subsample1Aligned.out.bam
+  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+```
+`samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1` and `WT_1` and will be what shows up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the TL-Snakemake repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the TL-Snakemake directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the TL-Snakemake directory as in this example. 
+
+As another example, imagine that the `data` directory was in the directory that you cloned the TL-Snakemake repo to, and that there was no `samples` subdirectory inside of `data`. In that case, the paths would look something like this:
+
+```
+samples:
+  Sample_1: ../data/Sample1Aligned.out.bam
+  Sample_2: ../data/Sample2Aligned.out.bam
+```
+where `../` means navigate up one directory. 
+
+A second almost equally important parmaeter immediately follows:
+
+```
+annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
+```
+This is the path to the GTF file for the genome that reads were mapped to. The same rules apply when it comes to specifying this path.
+
+The other parameters that can be altered are:
+* `cpus`: the number of cores (i.e., cpus) you want to use
+* `FORMAT`: whether the reads are paired-end (PE) or single-end SE
+* `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each
+* `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA"
+* `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this
+* `keepcols`: Names of columns to keep in cB.csv output file. I wouldn't usually worry about editing this
+
+Edit the values in the config file as necessary and move on to the last step.
+
+## Run it!
