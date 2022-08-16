@@ -13,9 +13,9 @@ This is a Snakemake implementation of a portion of the [TimeLapse pipeline](http
 * n - Number of reads which have the identical set of values described above
 
 ## Requirements
-TL-Snakemake (as the name implies) uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. In addition, TL-Snakemake has so far been exclusively tested on a Linux OS, so Mac users be warned. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher)!
+TL-Snakemake (as the name implies) uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. In addition, TL-Snakemake has so far been exclusively tested on a Linux OS, so Mac users be warned. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
 
-In addition, you will need Git installed on your system so that you can clone this repository. Head to [this link](https://git-scm.com/downloads) for installation instructions if you don't already have Git!
+In addition, you will need Git installed on your system so that you can clone this repository. Head to [this link](https://git-scm.com/downloads) for installation instructions if you don't already have Git.
 
 ## Setup
 There are 5 steps required to get up and running with TL-Snakemake
@@ -58,7 +58,7 @@ When asked this question:
 ```
 Do you wish the installer to preprend the install location to PATH ...? [yes|no]
 ```
-answer with *yes*. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the next step!
+answer with *yes*. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the next step.
 
 ### Clone TL-Snakemake
 Clone the TL-Snakemake repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
@@ -126,10 +126,16 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ## Run it!
-Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config):
+Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config). Also, TL-Snakemake doesn't currently support use of -s4U control samples to call SNPs, though this will hopefully change soon. You should still process these control samples though as they are helpful for downstream analysis and data quality assessment:
 ```
 $ conda activate pipeline-env-tmp2
 $ snakemake --cores 8
 ```
-There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the Snakemake documentation 
+There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html) 
 for the details on everything you can change when running the pipeline.
+
+### Output
+All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB`. 
+
+### Questions?
+If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
