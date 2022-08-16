@@ -85,7 +85,7 @@ To make sure we are all on the same page, an environment is a collection of inst
 Now, whenever you want to run the TL-Snakemake pipeline, you can just run:
 
 ```
-conda activate pipeline-env-tmp2
+$ conda activate pipeline-env-tmp2
 ```
 replacing `pipeline-env-tmp2` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
 
