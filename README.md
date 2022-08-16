@@ -19,15 +19,15 @@ In addition, you will need Git installed on your system so that you can clone th
 
 ## Setup
 There are 5 steps required to get up and running with TL-Snakemake
-1. Install conda (or mamba) on your system. This is the package manager that TL-Snakemake uses to make setting up the necessary dependencies a breeze.
-1. Clone this repository to wherever you want to run it from
-1. Install dependencies with conda/mamba
-1. Edit the config file (located in config/ directory of cloned repo) to your liking
-1. Run it!
+1. [Install conda (or mamba) on your system](#conda). This is the package manager that TL-Snakemake uses to make setting up the necessary dependencies a breeze.
+1. [Clone this repository](#clone) to wherever you want to run it from
+1. [Install dependencies](#depend) with conda/mamba
+1. [Edit the config file](#config) (located in config/ directory of cloned repo) to your liking
+1. [Run it!](#run)
 
 The remaining documentation will describe each of these steps in greater detail and point you to additional documentation that might be useful.
 
-### Install conda (or mamba)
+### Install conda (or mamba)<a name="conda"></a>
 [Conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a package/environment management system. [Mamba](https://mamba.readthedocs.io/en/latest/) is a newer, faster, C++ reimplementation of conda. While often associated with Python package management, lots of software, including all of the TimeLapse pipeline dependencies, can be installed with these package managers. They have pretty much the same syntax and can do the same things, so I highly suggest using Mamba in place of conda whenever possible. 
 
 One way to install Mamba is to first install Conda following the instructions at [this link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Then you can call:
@@ -60,7 +60,7 @@ Do you wish the installer to preprend the install location to PATH ...? [yes|no]
 ```
 answer with *yes*. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the next step.
 
-### Clone TL-Snakemake
+### Clone TL-Snakemake<a name="clone"></a>
 Clone the TL-Snakemake repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
 ```
 $ git clone https://github.com/isaacvock/TL-Snakemake.git
@@ -68,7 +68,7 @@ $ cd TL-Snakemake
 ```
 You should be in the TL-Snakemake repo directory now!
 
-### Install dependencies
+### Install dependencies<a name="depend"></a>
 Inside the repo, you will find a file named `current_env.yaml`. This is a YAML file with the list of exact dependencies that need to be installed to run the Snakemake workflow. Luckily, installation of everything can be completed automatically thanks to Mamba/Conda! If you followed the earlier instructions for installing Mamba, just run:
 ```
 $ conda activate base
@@ -89,7 +89,7 @@ $ conda activate pipeline-env-tmp2
 ```
 replacing `pipeline-env-tmp2` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
 
-### Edit the config file
+### Edit the config file<a name="config"></a>
 In the `config/` directory you will find a file named `config.yaml`. If you open it in a text editor, you will see several parameters which you can alter to your heart's content. The first and arguably most important parameter is at the top of the file:
 
 ```
@@ -125,7 +125,7 @@ The other parameters that can be altered are:
 
 Edit the values in the config file as necessary and move on to the last step.
 
-## Run it!
+### Run it!<a name="run"></a>
 Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config). Also, TL-Snakemake doesn't currently support use of -s4U control samples to call SNPs, though this will hopefully change soon, so you have to create an empty snp.txt file. You should still process these control samples though as they are helpful for downstream analysis and data quality assessment:
 ```
 $ touch snp.txt
@@ -135,8 +135,8 @@ $ snakemake --cores 8
 There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html) 
 for the details on everything you can change when running the pipeline.
 
-### Output
+## Output
 All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB`. 
 
-### Questions?
+## Questions?
 If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
