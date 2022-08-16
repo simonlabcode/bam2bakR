@@ -126,3 +126,10 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ## Run it!
+Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config:
+```
+$ conda activate pipeline-env-tmp2
+$ snakemake --cores 8
+```
+There are *A LOT* of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the Snakemake documentation 
+for the details on everything you can change when running the pipeline.
