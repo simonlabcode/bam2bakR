@@ -131,5 +131,5 @@ Technically, all you need to do to run TL-Snakemake is activate the pipeline env
 $ conda activate pipeline-env-tmp2
 $ snakemake --cores 8
 ```
-There are *A LOT* of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the Snakemake documentation 
+There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the Snakemake documentation 
 for the details on everything you can change when running the pipeline.
