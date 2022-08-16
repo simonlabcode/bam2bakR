@@ -30,9 +30,13 @@ The remaining documentation will describe each of these steps in greater detail 
 ### Install conda (or mamba)
 [Conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a package/environment management system. [Mamba](https://mamba.readthedocs.io/en/latest/) is a newer, faster, C++ reimplementation of conda. While often associated with Python package management, lots of software, including all of the TimeLapse pipeline dependencies, can be installed with these package managers. They have pretty much the same syntax and can do the same things, so I highly suggest using Mamba in place of conda whenever possible. 
 
-In either case, if you are going to go forward with Conda as your package manger of choice, check [this link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) out for releveant installation instructions
+One way to install Mamba is to first install Conda following the instructions at [this link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Then you can call:
+```
+$ conda install -n base -c conda-forge mamba
+```
+to install Mamba.
 
-Similarly, if Mamba is your choice, [this link](https://mamba.readthedocs.io/en/latest/installation.html) provides detailed installation instructions. For the sake of clarity, below I will reproduce instructions to install Mambaforge, which is similar to something called Miniconda but uses Mamba instead of Conda, and is probably the easiest way to get started with the necessary installation. These instructions come from the [Snakemake Getting Started tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/setup.html), so go to that link if you'd like to see the full original details:
+A second strategy would be to install Mambaforge, which is similar to something called Miniconda but uses Mamba instead of Conda. I will reproduce the instructions to install Mambaforge below, as this is probably the easiest way to get started with the necessary installation of Mamba. These instructions come from the [Snakemake Getting Started tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/setup.html), so go to that link if you'd like to see the full original details:
 
 * For Linux users with a 64-bit system, run these two lines of code from the terminal:
 ``` 
@@ -59,5 +63,31 @@ answer with *yes*. Prepending to PATH means that after closing your current term
 ### Clone TL-Snakemake
 Clone the TL-Snakemake repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
 ```
-gi
+$ git clone https://github.com/isaacvock/TL-Snakemake.git
+$ cd TL-Snakemake
 ```
+You should be in the TL-Snakemake repo directory now!
+
+### Install dependencies
+Inside the repo, you will find a file named `current_env.yaml`. This is a YAML file with the list of exact dependencies that need to be installed to run the Snakemake workflow. Luckily, installation of everything can be completed automatically thanks to Mamba/Conda! If you followed the earlier instructions for installing Mamba, just run:
+```
+$ conda activate base
+$ mamba env create --file current_env.yaml
+```
+The first line activates the so-called base environment in your installation of M This will create a new environment called pipeline-env-tmp2. If you don't like that environment name, you can change it by editing the first line of `current_env.yaml`, which looks like:
+```
+name: pipeline-env-tmp2
+```
+by replacing `pipeline-env-tmp2` with the name of your choice! 
+
+To make sure we are all on the same page, an environment is a collection of installed software tucked away in its own directory, separate from everything else installed on your computer. When installing software with Mamba/Conda, I highly suggest installing all of the software you need for a particular task into an isolated environment like this. What's great about it is that you can have multiple versions of any given software installed at the same time! 
+
+Now, whenever you want to run the TL-Snakemake pipeline, you can just run:
+
+```
+conda activate pipeline-env-tmp2
+```
+replacing `pipeline-env-tmp2` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
+
+### Edit the config file
+
