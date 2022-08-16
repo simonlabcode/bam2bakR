@@ -7,12 +7,6 @@ cBout=$3
 keepcols=$4
 mut_tracks=$5
 
-echo "cpus is $cpus"
-echo "masterout is $masterout"
-echo "cBout is $cBout"
-echo "keepcols is $keepcols"
-echo "mut_tracks is $mut_tracks"
-
 #day=$(date +"%y%m%d")
 
 # create base count name: "TC" => "nT"
@@ -43,8 +37,8 @@ parallel -j 1 --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p
                 header = $0
                 print "sample", $0
                 next
-            } 
-            $0 == header { 
+            }
+            $0 == header {
                 next
             }
             {
@@ -74,7 +68,7 @@ parallel -j 1 --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p
                 print out
             } ' \
     | awk -v OFS="," -v FS="," '
-            NR == 1 { 
+            NR == 1 {
                 print $0, "n"
                 next
             }
@@ -82,7 +76,7 @@ parallel -j 1 --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p
                 sample = $1
             }
             sample != $1 {
-                
+
                 for (row in count) {
                     print row, count[row]
                 }
@@ -99,7 +93,7 @@ parallel -j 1 --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p
             } '\
     | pigz -p $cpus > "$cBout"
 
-            
+
 # Explanation of the data flow:
 #
 #   cat (echo [filename as identiefier of data origin] + gzip [decompress file]) [use Parallels to create a single stream of alternating filename line + csv lines]
