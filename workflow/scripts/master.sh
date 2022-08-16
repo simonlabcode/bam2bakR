@@ -110,3 +110,5 @@ parallel -j 1 --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p
 
 echo "** Master file created: master.csv.gz"
 echo "** cB file created: cB.csv.gz"
+
+rm *temp*
