@@ -1,5 +1,5 @@
 
-### Parameters you MUST set
+######## Parameters you MUST set #########
 
 # location of bam files
 samples:
@@ -10,7 +10,7 @@ samples:
 annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
 
 
-### Parameters you should probably double check
+######## Parameters you should probably double check ########
 
 # Number of cpus to be used by pieline
 cpus: 2
@@ -20,20 +20,11 @@ FORMAT: "PE" # (PE, SE, NU)
                     # [SE - single end reads]
                     # [NU - including non-unique] (not tested)
 
-# Organism
-SPECIES: "Hs" # (Mm, Dm, Hs) [default: Mm]
-
-# Sequencing reads strandness relative to RNA transcript [depends on library prep and sequencing output]
-READS: "RF" # (FR, RF, F)
-                    # [FR - STL-seq]
-                    # [RF - Clonetech v2]
-
-
 # Number of reads per fragment when splitting up bam file
 fragment_size: 25000
 
 
-# Type of browser tracks to generate
+# Type of mutations of interest
 mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 
 # Minimum base quality to call mutation
@@ -43,7 +34,7 @@ minqual: 40
 keepcols: "sample,sj,io,ei,ai,GF,XF,rname"
 
 
-### Parameters you should NEVER alter
+######## Parameters you should NEVER alter ########
 awkscript: workflow/scripts/fragment_sam.awk
 mutcall: workflow/scripts/mut_call.py
 mutcnt: workflow/scripts/count_triple.py
