@@ -126,7 +126,7 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ### Run it!<a name="run"></a>
-Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config). Also, TL-Snakemake doesn't currently support use of -s4U control samples to call SNPs, though this will hopefully change soon, so you have to create an empty snp.txt file. You should still process these control samples though as they are helpful for downstream analysis and data quality assessment:
+Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake from the top of the TL-Snakemake directory as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config). Also, TL-Snakemake doesn't currently support use of -s4U control samples to call SNPs, though this will hopefully change soon, so you have to create an empty snp.txt file before running. You should still process these control samples though as they are helpful for downstream analysis and data quality assessment:
 ```
 $ touch snp.txt
 $ conda activate pipeline-env-tmp2
