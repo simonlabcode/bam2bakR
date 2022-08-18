@@ -136,7 +136,7 @@ There are **A LOT** of adjustable parameters that you can play with when running
 for the details on everything you can change when running the pipeline.
 
 ## Output
-All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB`. 
+All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. 
 
 ## Questions?
 If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
