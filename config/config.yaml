@@ -4,10 +4,10 @@
 # location of bam files
 samples:
   WT_1: data/samples/DCP2_subsample1Aligned.out.bam
-  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+  #WT_2: data/samples/DCP2_subsample2Aligned.out.bam
 
 # location of annotation gtf file
-annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
+annotation: data/annotation/Homo_sapiens.GRCh38.104.chr.gtf
 
 
 ######## Parameters you should probably double check ########
