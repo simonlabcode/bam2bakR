@@ -4,11 +4,13 @@
 # location of bam files
 samples:
   WT_1: data/samples/DCP2_subsample1Aligned.out.bam
-  #WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
 
 # location of annotation gtf file
 annotation: data/annotation/Homo_sapiens.GRCh38.104.chr.gtf
 
+# location of genome fasta file
+genome_fasta: data/genome/Homo_sapiens.GRCh38.dna.chr.fa
 
 ######## Parameters you should probably double check ########
 
@@ -27,6 +29,9 @@ fragment_size: 25000
 # Type of mutations of interest
 mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 
+# whether to make .tdf files or not
+make_tracks: True
+
 # Minimum base quality to call mutation
 minqual: 40
 
@@ -38,11 +43,4 @@ keepcols: "sample,sj,io,ei,ai,GF,XF,rname"
 awkscript: workflow/scripts/fragment_sam.awk
 mutcall: workflow/scripts/mut_call.py
 mutcnt: workflow/scripts/count_triple.py
-
-# Program used for creating browser tracks
-track_prog: "STAR" # (STAR, bedtools)
-  # not yet implemented
-
-# TRUE if you want information about mutation by position in addition to mutation by read.
-mut_pos: "FALSE"
-  # Not yet implemented
+count2tracks: workflow/scripts/count_to_tracks.py

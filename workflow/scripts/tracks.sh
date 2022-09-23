@@ -2,13 +2,6 @@
 #
 # To make filtered bam files and tracks with different numbers of mutations
 
-# Get parameters
-# This allows to be script run as: sbatch tracks.sh configFile sampleName
-    if [[ -n $1 ]]; then config=$1; fi
-    if [[ -n $2 ]]; then sample=$2; fi
-
-    source $config
-
 # Set normalization value
 normVal='1'
 
@@ -22,21 +15,20 @@ normVal='1'
 
 cpus=$1
 sample=$2
-input1=$3 # counts.csv files
-input2=$4 # _tl.bam files
-output=$5
-mut_tracks=$6
-TLcount2tracks=$7
+input1=$3
+input2=$4
+mut_tracks=$5
+output=$6
+genome_fasta=$7
 
 
 # Test if count files exist
 
     echo '* Creating files for each level of counting.'
 
-    python $TLcount2tracks \
-        -i "$input1" \
-        -s $sample \
-        --mutType $mut_tracks
+    python ./workflow/scripts/count_to_tracks.py \
+        -i $input1 \
+        -s $sample
 
 
 # Sort the starting .bam file by coordinate
@@ -45,11 +37,13 @@ TLcount2tracks=$7
 
 
 # Make .chrom.sizes file from .bam file header (alternative to .genome file for toTDF)
-    samtools view -H "$sample"_sort.bam \
-        | awk -v OFS="\t" ' $1 ~ /^@SQ/ {split($2, chr, ":")
-                                         split($3, size, ":")
-                                         print chr[2], size[2]}' > "$chrom_sizes"
-
+    chrom_sizes=$(echo ${genome_fasta##*/} | cut -f 1 -d '.')".chrom.sizes"
+    if [ ! -f $chrom_sizes ]; then
+            samtools view -H "$sample"_sort.bam \
+                | awk -v OFS="\t" ' $1 ~ /^@SQ/ {split($2, chr, ":")
+                                                 split($3, size, ":")
+                                                 print chr[2], size[2]}' > "$chrom_sizes"
+    fi
 
 
     muts=$(echo $mut_tracks | tr ',' ' ')
@@ -83,36 +77,36 @@ TLcount2tracks=$7
 
 
     # Filter the reads
-    parllel -j 1 samtools view -@ "$cpus" \
+    parallel -j 1 samtools view -@ "$cpus" \
                                      -b \
                                      -N "$sample"_{1}_{2}_reads.txt \
                                      -o "$sample"_{1}_{2}.bam \
                                      "$sample"_sort.bam ::: $muts \
                                                         ::: $(seq 0 5)
 
-        # Make tracks
-        parallel -j "$cpus" STAR \
-                                --runMode inputAlignmentsFromBAM \
-                                --inputBAMfile "$sample"_{1}_{2}.bam \
-                                --outWigType bedGraph \
-                                --outWigNorm None \
-                                --outWigStrand Stranded \
-                                --outFileNamePrefix {1}_{2}_ ::: $muts \
-                                                               ::: $(seq 0 5)
+    # Make tracks
+    parallel -j "$cpus" STAR \
+                            --runMode inputAlignmentsFromBAM \
+                            --inputBAMfile "$sample"_{1}_{2}.bam \
+                            --outWigType bedGraph \
+                            --outWigNorm None \
+                            --outWigStrand Stranded \
+                            --outFileNamePrefix {1}_{2}_ ::: $muts \
+                                                           ::: $(seq 0 5)
 
 
 
-        # Take only unique component of track
-        parallel -j "$cpus" "awk -v norm=${normVal} \
-                                        '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
-                                        {1}_{2}_Signal.Unique.{4}.out.bg \
-                                        >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
-                                                                                         ::: $(seq 0 5) \
+    # Take only unique component of track
+    parallel -j "$cpus" "awk -v norm=${normVal} \
+                                    '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
+                                    {1}_{2}_Signal.Unique.{4}.out.bg \
+                                    >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
+                                                                                     ::: $(seq 0 5) \
                                                                                          ::: + - \
                                                                                          :::+ str1 str2 \
                                                                                          :::+ pos min
 
-        rm *.bg
+        #rm *.bg
 
 
 
@@ -120,13 +114,14 @@ TLcount2tracks=$7
     parallel -j "$cpus" igvtools toTDF \
                                 -f mean,max \
                                 "$sample".{1}.{2}.{3}.bedGraph \
-                                "$output" \
+                                "$sample".{1}.{2}.{3}.tdf \
                                 "$chrom_sizes" ::: $muts \
                                              ::: $(seq 0 5) \
                                              ::: pos min
 
+    touch "$output"
 
-
+    mv *.tdf ./results/tracks/
 
 
 
@@ -134,4 +129,6 @@ TLcount2tracks=$7
 
     rm -f *.bam
     rm -f *_reads.txt
-    rm -f *.bedGraph
+    #rm -f *.bedGraph
+    rm -f *.bai
+    rm -f *.out
