@@ -20,4 +20,4 @@ results/**
 TLpipeline.yaml
 *.bedGraph
 *.log
-*.chrom
+*.chrom*
