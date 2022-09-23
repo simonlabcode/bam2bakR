@@ -18,3 +18,6 @@ data/**
 results/**
 .snakemake/**
 TLpipeline.yaml
+*.bedGraph
+*.log
+*.chrom
