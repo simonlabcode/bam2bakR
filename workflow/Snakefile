@@ -14,8 +14,8 @@ def get_input_bams(wildcards):
 
 rule all:
     input:
-        "results/cB/master.csv.gz",
-        "results/cB/cB.csv.gz",
+        # "results/cB/master.csv.gz",
+        # "results/cB/cB.csv.gz",
         "results/tracks/WT_1_success.txt",
         "results/tracks/WT_2_success.txt"
 
@@ -60,16 +60,16 @@ rule maketdf:
         "results/tracks/{sample}_success.txt"
     threads: CPU_num
     shell:
-        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]}"
+        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]} {config[WSL]}"
 
-rule makecB:
-    input:
-        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
-    output:
-        "results/cB/master.csv.gz",
-        "results/cB/cB.csv.gz"
-    log:
-        "logs/makecB/master.log"
-    threads: CPU_num
-    shell:
-        "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]}"
+# rule makecB:
+#     input:
+#         expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+#     output:
+#         "results/cB/master.csv.gz",
+#         "results/cB/cB.csv.gz"
+#     log:
+#         "logs/makecB/master.log"
+#     threads: CPU_num
+#     shell:
+#         "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]}"

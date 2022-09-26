@@ -22,6 +22,9 @@ FORMAT: "PE" # (PE, SE, NU)
                     # [SE - single end reads]
                     # [NU - including non-unique] (not tested)
 
+# Are you using the Windows subsystem for linux?
+WSL: False
+
 # Number of reads per fragment when splitting up bam file
 fragment_size: 25000
 
