@@ -8,7 +8,7 @@
     Date last modified: 8/30/2021
     Version: 1.0.0
     License: GPLv3
-    Python Version: Python 2.7.18, 3.8.7+ 
+    Python Version: Python 2.7.18, 3.8.7+
     Packages: pysam 0.16.0.1
     Description: Script for detecting mutations from sequencing data .bam file
 '''
@@ -37,6 +37,7 @@ parser.add_argument('--mutsRDS', action='store_true',
                     help='Generate _muts.rds like file with mutation frequency output')
 parser.add_argument('--mutPos', action='store_true',
                     help='Generate _cU.rds like file and mutation position bedGraph files')
+parser.add_argument('--SNPs', help='Path to snp.txt file')
 args = parser.parse_args()
 
 args.mutType = args.mutType.split(',')
@@ -62,7 +63,7 @@ MDstore = {}
 
 # Load SNPs for filtering
 snp = {}
-snpFile = open('snp.txt', 'r')
+snpFile = open(args.SNPs, 'r')
 for line in snpFile:
     line = line.strip().split(':')
     snp[line[2] + ':' + line[3]] = line[0] + ':' + line[1]
@@ -110,7 +111,7 @@ for r in samfile:
             r_info[9] = 'R'      # FR: forward or reverse read orientation
             MD = [[x[1], DNAcode[x[2]], min(x[0] - r.query_alignment_start + 1, r.query_alignment_length - (x[0] - r.query_alignment_start))] for x in r.get_aligned_pairs(matches_only = True, with_seq=True)]
             # Parse MD and Cigar strings, remove values that are softclipped
-            # MD = [[gen_position, ref_base, base_readEnd_distance]] 
+            # MD = [[gen_position, ref_base, base_readEnd_distance]]
 
             temp_qual = r.query_qualities
             r.query_sequence = ''.join([DNAcode[x] for x in r.query_sequence])
@@ -128,16 +129,16 @@ for r in samfile:
             dovetail = list(set(MDstore.keys()) & set([x[0] for x in MD]))   # Identify genomic positions that are covered by both first and second read
 
 
-            if len(dovetail) == 0:      # No dovetailing 
+            if len(dovetail) == 0:      # No dovetailing
                 MDstore.update({z[0][0]: [z[0][1], z[1], z[2], z[0][2]] for z in zip(MD, r.query_alignment_sequence, r.query_alignment_qualities)})
 
             else:                       # Dovetailing
                 MD = {z[0][0]: [z[0][1], z[1], z[2], z[0][2]] for z in zip(MD, r.query_alignment_sequence, r.query_alignment_qualities)}
-                
+
                 # MDstore.update({ pos:data for pos, data in MD.items() if pos in dovetail and MDstore[pos][2] < data[2] })   # Replace dovetail positions if better quality
-                MDstore.update({ pos:data for pos, data in MD.items() if pos in dovetail and ((MDstore[pos][2] < data[2] and MDstore[pos][0].islower() and data[0].islower()) or (MDstore[pos][2] < data[2] and MDstore[pos][0].isupper() and data[0].isupper()) or (MDstore[pos][2] < data[2] and MDstore[pos][0].islower() and data[0].isupper() and MDstore[pos][2] + 33 < args.minQual) or (data[0].islower() and MDstore[pos][0].isupper() and data[2] + 33 > args.minQual)) })   
+                MDstore.update({ pos:data for pos, data in MD.items() if pos in dovetail and ((MDstore[pos][2] < data[2] and MDstore[pos][0].islower() and data[0].islower()) or (MDstore[pos][2] < data[2] and MDstore[pos][0].isupper() and data[0].isupper()) or (MDstore[pos][2] < data[2] and MDstore[pos][0].islower() and data[0].isupper() and MDstore[pos][2] + 33 < args.minQual) or (data[0].islower() and MDstore[pos][0].isupper() and data[2] + 33 > args.minQual)) })
                 # This is a hack to simulate TimeLapse.R behaviour, but does not necessarily mean that it is a correct dovetail mutations handling
-                # For dovetail bases: 1) If there is no mutation in 1st and in 2nd read => replace with higher quality 2nd read 
+                # For dovetail bases: 1) If there is no mutation in 1st and in 2nd read => replace with higher quality 2nd read
                 #                     2) If there is mutation in 1st and in 2nd read => replace with higher quality 2nd read
                 #                     3) If there is mutation in 1nd but not in 2st read => replace only if 1st read quality is less than threshold and less than 2nd read
                 #                     4) If there is mutation in 2nd read but not in 1st read => replace even with lower quality 2nd read as long as 2nd read quality is higher than threshold
@@ -235,7 +236,7 @@ myfile.close()
     # with open(inputName + '_muts.csv', 'w', newline='') as myfile:
         # wr = csv.writer(myfile)
         # wr.writerow(['rname', 'gloc', 'trials', 'n'])           # header
-        # for position, counts in freq.items():                               
+        # for position, counts in freq.items():
             # row = position.split(':')
             # row[1] = int(row[1]) + 1                            # adjust position because we are 0-based
             # row.extend(counts)
@@ -265,7 +266,7 @@ myfile.close()
     # strand = {'F' : 0, 'R' : 1}
     # for b in args.mutType:
         # for s in ['pos', 'min']:
-            # fileName.append( open('_'.join([inputName, b, s, 'muts.bedGraph']), 'w') ) 
+            # fileName.append( open('_'.join([inputName, b, s, 'muts.bedGraph']), 'w') )
 
     # fs = []
     # for f in fileName:
@@ -279,4 +280,3 @@ myfile.close()
         # f.close()
 
 #print('bedgraph: ' + str(datetime.datetime.now()))
-

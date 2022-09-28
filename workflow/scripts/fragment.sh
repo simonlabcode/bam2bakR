@@ -4,17 +4,18 @@
 cpus=$1
 sample=$2
 input=$3
-output=$4
-awkscript=$5
-fragment_size=$6
-minqual=$7
-mut_tracks=$8
-mutcall=$9
-format=${10}
+input_snp=$4
+output=$5
+awkscript=$6
+fragment_size=$7
+minqual=$8
+mut_tracks=$9
+mutcall=${10}
+format=${11}
 
 # load tools
 
-# Spread the work load so all cpus are working at all times   
+# Spread the work load so all cpus are working at all times
     declare $(samtools view -@ "$cpus"  "$input" \
     			| wc -l \
     			| awk -v fragment_size="$fragment_size" \
@@ -23,7 +24,7 @@ format=${10}
                                         if ($1 % fragment_size != 0) {nFrag = nFrag + 1}        # If there are some left over reads then increase number of fractions
 
                                         nBatchRun = int(nFrag / cpus)                           # In how many batches will the fragments be processed
-                                        if (nFrag % cpus != 0) { nBatchRun = nBatchRun + 1}     # If there are some leftover fragments that will not fill up all cpus, then incerease number of batches 
+                                        if (nFrag % cpus != 0) { nBatchRun = nBatchRun + 1}     # If there are some leftover fragments that will not fill up all cpus, then incerease number of batches
 
                                         newFragmentNumber = nBatchRun * cpus
 
@@ -34,7 +35,7 @@ format=${10}
                                         print "newFragmentSize="newFragmentSize
                                     }')
 
-    echo "* The number of fragments for sample $sample is $newFragmentNumber"                                    
+    echo "* The number of fragments for sample $sample is $newFragmentNumber"
     echo "* The fragment size is set to $newFragmentSize alignments per fragment"
 
 
@@ -71,7 +72,8 @@ format=${10}
     parallel -j $cpus "python $mutcall -b {1} \
                                               --mutType $mut_tracks \
                                               --minQual $minqual \
-                                              --reads $format" ::: *_"$sample"_frag.bam
+                                              --reads $format" ::: *_"$sample"_frag.bam \
+																							--SNPs $input_snp
 
 
     echo "** Mutations called for sample $sample"
@@ -87,10 +89,9 @@ format=${10}
 
 
     echo "** Results fragments merged into final files"
-	
+
 
 
 	rm -f *_"$sample"_frag.bam
 
 	echo '* Cleaning up fragmented .bam files'
-

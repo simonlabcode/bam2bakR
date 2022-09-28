@@ -85,71 +85,71 @@ WSL_b=$8
                                                         ::: $(seq 0 5)
 
 
-    # if [ $WSL_b ]; then
-    #
-    #     for iter in $(seq 0 5);
-    #     do
-    #         STAR \
-    #             --runMode inputAlignmentsFromBAM \
-    #             --runThreadN $cpus \
-    #             --inputBAMfile "$sample"_"$muts"_"$iter".bam \
-    #             --outWigType bedGraph \
-    #             --outWigNorm None \
-    #             --outWigStrand Stranded \
-    #             --outFileNamePrefix ./"$sample"_"$muts"_"$iter"_
-    #     done
-    #
-    #
-    #
-    #     # Take only unique component of track
-    #     parallel -j "$cpus" "awk -v norm=${normVal} \
-    #                                     '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
-    #                                     ${sample}_{1}_{2}_Signal.Unique.{4}.out.bg \
-    #                                     >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
-    #                                                                        ::: $(seq 0 5) \
-    #                                                                        ::: + - \
-    #                                                                        :::+ str1 str2 \
-    #                                                                        :::+ pos min
-    #
-    #         #rm *.bg
-    #
-    # else
-    #     # # Make tracks
-    #     # parallel -j "$cpus" STAR \
-    #     #                         --runMode inputAlignmentsFromBAM \
-    #     #                         --inputBAMfile "$sample"_{1}_{2}.bam \
-    #     #                         --outWigType bedGraph \
-    #     #                         --outWigNorm None \
-    #     #                         --outWigStrand Stranded \
-    #     #                         --outFileNamePrefix ./"$sample"_{1}_{2}_ ::: $muts \
-    #     #                                                                  ::: $(seq 0 5)
-    #
-    #      parallel -j "$cpus" "bedtools genomecov \
-    #                                      -ibam ${sample}_{1}_{2}.bam \
-    #                                      -bg \
-    #                                      -pc \
-    #                                      -strand {3} \
-    #                                  | awk -v norm=${normVal} \
-    #                                      '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
-    #                                      >> ${sample}.{1}.{2}.{4}.bedGraph" ::: $muts \
-    #                                                                                       ::: $(seq 0 5) \
-    #                                                                                       ::: + - \
-    #                                                                                       :::+ pos min
-    #
-    # fi
+    if [ $WSL_b ]; then
 
-    parallel -j "$cpus" "bedtools genomecov \
-                                    -ibam ${sample}_{1}_{2}.bam \
-                                    -bg \
-                                    -pc \
-                                    -strand {3} \
-                                | awk -v norm=${normVal} \
-                                    '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
-                                    >> ${sample}.{1}.{2}.{4}.bedGraph" ::: $muts \
-                                                                                     ::: $(seq 0 5) \
-                                                                                     ::: + - \
-                                                                                     :::+ pos min
+        echo "Running STAR iteratively"
 
+        for iter in $(seq 0 1); do
+
+            STAR \
+                --runMode inputAlignmentsFromBAM \
+                --inputBAMfile "$sample"_"$muts"_"$iter".bam \
+                --outWigType bedGraph \
+                --outWigNorm None \
+                --outWigStrand Stranded \
+                --outFileNamePrefix ./"$sample"_"$muts"_"$iter"_
+
+        done
+
+
+
+        # Take only unique component of track
+        parallel -j "$cpus" "awk -v norm=${normVal} \
+                                        '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
+                                        ${sample}_{1}_{2}_Signal.Unique.{4}.out.bg \
+                                        >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
+                                                                           ::: $(seq 0 1) \
+                                                                           ::: + - \
+                                                                           :::+ str1 str2 \
+                                                                           :::+ pos min
+
+            #rm *.bg
+
+    else
+        # Make tracks
+        parallel -j "$cpus" STAR \
+                                --runMode inputAlignmentsFromBAM \
+                                --inputBAMfile "$sample"_{1}_{2}.bam \
+                                --outWigType bedGraph \
+                                --outWigNorm None \
+                                --outWigStrand Stranded \
+                                --outFileNamePrefix ./"$sample"_{1}_{2}_ ::: $muts \
+                                                                         ::: $(seq 0 5)
+
+        # Take only unique component of track
+        parallel -j "$cpus" "awk -v norm=${normVal} \
+                                        '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
+                                        ${sample}_{1}_{2}_Signal.Unique.{4}.out.bg \
+                                        >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
+                                                                           ::: $(seq 0 5) \
+                                                                           ::: + - \
+                                                                           :::+ str1 str2 \
+                                                                           :::+ pos min
+
+    fi
+
+    # parallel -j "$cpus" "bedtools genomecov \
+    #                                 -ibam ${sample}_{1}_{2}.bam \
+    #                                 -bg \
+    #                                 -pc \
+    #                                 -strand {3} \
+    #                             | awk -v norm=${normVal} \
+    #                                 '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
+    #                                 >> ${sample}.{1}.{2}.{4}.bedGraph" ::: $muts \
+    #                                                                                  ::: $(seq 0 5) \
+    #                                                                                  ::: + - \
+    #                                                                                  :::+ pos min
+    #
 
 
 
@@ -159,7 +159,7 @@ WSL_b=$8
                                 "$sample".{1}.{2}.{3}.bedGraph \
                                 "$sample".{1}.{2}.{3}.tdf \
                                 "$chrom_sizes" ::: $muts \
-                                             ::: $(seq 0 5) \
+                                             ::: $(seq 0 1) \
                                              ::: pos min
 
     touch "$output"

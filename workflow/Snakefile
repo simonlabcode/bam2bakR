@@ -2,7 +2,13 @@ configfile: "config/config.yaml"
 
 CPU_num = config['cpus']
 
-SAMPLES = config['samples']
+SAMP_NAMES = list(config['samples'].keys())
+
+print(*SAMP_NAMES)
+
+CTL_NAMES = list(config['control_samples'])
+
+nctl = len(CTL_NAMES)
 
 # MAKE_TRACKS = config['make_tracks']
 #
@@ -16,8 +22,8 @@ rule all:
     input:
         # "results/cB/master.csv.gz",
         # "results/cB/cB.csv.gz",
-        "results/tracks/WT_1_success.txt",
-        "results/tracks/WT_2_success.txt"
+        expand("results/tracks/{S_ID}_success.txt", S_ID=SAMP_NAMES)
+
 
 rule sort_filter:
     input:
@@ -41,9 +47,23 @@ rule htseq_cnt:
     shell:
         "workflow/scripts/htseq.sh {config[cpus]} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
+rule call_snps:
+    input:
+        expand("results/bams/{ctl}_tl.bam", ctl = CTL_NAMES)
+    params:
+        nsamps = nctl
+    output:
+        "results/snps/snp.txt"
+    log:
+        "logs/call_snps/ctl_samps.log"
+    threads: CPU_num
+    shell:
+        "workflow/scripts/call_snps.sh {config[cpus]} {params.nsamps} {output} {config[genome_fasta]} {input}"
+
 rule cnt_muts:
     input:
-        "results/bams/{sample}_tl.bam"
+        "results/bams/{sample}_tl.bam",
+        "results/snps/snp.txt"
     output:
         "results/counts/{sample}_counts.csv.gz"
     log:

@@ -34,7 +34,7 @@ mutcnt=$6
         echo '!!! HTSeq counting failed!'
         exit 1
     fi
-	
+
 
 
 # Combine outputs from individual jobs
@@ -46,7 +46,7 @@ mutcnt=$6
             -n \
             -o "$output" -
 
-    #rm "$sample"_htseq.*_temp.sam
+    rm "$sample"_htseq.*_temp.sam
     echo "* HTSeq .sam files merged for sample $sample"
 
 ### Need to make this a separate rule!
@@ -63,7 +63,9 @@ mutcnt=$6
                             | LC_COLLATE=C sort -k1,1 > {2}.${sample}_htseq.txt" ::: GF EF XF \
                                                                                  :::+ gene exon_w_overlaps mature
 
-    #rm *_htseq.*temp.txt
+    rm "${sample}"_GF_htseq.*temp.txt
+	rm "${sample}"_EF_htseq.*temp.txt
+	rm "${sample}"_XF_htseq.*temp.txt
 
     echo "* HTSeq counts files merged for sample $sample"
 
