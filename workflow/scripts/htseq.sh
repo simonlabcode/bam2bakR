@@ -46,7 +46,7 @@ mutcnt=$6
             -n \
             -o "$output" -
 
-    rm "$sample"_htseq.*_temp.sam
+    rm "${sample}"_htseq.*_temp.sam
     echo "* HTSeq .sam files merged for sample $sample"
 
 ### Need to make this a separate rule!

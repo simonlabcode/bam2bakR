@@ -136,6 +136,9 @@ WSL_b=$8
                                                                            :::+ str1 str2 \
                                                                            :::+ pos min
 
+        rm "$sample"*.bg
+
+
     fi
 
     # parallel -j "$cpus" "bedtools genomecov \
@@ -166,12 +169,12 @@ WSL_b=$8
 
     mv *.tdf ./results/tracks/
 
-    rm -f "$sample"*.bam
-    rm -f "$sample"*_reads.txt
-    rm -f "$sample"*.bedGraph
-    rm -f "$sample"*.bai
-    rm -f "$sample"*.out
-    rm -f "$sample"*.chrom.sizes
+    rm "$sample"*.bam
+    rm "$sample"*_reads.txt
+    rm "$sample"*.bedGraph
+    rm "$sample"*.bai
+    rm "$sample"*.out
+    # rm -f "$sample"*.chrom.sizes
     #rm -f igv*
 
     echo "* TDF track files created for sample $sample."
