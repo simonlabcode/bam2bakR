@@ -1,4 +1,4 @@
-name: pipeline-env-tmp2
+name: complete_pipeline
 channels:
   - bioconda
   - conda-forge
@@ -12,3 +12,6 @@ dependencies:
   - parallel =20210222
   - pigz =2.6
   - pysam =0.16.0.1
+  - star =2.7.7a
+  - bcftools = 1.12
+  - igvtools =2.3.93
