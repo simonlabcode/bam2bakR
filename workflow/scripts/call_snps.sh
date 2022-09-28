@@ -59,5 +59,7 @@ if [ $nsamps > 0 ]; then
             | sort \
             | uniq > $output_txt
 
+        mv snp.vcf ./results/snps/
+
         echo '* SNPs called and snp.txt generated'
 fi

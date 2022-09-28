@@ -20,9 +20,10 @@ def get_input_bams(wildcards):
 
 rule all:
     input:
-        # "results/cB/master.csv.gz",
-        # "results/cB/cB.csv.gz",
+        "results/cB/master.csv.gz",
+        "results/cB/cB.csv.gz",
         expand("results/tracks/{S_ID}_success.txt", S_ID=SAMP_NAMES)
+        #expand("results/counts/{S_ID}_counts.csv.gz", S_ID=SAMP_NAMES)
 
 
 rule sort_filter:
@@ -82,14 +83,14 @@ rule maketdf:
     shell:
         "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]} {config[WSL]}"
 
-# rule makecB:
-#     input:
-#         expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
-#     output:
-#         "results/cB/master.csv.gz",
-#         "results/cB/cB.csv.gz"
-#     log:
-#         "logs/makecB/master.log"
-#     threads: CPU_num
-#     shell:
-#         "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]}"
+rule makecB:
+    input:
+        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+    output:
+        "results/cB/master.csv.gz",
+        "results/cB/cB.csv.gz"
+    log:
+        "logs/makecB/master.log"
+    threads: CPU_num
+    shell:
+        "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]}"

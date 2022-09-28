@@ -72,8 +72,9 @@ format=${11}
     parallel -j $cpus "python $mutcall -b {1} \
                                               --mutType $mut_tracks \
                                               --minQual $minqual \
+																							--SNPs "./results/snps/snp.txt" \
                                               --reads $format" ::: *_"$sample"_frag.bam \
-																							--SNPs $input_snp
+
 
 
     echo "** Mutations called for sample $sample"
