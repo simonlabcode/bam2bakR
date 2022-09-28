@@ -85,11 +85,11 @@ WSL_b=$8
                                                         ::: $(seq 0 5)
 
 
-    if [ $WSL_b ]; then
+    if [ $WSL_b = 0 ]; then
 
         echo "Running STAR iteratively"
 
-        for iter in $(seq 0 1); do
+        for iter in $(seq 0 5); do
 
             STAR \
                 --runMode inputAlignmentsFromBAM \
@@ -108,12 +108,12 @@ WSL_b=$8
                                         '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
                                         ${sample}_{1}_{2}_Signal.Unique.{4}.out.bg \
                                         >> ${sample}.{1}.{2}.{5}.bedGraph" ::: $muts \
-                                                                           ::: $(seq 0 1) \
+                                                                           ::: $(seq 0 5) \
                                                                            ::: + - \
                                                                            :::+ str1 str2 \
                                                                            :::+ pos min
 
-            #rm *.bg
+        rm "$sample"*.bg
 
     else
         # Make tracks
@@ -159,19 +159,19 @@ WSL_b=$8
                                 "$sample".{1}.{2}.{3}.bedGraph \
                                 "$sample".{1}.{2}.{3}.tdf \
                                 "$chrom_sizes" ::: $muts \
-                                             ::: $(seq 0 1) \
+                                             ::: $(seq 0 5) \
                                              ::: pos min
 
     touch "$output"
 
     mv *.tdf ./results/tracks/
 
-    rm -f *.bam
-    rm -f *_reads.txt
-    rm -f *.bedGraph
-    rm -f *.bai
-    rm -f *.out
-    rm -f *.chrom.sizes
-    rm -f igv*
+    rm -f "$sample"*.bam
+    rm -f "$sample"*_reads.txt
+    rm -f "$sample"*.bedGraph
+    rm -f "$sample"*.bai
+    rm -f "$sample"*.out
+    rm -f "$sample"*.chrom.sizes
+    #rm -f igv*
 
     echo "* TDF track files created for sample $sample."

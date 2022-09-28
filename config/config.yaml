@@ -32,11 +32,11 @@ FORMAT: "PE" # (PE, SE, NU)
                     # [SE - single end reads]
                     # [NU - including non-unique] (not tested)
 
-# Are you using the Windows subsystem for linux?
-WSL: False
+# Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
+WSL: 1
 
 # Number of reads per fragment when splitting up bam file
-fragment_size: 2500
+fragment_size: 3500000
 
 
 # Type of mutations of interest
