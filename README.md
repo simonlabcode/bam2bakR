@@ -71,25 +71,25 @@ $ cd TL-Snakemake
 You should be in the TL-Snakemake repo directory now!
 
 ### Install dependencies<a name="depend"></a>
-Inside the repo, you will find a file named `current_env.yaml`. This is a YAML file with the list of exact dependencies that need to be installed to run the Snakemake workflow. Luckily, installation of everything can be completed automatically thanks to Mamba/Conda! If you followed the earlier instructions for installing Mamba, just run:
+Inside the repo, you will find a file named `pipeline_env.yaml`. This is a YAML file with the list of exact dependencies that need to be installed to run the Snakemake workflow. Luckily, installation of everything can be completed automatically thanks to Mamba/Conda! If you followed the earlier instructions for installing Mamba, just run:
 ```
 $ conda activate base
-$ mamba env create --file current_env.yaml
+$ mamba env create --file pipeline_env.yaml
 ```
-The first line activates the so-called `base` conda environment, which is what allows you to call `mamba` in the next line. This will create a new environment called pipeline-env-tmp2. If you don't like that environment name, you can change it by editing the first line of `current_env.yaml`, which looks like:
+The first line activates the so-called `base` conda environment, which is what allows you to call `mamba` in the next line. This will create a new environment called complete_pipeline. If you don't like that environment name, you can change it by editing the first line of `pipeline_env.yaml`, which looks like:
 ```
-name: pipeline-env-tmp2
+name: complete_pipeline
 ```
-by replacing `pipeline-env-tmp2` with the name of your choice! 
+by replacing `complete_pipeline` with the name of your choice! 
 
 To make sure we are all on the same page, an environment is a collection of installed software tucked away in its own directory, separate from everything else installed on your computer. When installing software with Mamba/Conda, I highly suggest installing all of the software you need for a particular task into an isolated environment like this. What's great about it is that you can have multiple versions of any given software installed at the same time! 
 
 Now, whenever you want to run the TL-Snakemake pipeline, you can just run:
 
 ```
-$ conda activate pipeline-env-tmp2
+$ conda activate complete_pipeline
 ```
-replacing `pipeline-env-tmp2` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
+replacing `complete_pipeline` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
 
 ### Edit the config file<a name="config"></a>
 In the `config/` directory you will find a file named `config.yaml`. If you open it in a text editor, you will see several parameters which you can alter to your heart's content. The first and arguably most important parameter is at the top of the file:
