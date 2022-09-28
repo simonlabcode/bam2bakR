@@ -98,6 +98,7 @@ In the `config/` directory you will find a file named `config.yaml`. If you open
 samples:
   WT_1: data/samples/DCP2_subsample1Aligned.out.bam
   WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+  WT_ctl: data/samples/DCP2_subsample3Aligned.out.bam
 ```
 `samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1` and `WT_1` and will be what shows up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the TL-Snakemake repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the TL-Snakemake directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the TL-Snakemake directory as in this example. 
 
@@ -105,21 +106,37 @@ As another example, imagine that the `data` directory was in the directory that 
 
 ```
 samples:
-  Sample_1: ../data/Sample1Aligned.out.bam
-  Sample_2: ../data/Sample2Aligned.out.bam
+  WT_1: ../data/DCP2_subsample1Aligned.out.bam
+  WT_2: ../data/DCP2_subsample2Aligned.out.bam
+  WT_ctl: ../data/DCP2_subsample3Aligned.out.bam
 ```
 where `../` means navigate up one directory. 
 
-A second almost equally important parmaeter immediately follows:
+The next parameter denotes the sample names of any -s4U control samples:
+
+```
+control_samples: ['WT_ctl']
+```
+
+In this case, the sample named WT_ctl is the only -s4U control. -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry.
+
+A third almost equally important parmaeter immediately follows:
 
 ```
 annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
 ```
 This is the path to the GTF file for the genome that reads were mapped to. The same rules apply when it comes to specifying this path.
 
+Finally, the path to the genome fasta file that you used for alignment must also be specified:
+
+```
+genome_fasta: data/genome/Homo_sapiens.GRCh38.dna.chr.fa
+```
+
 The other parameters that can be altered are:
 * `cpus`: the number of cores (i.e., cpus) you want to use.
 * `FORMAT`: whether the reads are paired-end (PE) or single-end (SE).
+* `WSL`: whether you are running this on the Windows subsystem for linux (0 = yes; 1= no)
 * `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each. The default value for this is what was used for testing with a downsampled .bam file, and thus is likely a bit small for typicaly analyses. A value of around (total # of reads)/(cpus) should work more generally. For example, if you have on average 20 million mapped reads in your bam files and will be running this with 20 cores, `fragment_size` should be around 1 million.
 * `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA".
 * `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this.
@@ -128,17 +145,19 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ### Run it!<a name="run"></a>
-Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake from the top of the TL-Snakemake directory as follows (replacing `pipeline-env-tmp2` with whatever you named the environment and `8` replaced with whatever you entered for `cpus` in the config). Also, TL-Snakemake doesn't currently support use of -s4U control samples to call SNPs, though this will hopefully change soon, so you have to create an empty snp.txt file before running. You should still process these control samples though as they are helpful for downstream analysis and data quality assessment:
+Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake from the top of the TL-Snakemake directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with whatever you entered for `cpus` in the config):
 ```
 $ touch snp.txt
-$ conda activate pipeline-env-tmp2
-$ snakemake --cores 8
+$ conda activate complete_pipeline
+$ snakemake --cores 4
 ```
 There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html) 
 for the details on everything you can change when running the pipeline.
 
 ## Output
 All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. 
+
+The tdf files to make color-coded tracks are in: `results/tracks/`.
 
 ## Questions?
 If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
