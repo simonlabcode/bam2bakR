@@ -2,14 +2,10 @@
 ######## Parameters you MUST set #########
 
 # location of ALL (including -s4U control) bam files
-# samples:
-#   WT_1: data/samples/DCP2_subsample1Aligned.out.bam
-#   WT_2: data/samples/DCP2_subsample2Aligned.out.bam
-#   WT_ctl: data/samples/DCP2_subsample3Aligned.out.bam
 samples:
-  WT_1: data/samples/WT_1_small.bam
-  WT_2: data/samples/WT_2_small.bam
-  WT_ctl: data/samples/WT_ctl_small.bam
+  WT_1: data/samples/DCP2_subsample1Aligned.out.bam
+  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
+  WT_ctl: data/samples/DCP2_subsample3Aligned.out.bam
 
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
