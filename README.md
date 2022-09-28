@@ -12,6 +12,8 @@ This is a Snakemake implementation of a portion of the [TimeLapse pipeline](http
 * sample - Sample name
 * n - Number of reads which have the identical set of values described above
 
+TL-Snakemake also now outputs .tdf files to make sequencing tracks colored by mutation content (increasingly red for increasing number of mutations)! 
+
 ## Requirements
 TL-Snakemake (as the name implies) uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. In addition, TL-Snakemake has so far been exclusively tested on a Linux OS, so Mac users be warned. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
 
