@@ -2,10 +2,9 @@
 
 # Source the paths and variables:
 cpus=$1
-masterout=$2
-cBout=$3
-keepcols=$4
-mut_tracks=$5
+cBout=$2
+keepcols=$3
+mut_tracks=$4
 
 #day=$(date +"%y%m%d")
 
@@ -44,7 +43,6 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
             {
                 print sample[2], $0
             }' \
-    | tee >(pigz -p $cpus > "$masterout") \
     | awk -v colNames="$keepcols" '
             BEGIN {
                 FS=","
@@ -53,7 +51,7 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     names[tmp[i]]
                 }
             }
-            NR == 1
+            NR == 1 {
                 for (i=1; i<=NF; i++) {
                     if ($i in names) {
                         f[++nf] = i
@@ -108,7 +106,6 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
 #                        |
 #                        --> gzip [compress output to cB file]
 
-echo "** Master file created: master.csv.gz"
 echo "** cB file created: cB.csv.gz"
 
 rm -f *temp*

@@ -9,7 +9,7 @@ samples:
 
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
-control_samples: ['WT_ctl']
+control_samples: ['WT_ctl', 'KO_ctl']
 
 
 # location of annotation gtf file

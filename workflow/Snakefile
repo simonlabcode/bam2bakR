@@ -20,7 +20,6 @@ def get_input_bams(wildcards):
 
 rule all:
     input:
-        "results/cB/master.csv.gz",
         "results/cB/cB.csv.gz",
         expand("results/tracks/{S_ID}_success.txt", S_ID=SAMP_NAMES)
         #expand("results/counts/{S_ID}_counts.csv.gz", S_ID=SAMP_NAMES)
@@ -87,7 +86,6 @@ rule makecB:
     input:
         expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
     output:
-        "results/cB/master.csv.gz",
         "results/cB/cB.csv.gz"
     log:
         "logs/makecB/master.log"
