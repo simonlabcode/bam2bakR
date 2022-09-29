@@ -147,7 +147,6 @@ Edit the values in the config file as necessary and move on to the last step.
 ### Run it!<a name="run"></a>
 Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake from the top of the TL-Snakemake directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with whatever you entered for `cpus` in the config):
 ```
-$ touch snp.txt
 $ conda activate complete_pipeline
 $ snakemake --cores 4
 ```
