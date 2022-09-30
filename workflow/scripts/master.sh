@@ -89,7 +89,7 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     print row, count[row]
                 }
             } '\
-    | awk '{ $1 = substr($1, 18); print }' \
+    | awk '{ if (NR > 1) {$1 = substr($1, 18); print } else print }' \
 	| pigz -p $cpus > "$cBout"
 
 
