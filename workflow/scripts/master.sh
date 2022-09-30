@@ -89,7 +89,8 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     print row, count[row]
                 }
             } '\
-    | pigz -p $cpus > "$cBout"
+    | awk '{ $1 = substr($1, 18); print }' \
+	| pigz -p $cpus > "$cBout"
 
 
 # Explanation of the data flow:
@@ -108,4 +109,9 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
 
 echo "** cB file created: cB.csv.gz"
 
+# Clean up files
 rm -f *temp*
+rm -f 0
+rm -f igv.log
+rm -f htseq_parallel.log
+
