@@ -20,7 +20,7 @@ mutcnt=$6
             --pipe python $mutcnt \
                         -f sam \
                         --samout "$sample"_htseq.{#}_temp.sam \
-                        -t gene,exon,exon \
+                        -t transcript,exon,exon \
                         -i gene_id,gene_id,gene_id \
                         -m union,union,intersection-strict \
                         -c "$sample"_GF_htseq.{#}_temp.txt,"$sample"_EF_htseq.{#}_temp.txt,"$sample"_XF_htseq.{#}_temp.txt \
