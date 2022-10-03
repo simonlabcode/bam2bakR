@@ -139,7 +139,7 @@ Finally, the path to the genome fasta file that you used for alignment must also
 genome_fasta: data/genome/Homo_sapiens.GRCh38.dna.chr.fa
 ```
 
-**NOTE**: this pipeline requires that all chromosome names in the genome and annotation files are appended with "chr" (e.g., chromosome 1 should be denoted chr1, not just 1 as it is in annotation/genome files from Ensembl). To add this to ensembl genomes and annotations, you can run the following awk code:
+**NOTE**: this pipeline requires that all chromosome names in the genome and annotation files are appended with "chr" (e.g., chromosome 1 should be denoted chr1, not just 1 as it is in annotation/genome files from Ensembl). To add this to ensembl genomes and annotations, you can run the following awk code, assuming you are in the directory containing the annotation/genome file when you run it:
 
 ```
 # Append chr to ensembl human annotation file chromosome names
