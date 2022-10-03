@@ -96,41 +96,60 @@ In the `config/` directory you will find a file named `config.yaml`. If you open
 
 ```
 samples:
-  WT_1: data/samples/DCP2_subsample1Aligned.out.bam
-  WT_2: data/samples/DCP2_subsample2Aligned.out.bam
-  WT_ctl: data/samples/DCP2_subsample3Aligned.out.bam
+  WT_1: data/samples/WT_replicate_1.bam
+  WT_2: data/samples/WT_replicate_2.bam
+  WT_ctl: data/samples/WT_nos4U.bam
+  KO_1: data/samples/KO_replicate_1.bam
+  KO_2: data/samples/KO_replicate_2.bam
+  KO_ctl: data/samples/KO_nos4U.bam
 ```
-`samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1` and `WT_1` and will be what shows up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the TL-Snakemake repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the TL-Snakemake directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the TL-Snakemake directory as in this example. 
+`samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1`, `WT_2`, `WT_ctl`, `KO_1`, `KO_2`, and `KO_ctl`. These are the sample names that will show up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the TL-Snakemake repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the TL-Snakemake directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the TL-Snakemake directory as in this example. 
 
 As another example, imagine that the `data` directory was in the directory that you cloned the TL-Snakemake repo to, and that there was no `samples` subdirectory inside of `data`. In that case, the paths would look something like this:
 
 ```
 samples:
-  WT_1: ../data/DCP2_subsample1Aligned.out.bam
-  WT_2: ../data/DCP2_subsample2Aligned.out.bam
-  WT_ctl: ../data/DCP2_subsample3Aligned.out.bam
+  WT_1: ../data/WT_replicate_1.bam
+  WT_2: ../data/WT_replicate_2.bam
+  WT_ctl: ../data/WT_nos4U.bam
+  KO_1: ../data/KO_replicate_1.bam
+  KO_2: ../data/KO_replicate_2.bam
+  KO_ctl: ../data/KO_nos4U.bam
 ```
 where `../` means navigate up one directory. 
 
-The next parameter denotes the sample names of any -s4U control samples:
+The next parameter denotes the sample names of any -s4U control samples (i.e., samples that were not fed s4U or a similar metabolic label):
 
 ```
-control_samples: ['WT_ctl']
+control_samples: ['WT_ctl', `KO_ctl`]
 ```
 
-In this case, the sample named WT_ctl is the only -s4U control. If you have multiple -s4U controls,  -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry. 
+In this case, the samples named WT_ctl and KO_ctl are the -s4U control samples. -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry. 
 
 A third almost equally important parmaeter immediately follows:
 
 ```
 annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
 ```
-This is the path to the GTF file for the genome that reads were mapped to. The same rules apply when it comes to specifying this path.
+This is the path to the GTF annotation file for the genome that reads were mapped to. The same rules apply when it comes to specifying this path.
 
 Finally, the path to the genome fasta file that you used for alignment must also be specified:
 
 ```
 genome_fasta: data/genome/Homo_sapiens.GRCh38.dna.chr.fa
+```
+
+**NOTE**: this pipeline requires that all chromosome names in the genome and annotation files are appended with "chr" (e.g., chromosome 1 should be denoted chr1, not just 1 as it is in annotation/genome files from Ensembl). To add this to ensembl genomes and annotations, you can run the following awk code:
+
+```
+# Append chr to ensembl human annotation file chromosome names
+awk -v OFS="\t" -v FS="\t" ' $1 !~ /^#/ {$1 = "chr"$1} \
+  {print $0}' Homo_sapiens.GRCh38.104.chr.gtf > Homo_sapiens.GRCh38.104.chr_chr.gtf
+  
+# Append chr to ensembl human genome fasta file 
+awk '$1 ~ /^>/ { split($1, h, ">") \
+                 print ">chr"h[2]} \
+     $1 !~ /^>/ { print $0}' Homo_sapiens.GRCh38.dna.primary_assembly.fa > Homo_sapiens.GRCh38.dna.chr.fa
 ```
 
 The other parameters that can be altered are:
