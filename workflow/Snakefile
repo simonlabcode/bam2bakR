@@ -4,8 +4,6 @@ CPU_num = config['cpus']
 
 SAMP_NAMES = list(config['samples'].keys())
 
-print(*SAMP_NAMES)
-
 CTL_NAMES = list(config['control_samples'])
 
 nctl = len(CTL_NAMES)
