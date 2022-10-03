@@ -118,7 +118,7 @@ The next parameter denotes the sample names of any -s4U control samples:
 control_samples: ['WT_ctl']
 ```
 
-In this case, the sample named WT_ctl is the only -s4U control. -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry.
+In this case, the sample named WT_ctl is the only -s4U control. If you have multiple -s4U controls,  -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry. 
 
 A third almost equally important parmaeter immediately follows:
 
@@ -140,8 +140,8 @@ The other parameters that can be altered are:
 * `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each. The default value for this is what was used for testing with a downsampled .bam file, and thus is likely a bit small for typicaly analyses. A value of around (total # of reads)/(cpus) should work more generally. For example, if you have on average 20 million mapped reads in your bam files and will be running this with 20 cores, `fragment_size` should be around 1 million.
 * `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA".
 * `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this.
-* `keepcols`: Names of columns to keep in cB.csv output file. I wouldn't usually worry about editing this.
-
+* `keepcols`: Names of columns to keep in cB.csv output file. See Output for details of columns you can keep.
+ 
 Edit the values in the config file as necessary and move on to the last step.
 
 ### Run it!<a name="run"></a>
@@ -154,7 +154,40 @@ There are **A LOT** of adjustable parameters that you can play with when running
 for the details on everything you can change when running the pipeline.
 
 ## Output
-All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. 
+All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. Columns that can be kept in the final cB (see the keepcols option in the config to choose among these options) are:
+  * qname (read ID)
+  * nA (number of As in read)
+  * nC (number of Cs)
+  * nT (number of Ts)
+  * nG (number of Gs)
+  * rname (chromosome name)
+  * GF (ENSEMBL ID of gene to which read maps)
+  * EF (ENSEMBL ID of gene to which read maps if read overlaps any exonic region)
+  * XF (ENSEMBL ID of gene to which read maps if read only overlaps with exonic regions)
+  * FR (Strandedness of read; F = forward, R = reverse. Only will have F is single-end sequencing)
+  * sj (TRUE if read overlaps a splice junction)
+  * ai (TRUE if read overlaps any intronic region)
+  * io (TRUE if read exclusively overlaps an intronic region)
+  * ei (TRUE if read maps to intronic and exonic regions)
+  * TA (number of T-to-A mutations)
+  * CA (number of C-to-A mutations)
+  * GA (number of G-to-A mutations)
+  * AT (number of A-to-T mutations)
+  * CT (number of C-to-T mutations)
+  * GT (number of G-to-T mutations)
+  * NT (number of N-to-T mutations, where N is any nucleotide)
+  * AC (number of A-to-C mutations)
+  * TC (number of T-to-C mutations)
+  * GC (number of G-to-C mutations)
+  * NC (number of N-to-C mutations, where N is any nucleotide)
+  * AG (number of A-to-G mutations)
+  * TG (number of T-to-G mutations)
+  * CG (number of C-to-G mutations)
+  * NG (number of N-to-G mutations, where N is any nucleotide)
+  * AN (number of A-to-N mutations, where N is any nucleotide)
+  * TN (number of T-to-N mutations, where N is any nucleotide)
+  * CN (number of C-to-N mutations, where N is any nucleotide)
+  * GN (number of G-to-N mutations, where N is any nucleotide)
 
 The tdf files to make color-coded tracks are in: `results/tracks/`.
 
