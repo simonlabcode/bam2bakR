@@ -164,7 +164,7 @@ All output files will be placed in a directory named `results` that will be crea
   * GF (ENSEMBL ID of gene to which read maps)
   * EF (ENSEMBL ID of gene to which read maps if read overlaps any exonic region)
   * XF (ENSEMBL ID of gene to which read maps if read only overlaps with exonic regions)
-  * FR (Strandedness of read; F = forward, R = reverse. Only will have F is single-end sequencing)
+  * FR (Strandedness of read; F = forward, R = reverse. Only will have F if single-end sequencing)
   * sj (TRUE if read overlaps a splice junction)
   * ai (TRUE if read overlaps any intronic region)
   * io (TRUE if read exclusively overlaps an intronic region)
