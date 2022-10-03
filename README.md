@@ -156,7 +156,7 @@ The other parameters that can be altered are:
 * `cpus`: the number of cores (i.e., cpus) you want to use.
 * `FORMAT`: whether the reads are paired-end (PE) or single-end (SE).
 * `WSL`: whether you are running this on the Windows subsystem for linux (0 = yes; 1= no)
-* `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each. The default value for this is what was used for testing with a downsampled .bam file, and thus is likely a bit small for typicaly analyses. A value of around (total # of reads)/(cpus) should work more generally. For example, if you have on average 20 million mapped reads in your bam files and will be running this with 20 cores, `fragment_size` should be around 1 million.
+* `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each. A value of around (total # of reads)/(cpus) should work more generally. For example, if you have on average 20 million mapped reads in your bam files and will be running this with 20 cores, `fragment_size` should be around 1 million.
 * `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA".
 * `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this.
 * `keepcols`: Names of columns to keep in cB.csv output file. See Output for details of columns you can keep.
