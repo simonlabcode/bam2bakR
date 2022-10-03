@@ -158,5 +158,12 @@ All output files will be placed in a directory named `results` that will be crea
 
 The tdf files to make color-coded tracks are in: `results/tracks/`.
 
+Other output includes:
+* Sorted and filtered bam file in results/sf_reads/
+* HTseq output text and bam files in results/bams/
+* SNP calls in results/snps/
+* Csv files with counts of all mutation types in results/counts/
+
+
 ## Questions?
 If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
