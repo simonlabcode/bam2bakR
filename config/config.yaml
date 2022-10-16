@@ -3,11 +3,15 @@
 
 # location of ALL (including -s4U control) bam files
 samples:
-  WT_1: data/samples/DCP2_subsample1Aligned.out.bam
-
+  WT_1: data/samples/WT_replicate_1.bam
+  WT_2: data/samples/WT_replicate_2.bam
+  WT_ctl: data/samples/WT_nos4U.bam
+  KO_1: data/samples/KO_replicate_1.bam
+  KO_2: data/samples/KO_replicate_2.bam
+  KO_ctl: data/samples/KO_nos4U.bam
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
-control_samples: []
+control_samples: ['WT_ctl', "KO_ctl"]
 
 
 # location of annotation gtf file
@@ -27,7 +31,7 @@ FORMAT: "PE" # (PE, SE, NU)
                     # [NU - including non-unique] (not tested)
 
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
-WSL: 0
+WSL: 1
 
 # Number of reads per fragment when splitting up bam file
 fragment_size: 3500000
