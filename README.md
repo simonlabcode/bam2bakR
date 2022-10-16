@@ -1,5 +1,5 @@
-# TL-Snakemake
-This is a Snakemake implementation of a portion of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and U-to-C or G-to-A mutations in mapped reads. TL-Snakemake currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to TL-Snakemake is a set of .bam files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns:
+# bam2bakR
+This is a Snakemake implementation of a portion of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and U-to-C or G-to-A mutations in mapped reads. bam2bakR currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to bam2bakR is a set of .bam files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns:
 * XF - Mature feature: ENSEMBL ID if the read mapped solely to exonic parts of a feature
 * GF - Gene feature: ENSEMBL ID when read is aligned to any part of feature (intronic or exonic)
 * rname - Chromosome name
@@ -12,16 +12,16 @@ This is a Snakemake implementation of a portion of the [TimeLapse pipeline](http
 * sample - Sample name
 * n - Number of reads which have the identical set of values described above
 
-TL-Snakemake also now outputs .tdf files to make sequencing tracks colored by mutation content (increasingly red for increasing number of mutations)! 
+bam2bakR also now outputs .tdf files to make sequencing tracks colored by mutation content (increasingly red for increasing number of mutations)! 
 
 ## Requirements
-TL-Snakemake (as the name implies) uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. In addition, TL-Snakemake has so far been exclusively tested on a Linux OS, so Mac users be warned. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
+bam2bakR uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. In addition, bam2bakR has so far been exclusively tested on a Linux OS, so Mac users be warned. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
 
 In addition, you will need Git installed on your system so that you can clone this repository. Head to [this link](https://git-scm.com/downloads) for installation instructions if you don't already have Git.
 
 ## Setup
-There are 5 steps required to get up and running with TL-Snakemake
-1. [Install conda (or mamba) on your system](#conda). This is the package manager that TL-Snakemake uses to make setting up the necessary dependencies a breeze.
+There are 5 steps required to get up and running with bam2bakR
+1. [Install conda (or mamba) on your system](#conda). This is the package manager that bam2bakR uses to make setting up the necessary dependencies a breeze.
 1. [Clone this repository](#clone) to wherever you want to run it from
 1. [Install dependencies](#depend) with conda/mamba
 1. [Edit the config file](#config) (located in config/ directory of cloned repo) to your liking
@@ -62,13 +62,13 @@ Do you wish the installer to preprend the install location to PATH ...? [yes|no]
 ```
 answer with `yes`. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the two steps.
 
-### Clone TL-Snakemake<a name="clone"></a>
-Clone the TL-Snakemake repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
+### Clone bam2bakR<a name="clone"></a>
+Clone the bam2bakR repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
 ```
-$ git clone https://github.com/isaacvock/TL-Snakemake.git
-$ cd TL-Snakemake
+$ git clone https://github.com/simonlabcode/bam2bakR.git
+$ cd bam2bakR
 ```
-You should be in the TL-Snakemake repo directory now!
+You should be in the bam2bakR repo directory now!
 
 ### Install dependencies<a name="depend"></a>
 Inside the repo, you will find a file named `pipeline_env.yaml`. This is a YAML file with the list of exact dependencies that need to be installed to run the Snakemake workflow. Luckily, installation of everything can be completed automatically thanks to Mamba/Conda! If you followed the earlier instructions for installing Mamba, just run:
@@ -84,7 +84,7 @@ by replacing `complete_pipeline` with the name of your choice!
 
 To make sure we are all on the same page, an environment is a collection of installed software tucked away in its own directory, separate from everything else installed on your computer. When installing software with Mamba/Conda, I highly suggest installing all of the software you need for a particular task into an isolated environment like this. What's great about it is that you can have multiple versions of any given software installed at the same time! 
 
-Now, whenever you want to run the TL-Snakemake pipeline, you can just run:
+Now, whenever you want to run the bam2bakR pipeline, you can just run:
 
 ```
 $ conda activate complete_pipeline
@@ -103,9 +103,9 @@ samples:
   KO_2: data/samples/KO_replicate_2.bam
   KO_ctl: data/samples/KO_nos4U.bam
 ```
-`samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1`, `WT_2`, `WT_ctl`, `KO_1`, `KO_2`, and `KO_ctl`. These are the sample names that will show up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the TL-Snakemake repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the TL-Snakemake directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the TL-Snakemake directory as in this example. 
+`samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1`, `WT_2`, `WT_ctl`, `KO_1`, `KO_2`, and `KO_ctl`. These are the sample names that will show up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the top of the bam2bakR repo directory. Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located at the top of the bam2bakR directory. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the bam2bakR directory as in this example. 
 
-As another example, imagine that the `data` directory was in the directory that you cloned the TL-Snakemake repo to, and that there was no `samples` subdirectory inside of `data`. In that case, the paths would look something like this:
+As another example, imagine that the `data` directory was in the directory that you cloned the bam2bakR repo to, and that there was no `samples` subdirectory inside of `data`. In that case, the paths would look something like this:
 
 ```
 samples:
@@ -164,7 +164,7 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ### Run it!<a name="run"></a>
-Technically, all you need to do to run TL-Snakemake is activate the pipeline environment and call snakemake from the top of the TL-Snakemake directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with whatever you entered for `cpus` in the config):
+Technically, all you need to do to run bam2bakR is activate the pipeline environment and call snakemake from the top of the bam2bakR directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with whatever you entered for `cpus` in the config):
 ```
 $ conda activate complete_pipeline
 $ snakemake --cores 4
@@ -173,7 +173,7 @@ There are **A LOT** of adjustable parameters that you can play with when running
 for the details on everything you can change when running the pipeline.
 
 ## Output
-All output files will be placed in a directory named `results` that will be created the first time you run TL-Snakemake. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. Columns that can be kept in the final cB (see the keepcols option in the config to choose among these options) are:
+All output files will be placed in a directory named `results` that will be created the first time you run bam2bakR. The output of greatest interest, the gzipped cB.csv file, will be in `results/cB/`. Columns that can be kept in the final cB (see the keepcols option in the config to choose among these options) are:
   * qname (read ID)
   * nA (number of As in read)
   * nC (number of Cs)
