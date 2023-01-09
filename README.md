@@ -92,7 +92,7 @@ $ conda activate complete_pipeline
 replacing `complete_pipeline` with whatever name you ended up giving the environment, and voila, all of the dependencies are ready to be called upon.
 
 ### Edit the config file<a name="config"></a>
-In the `config/` directory you will find a file named `config.yaml`. If you open it in a text editor, you will see several parameters which you can alter to your heart's content. The first and arguably most important parameter is at the top of the file:
+In the `config/` directory you will find a file named `config.yaml`. If you open it in a text editor, you will see several parameters which you can alter to your heart's content. The first parameter that you have to set is at the top of the file:
 
 ```
 samples:
@@ -118,7 +118,7 @@ samples:
 ```
 where `../` means navigate up one directory. 
 
-The next parameter denotes the sample names of any -s4U control samples (i.e., samples that were not fed s4U or a similar metabolic label):
+The next parameter you have to set denotes the sample names of any -s4U control samples (i.e., samples that were not fed s4U or a similar metabolic label):
 
 ```
 control_samples: ['WT_ctl', `KO_ctl`]
@@ -126,7 +126,7 @@ control_samples: ['WT_ctl', `KO_ctl`]
 
 In this case, the samples named WT_ctl and KO_ctl are the -s4U control samples. -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry. 
 
-A third almost equally important parmaeter immediately follows:
+The third crucial parmaeter immediately follows:
 
 ```
 annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
@@ -218,4 +218,4 @@ Other output includes:
 
 
 ## Questions?
-If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com
+If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com, or to post them to Issues.
