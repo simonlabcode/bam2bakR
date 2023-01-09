@@ -60,7 +60,7 @@ When asked this question:
 ```
 Do you wish the installer to preprend the install location to PATH ...? [yes|no]
 ```
-answer with `yes`. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the two steps.
+answer with `yes`. Prepending to PATH means that after closing your current terminal and opening a new one, you can call the `conda` command to install software packages and create isolated environments. We'll be using this in the next two steps.
 
 ### Clone bam2bakR<a name="clone"></a>
 Clone the bam2bakR repository to wherever you would like on your system. You will eventually be navigating to this repo directory in the terminal and running Snakemake from inside the directory, so make sure your chosen location is conducive to this. Navigate to the directory in the terminal and run:
