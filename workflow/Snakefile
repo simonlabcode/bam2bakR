@@ -45,19 +45,19 @@ rule htseq_cnt:
     shell:
         "workflow/scripts/htseq.sh {config[cpus]} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
-# rule normalize:
-#     input:
-#         expand("results/bams/{sample}_tl.bam", sample = SAMP_NAMES)
-#     output:
-#         "results/normalization/scale",
-#         "results/normalization/normalize.Rout"
-#     log:
-#         "logs/normalize/normalize.log"
-#     threads: CPU_num
-#     shell:
-#         r"""
-#         ./scripts/normalize.R --dirs ./results/bams/ --spikename {config[spikename]}
-#         """
+rule normalize:
+    input:
+        expand("results/bams/{sample}_tl.bam", sample = SAMP_NAMES)
+    output:
+        "results/normalization/scale",
+        "results/normalization/normalize.Rout"
+    log:
+        "logs/normalize/normalize.log"
+    threads: CPU_num
+    shell:
+        r"""
+        ./scripts/normalize.R --dirs ./results/bams/ --spikename {config[spikename]}
+        """
 
 
 rule call_snps:
