@@ -2,8 +2,8 @@
 #
 # To make filtered bam files and tracks with different numbers of mutations
 
-# Set normalization value
-normVal='1'
+## Set normalization value
+#normVal='1'
 
 ## Dependencies
 # Python
@@ -17,10 +17,20 @@ cpus=$1
 sample=$2
 input1=$3
 input2=$4
-mut_tracks=$5
-output=$6
-genome_fasta=$7
-WSL_b=$8
+input3=$5
+mut_tracks=$6
+output=$7
+genome_fasta=$8
+WSL_b=$9
+normalize=${10}
+
+	if [ $normalize ]; then
+		normVal=$(awk -v sam=$sample '$1 == sam {print $2}' ./results/normalization/scale)
+	else
+		normVal='1'
+		echo '* Tracks will not be normalized with scale factor. Setting normalization factor to 1'
+	fi
+
 
 
 # Test if count files exist

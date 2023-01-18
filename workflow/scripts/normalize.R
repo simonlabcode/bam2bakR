@@ -51,13 +51,24 @@ args = commandArgs(trailingOnly = TRUE)
 # # Load and clean master data
 
     # Define samples to load
-        dirs <- opt$dirs %>% str_split(',') %>% unlist()
+        ## Martin's old code
+	# dirs <- opt$dirs %>% str_split(',') %>% unlist()
+
+	# Screw it, going to hardcode directory cause I can
+	dirs <- c(getwd(), "/results/bams/")
+
 
         samplefiles <- list.files(path = dirs,
                                   pattern = 'mature.*.txt',
                                   recursive = TRUE)
 
-        samplenames <- gsub(".dir.*", "", samplefiles)
+	## Martin's old code that doesn't work in my workflow
+        # samplenames <- gsub(".dir.*", "", samplefiles)
+        samplenames <- paste0(dirs, samplefiles)
+
+	# Actual sample name wildcards
+	snames <- gsub(".*mature.|_htseq.*", "", samplefiles)
+	#snames <- gsub("htseq*", "", snames)
 
 
     # Loop through the samples to load them:
@@ -76,7 +87,7 @@ args = commandArgs(trailingOnly = TRUE)
 
     rm(df)
 
-    glimpse(master)
+    # glimpse(master)
 
     m <- master %>%
         pivot_wider(names_from = sample, values_from = count) %>%
@@ -90,15 +101,15 @@ args = commandArgs(trailingOnly = TRUE)
         print(paste0("* Calculating normalization factors from spikeins with name *", opt$spikename))
     }
 
-    head(m, 20)
+    # head(m, 20)
     rnames <- m[,1]
     m <- as.matrix(m[,-1])
     storage.mode(m) <- "numeric"
     rownames(m) <- unlist(rnames)
-    head(m, 20)
+    # head(m, 20)
 
 # Correlation analysis
-    cor(m)
+    #cor(m)
 
 # Examine RNA seq by edgeR:
 
@@ -111,13 +122,13 @@ args = commandArgs(trailingOnly = TRUE)
     erde <- DGEList(m[keep,], group = ers)
     erde <- calcNormFactors(erde, method = "upperquartile")
     scale <- erde$samples$norm.factors*erde$samples$lib.size
-    scale
+    # scale
 
 if (sum(is.finite(scale)) == length(scale)){
 
     x <- mean(scale)/scale
 
-    sdf <- tibble(sample = samplenames,
+    sdf <- tibble(sample = snames,
                   scale = x)
 
     write.table(sdf, file = 'scale',

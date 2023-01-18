@@ -49,14 +49,14 @@ rule normalize:
     input:
         expand("results/bams/{sample}_tl.bam", sample = SAMP_NAMES)
     output:
-        "results/normalization/scale",
-        "results/normalization/normalize.Rout"
+        "results/normalization/scale"
     log:
         "logs/normalize/normalize.log"
     threads: CPU_num
     shell:
         r"""
-        ./scripts/normalize.R --dirs ./results/bams/ --spikename {config[spikename]}
+       	./workflow/scripts/normalize.R --dirs ./results/bams/ --spikename {config[spikename]}
+	mv scale {output}
         """
 
 
@@ -88,12 +88,13 @@ rule cnt_muts:
 rule maketdf:
     input:
         "results/counts/{sample}_counts.csv.gz",
-        "results/bams/{sample}_tl.bam"
+        "results/bams/{sample}_tl.bam",
+	"results/normalization/scale"
     output:
         "results/tracks/{sample}_success.txt"
     threads: CPU_num
     shell:
-        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]} {config[WSL]}"
+        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]} {config[WSL]} {config[normalize]}"
 
 rule makecB:
     input:
