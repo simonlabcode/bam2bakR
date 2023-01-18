@@ -49,6 +49,12 @@ minqual: 40
 # Which columns to keep in final cB.csv.gz file
 keepcols: "sample,sj,io,ei,ai,GF,XF,rname"
 
+# String common to spike-in gene_ids in annotation gtf
+  # Leave blank if no spike-in
+spikename: 
+
+# If True, tracks will be normalized
+normalize: True
 
 ######## Parameters you should NEVER alter ########
 awkscript: workflow/scripts/fragment_sam.awk
