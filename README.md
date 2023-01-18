@@ -14,6 +14,8 @@ This is a Snakemake implementation of a portion of the [TimeLapse pipeline](http
 
 bam2bakR also now outputs .tdf files to make sequencing tracks colored by mutation content (increasingly red for increasing number of mutations)! 
 
+(1/18/2023): bam2bakR now normalizes .tdf tracks according to scale factors calculated from either all reads or only reads originating from spike-ins (if spike-ins are present). Make sure to set spikename parameter in config if spike-ins are present.
+
 ## Requirements
 bam2bakR uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
 
@@ -160,6 +162,8 @@ The other parameters that can be altered are:
 * `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA".
 * `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this.
 * `keepcols`: Names of columns to keep in cB.csv output file. See Output for details of columns you can keep.
+* `spikename`: If spike-ins are present, this should be a string that is common to all gene_ids for spike-in transcripts in annotation gtf. For example, in Ensembl annotations for Drosophila melanogaster, all gene_ids start with "FBgn". Therefore, if you have Drosophila spike-ins, `spikename` should be "FBgn".
+* `normalize`: If True, then scale factor calculated with edgeR is used to normalize tracks.
  
 Edit the values in the config file as necessary and move on to the last step.
 
