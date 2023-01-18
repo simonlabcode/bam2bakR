@@ -219,6 +219,7 @@ Other output includes:
 * HTseq output text and bam files in results/bams/
 * SNP calls in results/snps/
 * Csv files with counts of all mutation types in results/counts/
+* scale factors calculated with edgeR in results/normalization/
 
 
 ## Questions?
