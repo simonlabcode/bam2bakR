@@ -1,7 +1,7 @@
 name: complete_pipeline
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
 dependencies:
   - bash =5.0.018
   - samtools =1.12
