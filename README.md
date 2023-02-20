@@ -221,6 +221,19 @@ Other output includes:
 * Csv files with counts of all mutation types in results/counts/
 * Scale factors calculated with edgeR in results/normalization/
 
+## Further automating dependency installation
+
+If you are having trouble installing mamba/conda or creating the required conda environment, you may like to try running bam2bakR inside of a [Docker](https://docs.docker.com/get-started/) container instead. This will automatically install mambaforge, create bam2bakR's conda environment, and even reproduce the exact operating system that I have predominantly tested bam2bakR in. The steps to get up and running with this alternative installation route are:
+
+1. [Install Docker](https://docs.docker.com/get-docker/). If you are running bam2bakR on a system where you are not the admin (e.g., a shared computing cluster), then you will want to use [Singularity](https://apptainer.org/) (recently changed name to Apptainer) instead.
+1. Navigate to the directory where you want to run bam2bakR (i.e., the directory that you will call `snakemake --cores all` or something similar to start the pipeline
+1. Pull the bam2bakr Docker image from Docker Hub by running: `docker pull isaacvock/bam2bakr`
+1. Run the bam2bakr image with a [bind mount](https://docs.docker.com/get-started/06_bind_mounts/). This allows you to have access to all of the files inside your working directory while inside the image's software environment (i.e., Ubuntu + bam2bakR conda environment): `docker run -it --mount type=bind,src="$(pwd)", target=/pipeline isaacvock/bam2bakr`
+1. Activate the conda environment: `conda activate docker_pipeline`
+1. Move into the working directory: `cd pipeline`
+1. Run bam2bakR: `snakemake --cores all`
+
+When you want to exit the Docker container, hit "Ctl" + "D". Now everytime you want to run bam2bakR again, you just have to repeat steps 4 through 7.
 
 ## Questions?
 If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com, or to post them to Issues.
