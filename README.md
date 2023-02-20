@@ -239,4 +239,4 @@ If you are having trouble installing mamba/conda or creating the required conda 
 When you want to exit the Docker container, hit "Ctl" + "D". Now everytime you want to run bam2bakR again, you just have to repeat steps 4 through 7.
 
 ## Questions?
-If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com, or to post them to Issues.
+If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com, or post them to Issues.
