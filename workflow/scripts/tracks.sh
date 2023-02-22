@@ -42,7 +42,7 @@ normalize=${10}
 
     python ./workflow/scripts/count_to_tracks.py \
         -i $input1 \
-        -s $sample
+        -s ./results/tracks/$sample
 
 
 # Sort the starting .bam file by coordinate
