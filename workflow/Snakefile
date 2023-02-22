@@ -81,18 +81,19 @@ rule cnt_muts:
         "results/htseq/{sample}_tl.bam",
         "results/snps/snp.txt"
     output:
-        "results/counts/{sample}_counts.csv.gz"
+        "results/counts/{sample}_counts.csv.gz",
+        "results/counts/{sample}_check.txt",
     log:
-        "logs/fragment_bam/{sample}.log"
+        "logs/cnt_muts/{sample}.log"
     threads: CPU_num
     shell:
-        "workflow/scripts/fragment.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
+        "workflow/scripts/mut_call.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
 
 rule maketdf:
     input:
         "results/counts/{sample}_counts.csv.gz",
         "results/htseq/{sample}_tl.bam",
-	"results/normalization/scale"
+	    "results/normalization/scale"
     output:
         "results/tracks/{sample}_success.txt"
     threads: CPU_num
