@@ -5,32 +5,31 @@ cpus=$1
 sample=$2
 input=$3
 output=$4
-format=$5
+output2=$5
+output3=$6
+format=$7
 
 
-samtools fixmate -@ "$cpus" "$input" "$sample"_fixed_mate.bam
+samtools fixmate -@ "$cpus" "$input" "$output2"
 
 	if [ "$format" = "NU" ]; then
-	samtools view -@ "$cpus" -h "$sample"_fixed_mate.bam \
+	samtools view -@ "$cpus" -h "$output2" \
 		| awk awk '$1 ~ /^@/ {print}
-                   (($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163)) || (($2 == 355 || $2 == 403) || ($2 == 339 || $2 == 419))  {print}' > "$sample".f.sam
+                   (($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163)) || (($2 == 355 || $2 == 403) || ($2 == 339 || $2 == 419))  {print}' > "$output3"
     elif [ "$format" = "PE" ]; then
-	    samtools view -@ "$cpus" -q 2 -h "$sample"_fixed_mate.bam \
+	    samtools view -@ "$cpus" -q 2 -h "$output2" \
             | awk '$1 ~ /^@/ {print}
-                  ($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163) {print}' > "$sample".f.sam
+                  ($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163) {print}' > "$output3"
     elif [ "$format" = "SE" ]; then
-        samtools view -@ "$cpus" -q 2 -h "$sample"_fixed_mate.bam \
+        samtools view -@ "$cpus" -q 2 -h "$output2" \
             | awk '$1 ~ /^@/ {print}
-                  ($2 == 0 || $2 == 16) {print}' > "$sample".f.sam
+                  ($2 == 0 || $2 == 16) {print}' > "$output3"
 	else
-		samtools view -@ "$cpus" -h "$sample"_fixed_mate.bam > "$sample".f.sam
+		samtools view -@ "$cpus" -h "$sample"_fixed_mate.bam > "$output3"
 	fi &&
     echo "* Reads filtered for sample $sample"
 	
 
 
 
-samtools sort -@ "$cpus" -n -o "$output" "$sample".f.sam
-
-rm "$sample".f.sam
-rm "$sample"_fixed_mate.bam
+samtools sort -@ "$cpus" -n -o "$output" "$output3"

@@ -27,7 +27,9 @@ rule sort_filter:
     input:
         get_input_bams
     output:
-        "results/sf_reads/{sample}.s.sam"
+        "results/sf_reads/{sample}.s.sam",
+        "results/sf_reads/{sample}_fixed_mate.bam",
+        "results/sf_reads/{sample}.f.sam",
     log:
         "logs/sort_filter/{sample}.log"
     threads: CPU_num
