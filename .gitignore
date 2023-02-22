@@ -1,4 +1,7 @@
 *
+!config
+!workflow
+!workflow/scripts
 !config/*
 !workflow/*
 !pipeline_env.yaml
