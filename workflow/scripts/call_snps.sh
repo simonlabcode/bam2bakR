@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# number of cpus
-# number of control samples
-# list of control samples
 
+# Cute trick to deal with fact that there is an uncertaint number of control sample
+    # control_samples becomes array with all args
+    # remove args that I know aren't the actual control_samples
 control_samples=("$@")
 
 unset control_samples[0]
