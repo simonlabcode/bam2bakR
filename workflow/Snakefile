@@ -69,7 +69,8 @@ rule call_snps:
     params:
         nsamps = nctl
     output:
-        "results/snps/snp.txt"
+        "results/snps/snp.txt",
+        "results/snps/mkdir.txt",
     log:
         "logs/call_snps/ctl_samps.log"
     threads: CPU_num
