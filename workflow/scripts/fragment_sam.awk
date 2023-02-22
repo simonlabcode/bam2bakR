@@ -13,18 +13,18 @@ BEGIN { i = 1 }
 NR == (fragment_size * i - 1 ) { x = $1 }
 
 # Keep adding reads to file until fragent size limit is reached
-NR < (fragment_size * i ) { print >> i"_"sample".sam" }
+NR < (fragment_size * i ) { print >> ./results/counts/i"_"sample".sam" }
 
 # If the last read is a pair to previous one, add it to the same file. Othewise, start new fragment file.
 NR == (fragment_size * i ) { if ($1 == x) 
                                 { 
-                                    print >> i"_"sample".sam"
+                                    print >> ./results/counts/i"_"sample".sam"
                                     i++
                                 } 
                             else 
                                 {           
                                     i++
-                                    print >> i"_"sample".sam"
+                                    print >> ./results/counts/i"_"sample".sam"
                                 }
                         
                             }
