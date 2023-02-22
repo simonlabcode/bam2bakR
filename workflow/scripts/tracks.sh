@@ -53,7 +53,7 @@ normalize=${10}
 # Make .chrom.sizes file from .bam file header (alternative to .genome file for toTDF)
     chrom_sizes=./results/tracks/$(echo ${genome_fasta##*/} | cut -f 1 -d '.')".chrom.sizes"
     if [ ! -f $chrom_sizes ]; then
-            samtools view -H "$sample"_sort.bam \
+            samtools view -H ./results/tracks/"$sample"_sort.bam \
                 | awk -v OFS="\t" ' $1 ~ /^@SQ/ {split($2, chr, ":")
                                                  split($3, size, ":")
                                                  print chr[2], size[2]}' > "$chrom_sizes"
