@@ -69,7 +69,5 @@ mutcnt=$7
 
     echo "* HTSeq counts files merged for sample $sample"
 
-	mv exon_w_overlaps.${sample}_htseq.txt ./results/htseq/
-	mv gene.${sample}_htseq.txt ./results/htseq/
-	mv mature.${sample}_htseq.txt ./results/htseq/
     mv ${sample}_htseq_parallel.log ./results/htseq/
+    rm ./results/htseq/${sample}*temp*
