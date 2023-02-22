@@ -3,3 +3,4 @@
 !workflow/*
 !pipeline_env.yaml
 !README.md
+!workflow/scripts/*
