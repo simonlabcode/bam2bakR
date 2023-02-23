@@ -1,23 +1,26 @@
 #!/bin/bash
 
-# number of cpus
-# number of control samples
-# list of control samples
 
+# Cute trick to deal with fact that there is an uncertaint number of control sample
+    # control_samples becomes array with all args
+    # remove args that I know aren't the actual control_samples
 control_samples=("$@")
 
 unset control_samples[0]
 unset control_samples[1]
 unset control_samples[2]
 unset control_samples[3]
-
+unset control_samples[4]
 
 
 cpus=$1
 nsamps=$2
 output_txt=$3
-genome_fasta=$4
+output_dir=$4
+genome_fasta=$5
 
+
+touch "$output_dir"
 
 
 
@@ -25,8 +28,8 @@ if [ $nsamps > 0 ]; then
     # Loop through control samples:
         for cs in ${control_samples[@]}; do
             name=$(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev)
-            samtools sort -@ "$cpus" -o "$name"_sort.bam "$cs"
-            samtools index -@ "$cpus" "$name"_sort.bam
+            samtools sort -@ "$cpus" -o ./results/snps/"$name"_sort.bam "$cs"
+            samtools index -@ "$cpus" ./results/snps/"$name"_sort.bam
         done
 
         for cs in ${control_samples[@]}; do
@@ -41,9 +44,9 @@ if [ $nsamps > 0 ]; then
         parallel -j "$cpus" "samtools mpileup -uf {1} \
                                                    -r {2} {3} \
                                 | bcftools call -mv" ::: $genome_fasta \
-                                                      ::: $(samtools view -H ${NAMES[0]}_sort.bam \
+                                                      ::: $(samtools view -H ./results/snps/${NAMES[0]}_sort.bam \
                                                                     | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}') \
-                                                      ::: ${NAMES[@]/%/_sort.bam} > snp.vcf
+                                                      ::: ./results/snps/${NAMES[@]/%/_sort.bam} > snp.vcf
 
 
         # Note: Easier and also fast option would be:  bcftools mpileup --threads $cpus -f $genome_fasta "$cs"_sort.bam | bcftools call --threads $cpus-mv > snp-"$cs".vcf

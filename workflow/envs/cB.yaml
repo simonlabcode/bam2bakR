@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - bash =5.0.018
+  - samtools =1.12
+  - gawk =4.2.1
+  - parallel =20210222
+  - pigz =2.6
