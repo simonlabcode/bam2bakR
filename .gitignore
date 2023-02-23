@@ -2,8 +2,12 @@
 !config
 !workflow
 !workflow/scripts
+!workflow/envs
+!workflow/rules
 !config/*
 !workflow/*
 !pipeline_env.yaml
 !README.md
 !workflow/scripts/*
+!workflow/envs/*
+!workflow/rules/*

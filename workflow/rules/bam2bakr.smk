@@ -20,6 +20,8 @@ rule sort_filter:
     log:
         "logs/sort_filter/{sample}.log"
     threads: CPU_num
+    conda:
+        "../envs/sort.yaml"
     shell:
         "workflow/scripts/sort_filter.sh {config[cpus]} {wildcards.sample} {input} {output} {config[FORMAT]}"
 
@@ -32,6 +34,8 @@ rule htseq_cnt:
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: CPU_num
+    conda:
+        "../envs/htseq.yaml"
     shell:
         "workflow/scripts/htseq.sh {config[cpus]} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
@@ -43,6 +47,8 @@ rule normalize:
     log:
         "logs/normalize/normalize.log"
     threads: CPU_num
+    conda:
+        "../envs/normalize.yaml"
     shell:
         r"""
        	./workflow/scripts/normalize.R --dirs ./results/htseq/ --spikename {config[spikename]}
@@ -61,6 +67,8 @@ rule call_snps:
     log:
         "logs/call_snps/ctl_samps.log"
     threads: CPU_num
+    conda:
+        "../envs/snps.yaml"
     shell:
         "workflow/scripts/call_snps.sh {config[cpus]} {params.nsamps} {output} {config[genome_fasta]} {input}"
 
@@ -74,6 +82,8 @@ rule cnt_muts:
     log:
         "logs/cnt_muts/{sample}.log"
     threads: CPU_num
+    conda:
+        "../envs/cnt_muts.yaml"
     shell:
         "workflow/scripts/mut_call.sh {config[cpus]} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
 
@@ -86,6 +96,8 @@ rule maketdf:
         temp("results/tracks/{sample}_success.txt"),
         expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
     threads: CPU_num
+    conda:
+        "../envs/tracks.yaml"
     shell:
         "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output}"
 
@@ -97,5 +109,7 @@ rule makecB:
     log:
         "logs/makecB/master.log"
     threads: CPU_num
+    conda:
+        "../envs/cB.yaml"
     shell:
         "workflow/scripts/master.sh {config[cpus]} {output} {config[keepcols]} {config[mut_tracks]}"
