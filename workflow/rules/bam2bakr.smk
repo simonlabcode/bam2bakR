@@ -19,7 +19,7 @@ rule sort_filter:
         "results/sf_reads/{sample}.f.sam",
     log:
         "logs/sort_filter/{sample}.log"
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/sort.yaml"
     shell:
@@ -33,7 +33,7 @@ rule htseq_cnt:
         temp("results/htseq/{sample}_check.txt")
     log:
         "logs/htseq_cnt/{sample}.log"
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/htseq.yaml"
     shell:
@@ -46,7 +46,7 @@ rule normalize:
         "results/normalization/scale"
     log:
         "logs/normalize/normalize.log"
-    threads: CPU_num
+    threads: 1
     conda:
         "../envs/normalize.yaml"
     shell:
@@ -66,7 +66,7 @@ rule call_snps:
         temp("results/snps/mkdir.txt")
     log:
         "logs/call_snps/ctl_samps.log"
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/snps.yaml"
     shell:
@@ -81,7 +81,7 @@ rule cnt_muts:
         temp("results/counts/{sample}_check.txt")
     log:
         "logs/cnt_muts/{sample}.log"
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/cnt_muts.yaml"
     shell:
@@ -95,7 +95,7 @@ rule maketdf:
     output:
         temp("results/tracks/{sample}_success.txt"),
         expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/tracks.yaml"
     shell:
@@ -108,7 +108,7 @@ rule makecB:
         "results/cB/cB.csv.gz"
     log:
         "logs/makecB/master.log"
-    threads: CPU_num
+    threads: workflow.cores
     conda:
         "../envs/cB.yaml"
     shell:
