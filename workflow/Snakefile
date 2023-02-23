@@ -28,7 +28,7 @@ container: "docker://continuumio/miniconda3"
 ##### load rules #####
 
 
-include: "rules/bam2bakr.smk
+include: "rules/bam2bakr.smk"
 
 
 ##### target rules #####
