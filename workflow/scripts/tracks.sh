@@ -179,6 +179,7 @@ output=${10}
                                              ::: $(seq 0 5) \
                                              ::: pos min
 
+    rm -f igv.log
 
 
     rm ./results/tracks/"$sample"*.bam
