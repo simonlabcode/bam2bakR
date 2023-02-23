@@ -96,10 +96,11 @@ rule maketdf:
         "results/htseq/{sample}_tl.bam",
 	    "results/normalization/scale"
     output:
-        "results/tracks/{sample}_success.txt"
+        temp("results/tracks/{sample}_success.txt"),
+        expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
     threads: CPU_num
     shell:
-        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {output} {config[genome_fasta]} {config[WSL]} {config[normalize]}"
+        "workflow/scripts/tracks.sh {config[cpus]} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output}"
 
 rule makecB:
     input:

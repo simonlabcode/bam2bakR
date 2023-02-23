@@ -19,10 +19,11 @@ input1=$3
 input2=$4
 input3=$5
 mut_tracks=$6
-output=$7
-genome_fasta=$8
-WSL_b=$9
-normalize=${10}
+genome_fasta=$7
+WSL_b=$8
+normalize=$9
+output=${10}
+
 
     # Create ./results/tracks/
     touch "$output"
