@@ -1,4 +1,5 @@
 *
+!docs
 !config
 !workflow
 !workflow/scripts
@@ -11,3 +12,4 @@
 !workflow/scripts/*
 !workflow/envs/*
 !workflow/rules/*
+!docs/*
