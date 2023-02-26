@@ -29,7 +29,7 @@ FORMAT: "PE" # (PE, SE)
                     # [SE - single end reads]
 
 # Strandedness of reads
-strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
+strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
 WSL: 1
