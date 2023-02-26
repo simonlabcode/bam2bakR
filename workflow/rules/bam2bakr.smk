@@ -76,6 +76,12 @@ rule cnt_muts:
     input:
         "results/htseq/{sample}_tl.bam",
         "results/snps/snp.txt"
+    params:
+        format = config["FORMAT"],
+        fragment_size = config["fragment_size"],
+        minqual = config["minqual"],
+        mut_tracks = config["mut_tracks"],
+        strand = config["strandedness"]
     output:
         "results/counts/{sample}_counts.csv.gz",
         temp("results/counts/{sample}_check.txt")
@@ -85,7 +91,7 @@ rule cnt_muts:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {config[awkscript]} {config[fragment_size]} {config[minqual]} {config[mut_tracks]} {config[mutcall]} {config[FORMAT]}"
+        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
 
 rule maketdf:
     input:

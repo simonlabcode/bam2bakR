@@ -25,9 +25,11 @@ genome_fasta: data/genome/GRCh38.fa
 cpus: 20
 
 # Format of reads
-FORMAT: "PE" # (PE, SE, NU)
+FORMAT: "PE" # (PE, SE)
                     # [SE - single end reads]
-                    # [NU - including non-unique] (not tested)
+
+# Strandedness of reads
+strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
 WSL: 1

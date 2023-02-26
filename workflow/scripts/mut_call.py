@@ -38,12 +38,18 @@ parser.add_argument('--mutsRDS', action='store_true',
 parser.add_argument('--mutPos', action='store_true',
                     help='Generate _cU.rds like file and mutation position bedGraph files')
 parser.add_argument('--SNPs', help='Path to snp.txt file')
+parser.add_argument('--strandedness', default='F', type=str, choices=['F', 'R'],
+                    help='Is first read forward or reverse orientation? F = forward is the default.')
 args = parser.parse_args()
 
 args.mutType = args.mutType.split(',')
 args.base = [x[0] for x in args.mutType]        # base nucleotide: TC => T
 inputName = args.bam.split('.bam')[0]           # name without .bam suffix
 
+if args.strandedness == 'F':
+    strand_check = True
+else:
+    strand_check = False
 
 
 
@@ -107,7 +113,7 @@ for r in samfile:
 
         r_info[10] = str( r_info[10] == 'TRUE' or ('N' in r.cigarstring) ).upper()     # sj: splice junction
 
-        if (r.is_paired and (r.is_read1 == r.is_reverse)) or (not r.is_paired and r.is_reverse):        # If read is first_in_pair and on reverse strand -or- second_in_pair and on forward strand then make sequence complement
+        if (r.is_paired and (r.is_read1 == (r.is_reverse == strand_check))) or (not r.is_paired and r.is_reverse):        # If read is first_in_pair and on reverse strand -or- second_in_pair and on forward strand then make sequence complement
             r_info[9] = 'R'      # FR: forward or reverse read orientation
             MD = [[x[1], DNAcode[x[2]], min(x[0] - r.query_alignment_start + 1, r.query_alignment_length - (x[0] - r.query_alignment_start))] for x in r.get_aligned_pairs(matches_only = True, with_seq=True)]
             # Parse MD and Cigar strings, remove values that are softclipped
