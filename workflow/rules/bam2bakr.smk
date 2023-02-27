@@ -1,13 +1,3 @@
-SAMP_NAMES = list(config['samples'].keys())
-
-CTL_NAMES = list(config['control_samples'])
-
-nctl = len(CTL_NAMES)
-
-def get_input_bams(wildcards):
-    return config["samples"][wildcards.sample]
-
-
 rule sort_filter:
     input:
         get_input_bams
@@ -21,7 +11,7 @@ rule sort_filter:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]}"
+        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
 
 rule htseq_cnt:
     input:
@@ -35,7 +25,7 @@ rule htseq_cnt:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
+        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]} 1> {log} 2>&1"
 
 rule normalize:
     input:
@@ -68,7 +58,7 @@ rule call_snps:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input}"
+        "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input} 1> {log} 2>&1"
 
 rule cnt_muts:
     input:
@@ -99,11 +89,13 @@ rule maketdf:
     output:
         temp("results/tracks/{sample}_success.txt"),
         expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
+    log:
+        "logs/maketdf/{sample}.log"
     threads: workflow.cores
     conda:
         "../envs/tracks.yaml"
     shell:
-        "workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output}"
+        "workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output} 1> {log} 2>&1"
 
 rule makecB:
     input:
@@ -116,4 +108,4 @@ rule makecB:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]}"
+        "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1"
