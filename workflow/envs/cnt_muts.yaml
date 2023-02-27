@@ -10,5 +10,3 @@ dependencies:
   - parallel =20210222
   - pysam =0.16.0.1
   - pigz =2.6
-  - bcftools =1.12
-  - htseq =2.0.1

@@ -9,9 +9,9 @@ rule sort_filter:
         "logs/sort_filter/{sample}.log"
     threads: workflow.cores
     conda:
-        "../envs/cnt_muts.yaml"
+        "../envs/sort.yaml"
     shell:
-        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
+        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]}"
 
 rule htseq_cnt:
     input:
@@ -23,9 +23,9 @@ rule htseq_cnt:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
     conda:
-        "../envs/cnt_muts.yaml"
+        "../envs/htseq.yaml"
     shell:
-        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]} 1> {log} 2>&1"
+        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
 rule normalize:
     input:
@@ -56,9 +56,9 @@ rule call_snps:
         "logs/call_snps/ctl_samps.log"
     threads: workflow.cores
     conda:
-        "../envs/cnt_muts.yaml"
+        "../envs/snps.yaml"
     shell:
-        "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input} 1> {log} 2>&1"
+        "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input}"
 
 rule cnt_muts:
     input:
@@ -79,7 +79,7 @@ rule cnt_muts:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
+        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand}"
 
 rule maketdf:
     input:
@@ -95,7 +95,7 @@ rule maketdf:
     conda:
         "../envs/tracks.yaml"
     shell:
-        "workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output} 1> {log} 2>&1"
+        "workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output}"
 
 rule makecB:
     input:
@@ -106,6 +106,6 @@ rule makecB:
         "logs/makecB/master.log"
     threads: workflow.cores
     conda:
-        "../envs/cnt_muts.yaml"
+        "../envs/cB.yaml"
     shell:
-        "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1"
+        "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]}"
