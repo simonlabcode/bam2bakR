@@ -14,10 +14,10 @@ control_samples: ["KO_ctl"]
 
 
 # location of annotation gtf file
-annotation: data/annotation/genome_chr.gtf
+annotation: data/annotation/GRCh38.gtf
 
 # location of genome fasta file
-genome_fasta: data/genome/genome_chr.fasta
+genome_fasta: data/genome/GRCh38.fasta
 
 ######## Parameters you should probably double check ########
 

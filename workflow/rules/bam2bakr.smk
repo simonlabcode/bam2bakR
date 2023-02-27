@@ -1,5 +1,3 @@
-CPU_num = config['cpus']
-
 SAMP_NAMES = list(config['samples'].keys())
 
 CTL_NAMES = list(config['control_samples'])
@@ -21,7 +19,7 @@ rule sort_filter:
         "logs/sort_filter/{sample}.log"
     threads: workflow.cores
     conda:
-        "../envs/sort.yaml"
+        "../envs/cnt_muts.yaml"
     shell:
         "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]}"
 
@@ -35,7 +33,7 @@ rule htseq_cnt:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
     conda:
-        "../envs/htseq.yaml"
+        "../envs/cnt_muts.yaml"
     shell:
         "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]}"
 
@@ -68,7 +66,7 @@ rule call_snps:
         "logs/call_snps/ctl_samps.log"
     threads: workflow.cores
     conda:
-        "../envs/snps.yaml"
+        "../envs/cnt_muts.yaml"
     shell:
         "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input}"
 
@@ -116,6 +114,6 @@ rule makecB:
         "logs/makecB/master.log"
     threads: workflow.cores
     conda:
-        "../envs/cB.yaml"
+        "../envs/cnt_muts.yaml"
     shell:
         "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]}"
