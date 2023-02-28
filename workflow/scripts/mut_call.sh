@@ -17,7 +17,7 @@ touch "$output2"
 
 # Infer a decent fragment size
 num_reads=$(samtools view -@ "$cpus" -c "$input")
-fragment_size=$(echo "scale=0; $num_reads/$cpus | bc)
+fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
 (( fragment_size++ ))
 
 
