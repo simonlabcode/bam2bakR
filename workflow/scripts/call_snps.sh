@@ -33,11 +33,11 @@ then
             name=$(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev)
             samtools sort -@ "$cpus" -o ./results/snps/"$name"_sort.bam "$cs"
             samtools index -@ "$cpus" ./results/snps/"$name"_sort.bam
-            bcftools mpileup --threads "$cpus" -f "$genome_fasta" ./results/snps/"$name"_sort.bam | bcftools call --threads "$cpus" -mv > ./results/snps/snp-"$name".vcf
+            #bcftools mpileup --threads "$cpus" -f "$genome_fasta" ./results/snps/"$name"_sort.bam | bcftools call --threads "$cpus" -mv > ./results/snps/snp-"$name".vcf
         done
 
-        cat ./results/snps/*.vcf > $output_vcf
-        rm ./results/snps/snp-*
+        #cat ./results/snps/*.vcf > $output_vcf
+        #rm ./results/snps/snp-*
 
         #for cs in ${control_samples[@]}; do
         #    NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
@@ -48,12 +48,12 @@ then
         # {1} : path to fasta file
         # {2} : samtools view -H ${control_samples[0]}_sort.bam | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}' : Extracts chromosome names from .bam file header
         # {3} : ${control_samples[@]/%/_sort.bam}                                                    : Appends "_sort.bam" to the end of control names and prints
-        #parallel -j "$cpus" "samtools mpileup -uf {1} \
-        #                                           -r {2} {3} \
-        #                        | bcftools call -mv" ::: $genome_fasta \
-        #                                              ::: $(samtools view -H ./results/snps/${NAMES[0]}_sort.bam \
-        #                                                            | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}') \
-        #                                              ::: ./results/snps/${NAMES[@]/%/_sort.bam} > snp.vcf
+        parallel -j "$cpus" "bcftools mpileup -f {1} \
+                                                   -r {2} {3} \
+                                | bcftools call -mv" ::: $genome_fasta \
+                                                      ::: $(samtools view -H ./results/snps/${NAMES[0]}_sort.bam \
+                                                                    | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}') \
+                                                      ::: ./results/snps/${NAMES[@]/%/_sort.bam} > snp.vcf
 
 
         # Note: Easier and also fast option would be:  bcftools mpileup --threads $cpus -f $genome_fasta "$cs"_sort.bam | bcftools call --threads $cpus-mv > snp-"$cs".vcf
