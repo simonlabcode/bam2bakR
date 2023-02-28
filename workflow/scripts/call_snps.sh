@@ -39,9 +39,9 @@ then
         #cat ./results/snps/*.vcf > $output_vcf
         #rm ./results/snps/snp-*
 
-        #for cs in ${control_samples[@]}; do
-        #    NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
-        #done
+        for cs in ${control_samples[@]}; do
+            NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
+        done
 
     # Parallelize SNPs calling. Each chromosome in each .bam file is processed as separate job
         # Note: This approach does not give the same snp.txt result. In 2199712 SNPs there were 16 different.
