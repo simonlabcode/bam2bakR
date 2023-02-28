@@ -44,9 +44,6 @@ then
             NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
         done
 
-        echo ${NAMES[@]}
-        echo ${control_samples[@]}
-
     # Parallelize SNPs calling. Each chromosome in each .bam file is processed as separate job
         # Note: This approach does not give the same snp.txt result. In 2199712 SNPs there were 16 different.
         # {1} : path to fasta file
@@ -57,7 +54,7 @@ then
                                 | bcftools call -mv" ::: $genome_fasta \
                                                       ::: $(samtools view -H ./results/snps/${NAMES[0]}_sort.bam \
                                                                     | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}') \
-                                                      ::: ./results/snps/${NAMES[@]/%/_sort.bam} > $output_vcf
+                                                      ::: ./results/snps/*_sort.bam > $output_vcf
 
 
         # Note: Easier and also fast option would be:  bcftools mpileup --threads $cpus -f $genome_fasta "$cs"_sort.bam | bcftools call --threads $cpus-mv > snp-"$cs".vcf
