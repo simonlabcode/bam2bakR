@@ -5,15 +5,13 @@ rule sort_filter:
         "results/sf_reads/{sample}.s.sam",
         "results/sf_reads/{sample}_fixed_mate.bam",
         "results/sf_reads/{sample}.f.sam",
-    params:
-        shellscript=workflow.source_path("../scripts/sort_filter.sh")
     log:
         "logs/sort_filter/{sample}.log"
     threads: workflow.cores
     conda:
         "../envs/sort.yaml"
     shell:
-        "{params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
+        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
 
 rule htseq_cnt:
     input:
@@ -21,8 +19,6 @@ rule htseq_cnt:
     output:
         "results/htseq/{sample}_tl.bam",
         temp("results/htseq/{sample}_check.txt")
-    params:
-        shellscript=workflow.source_path("../scripts/htseq.sh")
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
