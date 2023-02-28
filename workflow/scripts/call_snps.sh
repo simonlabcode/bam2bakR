@@ -44,7 +44,7 @@ then
             NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
         done
 
-        echo $NAMES
+        echo ${NAMES[@]}
         echo ${control_samples[@]}
 
     # Parallelize SNPs calling. Each chromosome in each .bam file is processed as separate job
