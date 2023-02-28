@@ -7,11 +7,10 @@ input=$3
 input_snp=$4
 output=$5
 output2=$6
-fragment_size=$7
-minqual=$8
-mut_tracks=$9
-format=${10}
-strand=${11}
+minqual=$7
+mut_tracks=$6
+format=$9
+strand=${10}
 
 # Create results/counts/
 touch "$output2"

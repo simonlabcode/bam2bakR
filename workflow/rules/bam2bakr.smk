@@ -78,7 +78,6 @@ rule cnt_muts:
         "results/snps/snp.txt"
     params:
         format = config["FORMAT"],
-        fragment_size = config["fragment_size"],
         minqual = config["minqual"],
         mut_tracks = config["mut_tracks"],
         strand = config["strandedness"]
@@ -91,7 +90,7 @@ rule cnt_muts:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
+        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
 
 rule maketdf:
     input:

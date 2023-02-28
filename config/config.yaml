@@ -25,9 +25,6 @@ FORMAT: "PE" # (PE, SE)
 # Strandedness of reads
 strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
-# Number of reads per fragment when splitting up bam file
-fragment_size: 5000
-
 
 # Type of mutations of interest
 mut_tracks: "TC" # ("TC", "GA", "TC,GA")
