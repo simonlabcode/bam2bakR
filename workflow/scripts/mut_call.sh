@@ -16,6 +16,12 @@ strand=${11}
 # Create results/counts/
 touch "$output2"
 
+# Infer a decent fragment size
+num_reads=$(samtools view -@ "$cpus" -c "$input")
+fragment_size=$(echo "scale=0; $num_reads/$cpus | bc)
+(( fragment_size++ ))
+
+
 # Spread the work load so all cpus are working at all times
     declare $(samtools view -@ "$cpus"  "$input" \
     			| wc -l \
