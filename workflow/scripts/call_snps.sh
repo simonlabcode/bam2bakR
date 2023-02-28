@@ -53,7 +53,7 @@ then
                                 | bcftools call -mv" ::: $genome_fasta \
                                                       ::: $(samtools view -H ./results/snps/${NAMES[0]}_sort.bam \
                                                                     | awk ' $1 == "@SQ" {split($2,a,":"); print a[2]}') \
-                                                      ::: ./results/snps/${NAMES[@]/%/_sort.bam} > snp.vcf
+                                                      ::: ./results/snps/${NAMES[@]/%/_sort.bam} > $output_vcf
 
 
         # Note: Easier and also fast option would be:  bcftools mpileup --threads $cpus -f $genome_fasta "$cs"_sort.bam | bcftools call --threads $cpus-mv > snp-"$cs".vcf
