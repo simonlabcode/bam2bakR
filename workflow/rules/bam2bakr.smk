@@ -50,7 +50,6 @@ rule index:
         get_index_name()
     log:
         "logs/genome-faidx.log",
-    cache: True
     wrapper:
         "v1.21.4/bio/samtools/faidx"
 
