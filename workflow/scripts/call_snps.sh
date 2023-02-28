@@ -69,8 +69,6 @@ then
             | sort \
             | uniq > $output_txt
 
-        mv snp.vcf ./results/snps/
-
         echo '* SNPs called and snp.txt generated'
 else
     touch "$output_txt"
