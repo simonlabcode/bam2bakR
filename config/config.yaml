@@ -3,21 +3,23 @@
 
 # location of ALL (including -s4U control) bam files
 samples:
-  KO_1: data/samples/KO_1.sorted.bam
-  KO_ctl: data/samples/KO_ctl.sorted.bam
-  WT_1: data/samples/WT_1.sorted.bam
-  WT_2: data/samples/WT_2.sorted.bam
+  KO_1: data/samples/KO_1_tl.bam
+  KO_2: data/samples/KO_2_tl.bam
+  KO_ctl: data/samples/KO_ctl_tl.bam
+  WT_1: data/samples/WT_1_tl.bam
+  WT_2: data/samples/WT_2_tl.bam
+  WT_ctl: data/samples/WT_ctl_tl.bam
 
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
-control_samples: ["KO_ctl"]
+control_samples: ["KO_ctl", "WT_ctl"]
 
 
 # location of annotation gtf file
-annotation: data/annotation/genome.gtf
+annotation: data/annotation/GRCh38.gtf
 
 # location of genome fasta file
-genome_fasta: data/genome/genome.fasta
+genome_fasta: data/genome/GRCh38.fasta
 
 ######## Parameters you should probably double check ########
 
@@ -35,7 +37,7 @@ strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs.
 WSL: 1
 
 # Number of reads per fragment when splitting up bam file
-fragment_size: 5000
+fragment_size: 500000
 
 
 # Type of mutations of interest
