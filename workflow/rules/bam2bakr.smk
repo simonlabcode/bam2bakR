@@ -51,6 +51,7 @@ rule call_snps:
         nsamps = nctl
     output:
         "results/snps/snp.txt",
+        "results/snps/snp.vcf",
         temp("results/snps/mkdir.txt")
     log:
         "logs/call_snps/ctl_samps.log"
