@@ -8,7 +8,7 @@ input_snp=$4
 output=$5
 output2=$6
 minqual=$7
-mut_tracks=$6
+mut_tracks=$8
 format=$9
 strand=${10}
 
