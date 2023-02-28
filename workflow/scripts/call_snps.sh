@@ -11,6 +11,7 @@ unset control_samples[1]
 unset control_samples[2]
 unset control_samples[3]
 unset control_samples[4]
+unset control_samples[5]
 
 
 cpus=$1
@@ -32,14 +33,15 @@ then
             name=$(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev)
             samtools sort -@ "$cpus" -o ./results/snps/"$name"_sort.bam "$cs"
             samtools index -@ "$cpus" ./results/snps/"$name"_sort.bam
-            bcftools mpileup --threads "$cpus" -f $genome_fasta "$cs"_sort.bam | bcftools call --threads "$cpus" -mv > ./results/snps/snp-"$cs".vcf
+            bcftools mpileup --threads "$cpus" -f "$genome_fasta" ./results/snps/"$name"_sort.bam | bcftools call --threads "$cpus" -mv > ./results/snps/snp-"$name".vcf
         done
 
         cat ./results/snps/*.vcf > $output_vcf
+        rm ./results/snps/snp-*
 
-        for cs in ${control_samples[@]}; do
-            NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
-        done
+        #for cs in ${control_samples[@]}; do
+        #    NAMES+=($(echo "$cs" | cut -d '/' -f 3 | rev | cut -c8- | rev))
+        #done
 
     # Parallelize SNPs calling. Each chromosome in each .bam file is processed as separate job
         # Note: This approach does not give the same snp.txt result. In 2199712 SNPs there were 16 different.
