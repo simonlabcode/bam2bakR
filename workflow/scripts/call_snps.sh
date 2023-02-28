@@ -12,6 +12,7 @@ unset control_samples[2]
 unset control_samples[3]
 unset control_samples[4]
 unset control_samples[5]
+unset control_samples[6]
 
 
 cpus=$1

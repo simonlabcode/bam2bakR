@@ -43,9 +43,21 @@ rule normalize:
 	mv scale {output}
         """
 
+rule index:
+    input:
+        str(config["genome_fasta"])
+    output:
+        get_index_name()
+    log:
+        "logs/genome-faidx.log",
+    cache: True
+    wrapper:
+        "v1.21.4/bio/samtools/faidx"
+
 
 rule call_snps:
     input:
+        get_index_name(),
         expand("results/htseq/{ctl}_tl.bam", ctl = CTL_NAMES)
     params:
         nsamps = nctl
