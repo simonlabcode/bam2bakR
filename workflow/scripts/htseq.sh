@@ -7,7 +7,6 @@ input=$3
 output=$4
 output2=$5
 annotation=$6
-mutcnt=$7
 
     # Will create the ./results/htseq
     touch "$output2"
@@ -21,7 +20,7 @@ mutcnt=$7
             --joblog "$sample"_htseq_parallel.log \
             --roundrobin \
             --header '(@.*\n)*' \
-            --pipe python $mutcnt \
+            --pipe python ./workflow/scripts/count_triple.py \
                         -f sam \
                         --samout ./results/htseq/"$sample"_htseq.{#}_temp.sam \
                         -t transcript,exon,exon \

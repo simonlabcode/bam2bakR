@@ -25,7 +25,7 @@ rule htseq_cnt:
     conda:
         "../envs/htseq.yaml"
     shell:
-        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} {config[mutcnt]} 1> {log} 2>&1"
+        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} 1> {log} 2>&1"
 
 rule normalize:
     input:
