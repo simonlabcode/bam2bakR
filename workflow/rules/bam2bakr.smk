@@ -5,13 +5,15 @@ rule sort_filter:
         "results/sf_reads/{sample}.s.sam",
         "results/sf_reads/{sample}_fixed_mate.bam",
         "results/sf_reads/{sample}.f.sam",
+    params:
+        shellscript=workflow.source_path("../scripts/sort_filter.sh")
     log:
         "logs/sort_filter/{sample}.log"
     threads: workflow.cores
     conda:
         "../envs/sort.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
+        "{params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
 
 rule htseq_cnt:
     input:
@@ -19,13 +21,15 @@ rule htseq_cnt:
     output:
         "results/htseq/{sample}_tl.bam",
         temp("results/htseq/{sample}_check.txt")
+    params:
+        shellscript=workflow.source_path("../scripts/htseq.sh")
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
     conda:
         "../envs/htseq.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} 1> {log} 2>&1"
+        "workflow/scripts/htseq.sh {threads} {wildcards.sample} {input} {output} {config[annotation]} 1> {log} 2>&1"
 
 rule normalize:
     input:
@@ -70,7 +74,7 @@ rule call_snps:
     conda:
         "../envs/snps.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input} 1> {log} 2>&1"
+        "workflow/scripts/call_snps.sh {threads} {params.nsamps} {output} {config[genome_fasta]} {input} 1> {log} 2>&1"
 
 rule cnt_muts:
     input:
@@ -91,7 +95,7 @@ rule cnt_muts:
     conda:
         "../envs/cnt_muts.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
+        "./workflow/scripts/mut_call.sh {threads} {wildcards.sample} {input} {output} {params.fragment_size} {params.minqual} {params.mut_tracks} {params.format} {params.strand} 1> {log} 2>&1"
 
 rule maketdf:
     input:
@@ -107,7 +111,7 @@ rule maketdf:
     conda:
         "../envs/tracks.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output} 1> {log} 2>&1"
+        "workflow/scripts/tracks.sh {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {output} 1> {log} 2>&1"
 
 rule makecB:
     input:
@@ -120,4 +124,4 @@ rule makecB:
     conda:
         "../envs/cB.yaml"
     shell:
-        "${{workflow.path}}/workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1"
+        "workflow/scripts/master.sh {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1"
