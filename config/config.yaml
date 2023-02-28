@@ -1,18 +1,13 @@
-
 ######## Parameters you MUST set #########
 
 # location of ALL (including -s4U control) bam files
 samples:
-  WT_1: data/samples/WT_1_tl.bam
-  WT_2: data/samples/WT_2_tl.bam
-  WT_ctl: data/samples/WT_ctl_tl.bam
-  KO_1: data/samples/KO_1_tl.bam
-  KO_2: data/samples/KO_2_tl.bam
-  KO_ctl: data/samples/KO_ctl_tl.bam
+  KO_1: data/samples/test_KO1.bam
+  KO_ctl: data/samples/test_KOctl.bam
 
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
-control_samples: ["WT_ctl", "KO_ctl"]
+control_samples: ["KO_ctl"]
 
 
 # location of annotation gtf file
@@ -31,7 +26,7 @@ FORMAT: "PE" # (PE, SE)
 strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
 # Number of reads per fragment when splitting up bam file
-fragment_size: 500000
+fragment_size: 5000
 
 
 # Type of mutations of interest
