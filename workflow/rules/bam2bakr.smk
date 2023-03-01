@@ -139,8 +139,8 @@ rule maketdf:
         "../envs/tracks.yaml"
     shell:
         """
-        chmod +x shellscript
-        chmod +x pythonscript
+        chmod +x {params.shellscript}
+        chmod +x {params.pythonscript}
         {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {output} 1> {log} 2>&1
         """
 
