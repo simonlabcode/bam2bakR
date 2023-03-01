@@ -7,11 +7,16 @@ rule sort_filter:
         "results/sf_reads/{sample}.f.sam",
     log:
         "logs/sort_filter/{sample}.log"
+    params: 
+        shellscript=workflow.source_path("../scripts/sort_filter.sh")
     threads: workflow.cores
     conda:
         "../envs/sort.yaml"
     shell:
-        "workflow/scripts/sort_filter.sh {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1"
+        """
+        chmod +x {params.shellscript}
+        {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
+        """
 
 rule htseq_cnt:
     input:
