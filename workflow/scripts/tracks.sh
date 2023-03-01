@@ -22,7 +22,8 @@ mut_tracks=$6
 genome_fasta=$7
 WSL_b=$8
 normalize=$9
-output=${10}
+pyscript=${10}
+output=${11}
 
 
     # Create ./results/tracks/
@@ -41,7 +42,7 @@ output=${10}
 
     echo '* Creating files for each level of counting.'
 
-    python ./workflow/scripts/count_to_tracks.py \
+    python $pyscript \
         -i $input1 \
         -s ./results/tracks/$sample
 

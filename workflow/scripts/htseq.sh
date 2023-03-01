@@ -7,6 +7,7 @@ input=$3
 output=$4
 output2=$5
 annotation=$6
+count_script=$7
 
     # Will create the ./results/htseq
     touch "$output2"
@@ -20,7 +21,7 @@ annotation=$6
             --joblog "$sample"_htseq_parallel.log \
             --roundrobin \
             --header '(@.*\n)*' \
-            --pipe python ./workflow/scripts/count_triple.py \
+            --pipe python $count_script \
                         -f sam \
                         --samout ./results/htseq/"$sample"_htseq.{#}_temp.sam \
                         -t transcript,exon,exon \
