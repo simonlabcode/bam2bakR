@@ -12,10 +12,6 @@ This is a Snakemake implementation of a portion of the [TimeLapse pipeline](http
 * sample - Sample name
 * n - Number of reads which have the identical set of values described above
 
-bam2bakR also now outputs .tdf files to make sequencing tracks colored by mutation content (increasingly red for increasing number of mutations)! 
-
-(1/18/2023): bam2bakR now normalizes .tdf tracks according to scale factors calculated from either all reads or only reads originating from spike-ins (if spike-ins are present). Make sure to set spikename parameter in config if spike-ins are present.
-
 ## Requirements
 bam2bakR uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/en/stable/). The minimal version of Snakemake is techncially compatible with Windows, Mac, and Linux OS, but several of the software dependencies (e.g., HTSeq) are only Mac and Linux compatible. If you are a Windows user like me, don't sweat it, I would suggest looking to the Windows subsystem for linux which can be easily installed (assuming you are running Windows 10 version 2004 or higher).
 
@@ -123,7 +119,7 @@ where `../` means navigate up one directory.
 The next parameter you have to set denotes the sample names of any -s4U control samples (i.e., samples that were not fed s4U or a similar metabolic label):
 
 ```
-control_samples: ['WT_ctl', `KO_ctl`]
+control_samples: ["WT_ctl", "KO_ctl"]
 ```
 
 In this case, the samples named WT_ctl and KO_ctl are the -s4U control samples. -s4U controls will be used to call any single nucleotide polymorphisms (SNPs) in your cell line so as to avoid conflating them with T-to-C mutations induced by the nucleotide recoding chemistry. 
@@ -131,34 +127,20 @@ In this case, the samples named WT_ctl and KO_ctl are the -s4U control samples. 
 The third crucial parmaeter immediately follows:
 
 ```
-annotation: data/annotation/Homo_sapiens.GRCh38.104.chr_chr.gtf
+annotation: data/annotation/GRCh38.gtf
 ```
 This is the path to the GTF annotation file for the genome that reads were mapped to. The same rules apply when it comes to specifying this path.
 
 Finally, the path to the genome fasta file that you used for alignment must also be specified:
 
 ```
-genome_fasta: data/genome/Homo_sapiens.GRCh38.dna.chr.fa
-```
-
-**NOTE**: this pipeline requires that all chromosome names in the genome and annotation files are appended with "chr" (e.g., chromosome 1 should be denoted chr1, not just 1 as it is in annotation/genome files from Ensembl). To add this to ensembl genomes and annotations, you can run the following awk code, assuming you are in the directory containing the annotation/genome file when you run it:
-
-```
-# Append chr to ensembl human annotation file chromosome names
-awk -v OFS="\t" -v FS="\t" ' $1 !~ /^#/ {$1 = "chr"$1} \
-  {print $0}' Homo_sapiens.GRCh38.104.chr.gtf > Homo_sapiens.GRCh38.104.chr_chr.gtf
-  
-# Append chr to ensembl human genome fasta file 
-awk '$1 ~ /^>/ { split($1, h, ">") \
-                 print ">chr"h[2]} \
-     $1 !~ /^>/ { print $0}' Homo_sapiens.GRCh38.dna.primary_assembly.fa > Homo_sapiens.GRCh38.dna.chr.fa
+genome_fasta: data/genome/GRCh38.fasta
 ```
 
 The other parameters that can be altered are:
-* `cpus`: the number of cores (i.e., cpus) you want to use.
+* `strandedness`: whether the first read in a pair (or the only read if single-end) represents the original sequence of the RNA (F), or its reverse complement (R). For example, set this parameter to "F" if your library is an FR paired-end library, and "R" if it is an RF paired-end library.
 * `FORMAT`: whether the reads are paired-end (PE) or single-end (SE).
 * `WSL`: whether you are running this on the Windows subsystem for linux (0 = yes; 1= no)
-* `fragment_size`: For parallel processing, bam files will be split up into temporary files with `fragment_size` reads in each. A value of around (total # of reads)/(cpus) should work more generally. For example, if you have on average 20 million mapped reads in your bam files and will be running this with 20 cores, `fragment_size` should be around 1 million.
 * `mut_tracks`: the type of mutation (e.g., T-to-C mutations) that you are most interested in. If T-to-C, then `mut_tracks` should be TC. If G-to-A, then `mut_tracks` should be GA. If both, then `mut_tracks` should be "TC,GA".
 * `minqual`: Minimum base quality to call it a mutation. I wouldn't usually worry about editing this.
 * `keepcols`: Names of columns to keep in cB.csv output file. See Output for details of columns you can keep.
@@ -168,7 +150,7 @@ The other parameters that can be altered are:
 Edit the values in the config file as necessary and move on to the last step.
 
 ### Run it!<a name="run"></a>
-Technically, all you need to do to run bam2bakR is activate the pipeline environment and call snakemake from the top of the bam2bakR directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with whatever you entered for `cpus` in the config):
+Technically, all you need to do to run bam2bakR is activate the pipeline environment and call snakemake from the top of the bam2bakR directory as follows (replacing `complete_pipeline` with whatever you named the environment and `4` replaced with however many cpus you would like to use):
 ```
 $ conda activate complete_pipeline
 $ snakemake --cores 4
@@ -215,11 +197,44 @@ All output files will be placed in a directory named `results` that will be crea
 The tdf files to make color-coded tracks are in: `results/tracks/`.
 
 Other output includes:
-* Sorted and filtered bam file in results/sf_reads/
-* HTseq output text and bam files in results/bams/
-* SNP calls in results/snps/
-* Csv files with counts of all mutation types in results/counts/
-* Scale factors calculated with edgeR in results/normalization/
+* Sorted and filtered bam file in `results/sf_reads/`
+* HTseq output text and bam files in `results/htseq/`
+* SNP calls in `results/snps/`
+* .csv files with counts of all mutation types in `results/counts/`
+* Scale factors calculated with edgeR in `results/normalization/`
+
+## Common problems
+
+If there are very few T-to-C mutations in the final cB.csv file (e.g., if sample-wide mutation rates in +s4U samples are < 0.003), then you may have used the incorrect value for the `strandedness` parameter in the config. One way to tell if this is the case is by looking at one of the +s4U sample counts.csv files in `results/counts/` and checking for an abundance of A-to-G mutations. If this is the case, flip the value of `strandedness` to the opposite of whatever you used.
+
+Related to the first point, a good sanity check after running the pipeline is going into R and checking the raw mutation rates as such:
+
+```
+library(data.table)
+
+# To unzip and read cB, also need to have R.utils package installed
+cB <- fread("path/to/cB.csv.gz")
+
+# Assess sample-wide T-to-C mutation rate in each sample
+cB[,.(mutrate = sum(TC*n)/sum(nT*n), by = sample]
+  # Want to see that +s4U samples has higher mutation rate than -s4U samples
+```
+
+Similarly, checking a counts.csv file for an abundance of A-to-G mutations can be done as follows:
+
+```
+library(data.table)
+
+counts <- fread("path/to/+s4U/counts.csv.gz")
+
+## Check if A-to-G mutation rate is higher than T-to-C mutation rate:
+
+# A-to-G mutation rate
+sum(counts$AG)/sum(counts$nA)
+
+# T-to-C mutation rate
+sum(counts$TC)/sum(counts$nT)
+```
 
 ## Further automating dependency installation
 
