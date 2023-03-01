@@ -207,7 +207,7 @@ Other output includes:
 
 ## Running bam2bakR with --use-conda
 
-Version 1.0.0 of bam2bakR is now compatible Snakemake's [--use-conda option](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html). This will cause Snakemake to automatically create and activate conda environments for each step of the workflow to run inside. If you want to use this functionality, you can replace step 3 of the **Setup** instructions (installing dependencies), with creating a simple conda environment that contains snakemake, as such:
+Version 1.0.0 of bam2bakR is now compatible Snakemake's [--use-conda option](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html). This will cause Snakemake to automatically create and activate conda environments for each step of the workflow to run inside. If you want to use this functionality, you can replace step 3 of the **Setup** instructions (installing dependencies) with creating a simple conda environment that contains snakemake, as such:
 
 `mamba create -c conda-forge -c bioconda --name snakemake snakemake`
 
