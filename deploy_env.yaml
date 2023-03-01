@@ -1,7 +1,0 @@
-name: deploy_bam2bakR
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - snakemake
-  - snakedeploy
