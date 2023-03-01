@@ -8,6 +8,7 @@ dependencies:
   - gawk =4.2.1
   - python =3.8.6
   - snakemake-minimal >=5.24.1
+  - snakemake-wrapper-utils =0.5.0
   - htseq =2.0.1
   - parallel =20210222
   - pigz =2.6

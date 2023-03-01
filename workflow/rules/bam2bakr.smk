@@ -55,8 +55,10 @@ rule index:
         get_index_name()
     log:
         "logs/genome-faidx.log",
-    wrapper:
-        "v1.21.4/bio/samtools/faidx"
+    conda:
+        "../envs/faidx.yaml"
+    script:
+        "../scripts/genome-faidx.py"
 
 
 rule call_snps:
