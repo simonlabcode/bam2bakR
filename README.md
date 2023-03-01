@@ -296,10 +296,10 @@ If you are having trouble installing mamba/conda or creating the required conda 
 
 1. [Install Docker](https://docs.docker.com/get-docker/). If you are running bam2bakR on a system where you are not the admin (e.g., a shared computing cluster), then you will want to use [Singularity](https://apptainer.org/) (recently changed name to Apptainer) instead. If using Apptainer, just replace `docker` in any code snippet that follows with `apptainer` and you should be good to go!
 1. Navigate to the directory where you want to run bam2bakR (i.e., the directory that you will call `snakemake --cores all` or something similar to start the pipeline)
-1. Pull the bam2bakr Docker image from Docker Hub by running: `docker pull isaacvock/bam2bakr`
+1. Pull the bam2bakr Docker image from Docker Hub by running: `docker pull isaacvock/bam2bakr:v1.0.1`
 1. Run the bam2bakr image with a [bind mount](https://docs.docker.com/get-started/06_bind_mounts/). This allows you to have access to all of the files inside your working directory while inside the image's software environment (i.e., Ubuntu + bam2bakR conda environment): 
    ```
-   docker run -it --mount type=bind,src="$(pwd)", target=/pipeline isaacvock/bam2bakr
+   docker run -it --mount type=bind,src="$(pwd)", target=/pipeline isaacvock/bam2bakr:v1.0.1
    ```
 1. Activate the conda environment: `conda activate docker_pipeline`
 1. Move into the working directory: `cd pipeline`
