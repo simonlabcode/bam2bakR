@@ -223,6 +223,34 @@ mamba env remove -n complete_pipeline
 mamba env create -f pipeline_env.yaml
 ```
 
+## Running bam2bakR with Snakedeploy
+
+Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snakedeploy](https://snakedeploy.readthedocs.io/en/latest/index.html). One challenge of using a raw Snakemake workflow like bam2bakR is that updating can be difficult. It often requires renaming the old cloned directory, reclonging the repo into a new directory, moving data into the new directory, and editing the config file. Snakedeploy eliminates a lot of the hassle by creating a new workflow from scratch that uses bam2bakR as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html). This ensures that you are always using the most up-to-date version of bam2bakR. 
+
+Getting started with Snakedeploy involves a similar process as enabling `--use-conda` when running bam2bakR. Steps 1 and 2 of the **Setup** instructions remain unchanged. Step 3 is to create a simple conda environment, this time containing Snakemake and Snakedeploy:
+
+`mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy`
+
+Next, create a directory that you want to run bam2bakR in (I'll refer to it as `workdir`) and move into it:
+```
+mkdir workdir
+cd workdir
+```
+
+Now, activate the `deploy_snakemake` environment and deploy the workflow as follows:
+
+```
+conda activate deploy_snakemake
+snakedeploy deploy-workflow https://github.com/simonlabcode/bam2bakR.git . --branch main
+```
+
+`snakedeploy deploy-workflow https://github.com/simonlabcode/bam2bakR.git` copies the content of the `config` directory in the bam2bakR Github repo into the directoy specified (`.`, which means current directory, i.e., `workdir` in this example). It also creates a directory called `workflow` that contains a singular Snakefile that instructs Snakemake to use the workflow hosted on the main branch (that is what `--branch main` determines) of the bam2bakR Github repo. `--branch main` can also be replaced with `--tag 1.0.1` to ensure that you are consistently using the same version of bam2bakR (version 1.0.1 release).
+
+Edit the config and add any data to `workdir` as you see fit (see **Setup** section steps 4 and 5 for more details). Once you are ready, run bam2bakR with:
+```
+snakemake --cores all --use-conda
+```
+
 ## Common problems
 
 If there are very few T-to-C mutations in the final cB.csv file (e.g., if sample-wide mutation rates in +s4U samples are < 0.003), then you may have used the incorrect value for the `strandedness` parameter in the config. One way to tell if this is the case is by looking at one of the +s4U sample counts.csv files in `results/counts/` and checking for an abundance of A-to-G mutations. If this is the case, flip the value of `strandedness` to the opposite of whatever you used.
