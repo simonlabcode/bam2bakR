@@ -2,12 +2,16 @@
 
 # location of ALL (including -s4U control) bam files
 samples:
-  KO_1: data/samples/test_KO1.bam
-  KO_ctl: data/samples/test_KOctl.bam
+  WT_1: data/samples/WT_replicate_1.bam
+  WT_2: data/samples/WT_replicate_2.bam
+  WT_ctl: data/samples/WT_nos4U.bam
+  KO_1: data/samples/KO_replicate_1.bam
+  KO_2: data/samples/KO_replicate_2.bam
+  KO_ctl: data/samples/KO_nos4U.bam
 
 # sample IDs of -s4U control bam files (or leave blank if you have none)
 # Needs to be same sample ID(s) that show up under samples entry
-control_samples: ["KO_ctl"]
+control_samples: ["WT_ctl", "KO_ctl"]
 
 
 # location of annotation gtf file
