@@ -205,6 +205,24 @@ Other output includes:
 * .csv files with counts of all mutation types in `results/counts/`
 * Scale factors calculated with edgeR in `results/normalization/`
 
+## Running bam2bakR with --use-conda
+
+Version 1.0.0 of bam2bakR is now compatible Snakemake's [--use-conda option](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html). This will cause Snakemake to automatically create and activate conda environments for each step of the workflow to run inside. If you want to use this functionality, you can replace step 3 of the **Setup** instructions (installing dependencies) with creating a simple conda environment that contains snakemake, as such:
+
+`mamba create -c conda-forge -c bioconda --name snakemake snakemake`
+
+You would then run the pipeline with the `snakemake` environment activated (instead of the `complete_pipeline` environment) with:
+
+`snakemake cores all --use-conda`
+
+where `cores all` is a convenient way to tell Snakemake to make use of all available cpus (all can be replaced with an explicit number as was shown in the installation/pipeline running instructions above). If you already have the `complete_pipeline` environment created from a previous installation of bam2bakR, you can also run `snakemake cores all --use-conda` from inside of this environment, instead of the minimal `snakemake` environment. If you want to run the pipeline as described in the **Setup** section (i.e., without --use-conda), you will need to ensure that the most up-to-date `complete_pipeline` environment is installed, as a dependency was added in version 1.0.0. If you need to update the environment, it is best to recreate it from scratch as follows (assuming you are in the bam2bakR root directory containing the `pipeline_env.yaml` file):
+
+```
+mamba env remove -n complete_pipeline
+
+mamba env create -f pipeline_env.yaml
+```
+
 ## Common problems
 
 If there are very few T-to-C mutations in the final cB.csv file (e.g., if sample-wide mutation rates in +s4U samples are < 0.003), then you may have used the incorrect value for the `strandedness` parameter in the config. One way to tell if this is the case is by looking at one of the +s4U sample counts.csv files in `results/counts/` and checking for an abundance of A-to-G mutations. If this is the case, flip the value of `strandedness` to the opposite of whatever you used.
