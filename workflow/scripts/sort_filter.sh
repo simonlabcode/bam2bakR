@@ -9,8 +9,8 @@ output2=$5
 output3=$6
 format=$7
 
-
-samtools fixmate -@ "$cpus" "$input" "$output2"
+# Make sure bam file is query sorted rather than coordinate sorted
+samtools sort -@ "$cpus" -n "$input" | samtools fixmate -@ "$cpus" - - | samtools view -@ "$cpus" -b - > "$output2"
 
 	if [ "$format" = "NU" ]; then
 	samtools view -@ "$cpus" -h "$output2" \
