@@ -25,7 +25,7 @@ rule htseq_cnt:
         "results/htseq/{sample}_tl.bam",
         temp("results/htseq/{sample}_check.txt")
     params: 
-        shellscript=workflow.source_path("../scripts/sort_filter.sh"),
+        shellscript=workflow.source_path("../scripts/htseq.sh"),
         pythonscript=workflow.source_path("../scripts/count_triple.py")
     log:
         "logs/htseq_cnt/{sample}.log"
@@ -38,7 +38,7 @@ rule htseq_cnt:
         chmod +x {params.pythonscript}
         {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[annotation]} {params.pythonscript} 1> {log} 2>&1
         """
-        
+
 rule normalize:
     input:
         expand("results/htseq/{sample}_tl.bam", sample = SAMP_NAMES)
