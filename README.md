@@ -17,6 +17,8 @@ bam2bakR uses the workflow manager [Snakemake](https://snakemake.readthedocs.io/
 
 In addition, you will need Git installed on your system so that you can clone this repository. Head to [this link](https://git-scm.com/downloads) for installation instructions if you don't already have Git.
 
+Finally, bam2bakR requires bam files from stranded library preps (i.e., information about whether a given read represents the original sequence of the RNA or its reverse complement must be retained). In addition, make sure that the aligner you used was configured to output bam files with an MD tag, which will keep track of the reference nucleotide at any mismatches between the aligned read and the reference genome. While this tag is not always included by default, most aligners have an option to add this tag to the list of default tags.
+
 ## Setup
 There are 5 steps required to get up and running with bam2bakR
 1. [Install conda (or mamba) on your system](#conda). This is the package manager that bam2bakR uses to make setting up the necessary dependencies a breeze.
