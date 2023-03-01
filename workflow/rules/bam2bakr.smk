@@ -158,6 +158,6 @@ rule makecB:
         "../envs/cB.yaml"
     shell:
         """
-        chmod +x shellscript
+        chmod +x {params.shellscript}
         {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1
         """
