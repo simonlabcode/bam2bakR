@@ -13,3 +13,5 @@
 !workflow/envs/*
 !workflow/rules/*
 !docs/*
+!mkdocs.yaml
+!.readthedocs.yaml
