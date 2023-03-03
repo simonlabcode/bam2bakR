@@ -1,0 +1,17 @@
+site_name: bam2bakR
+site_url: https://example.come/
+nav:
+  - Introduction: index.md
+  - Running bam2bakR: deploy.md
+  - Output: output.md
+  - Making Tracks: tracks.md
+  - Alternative deployment strategies: alt.md
+  - FAQs: pitfalls.md
+theme: readthedocs
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
