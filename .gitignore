@@ -15,3 +15,5 @@
 !docs/*
 !mkdocs.yaml
 !.readthedocs.yaml
+!docs/images
+!docs/images/*
