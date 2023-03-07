@@ -7,7 +7,8 @@ input=$3
 output=$4
 output2=$5
 annotation=$6
-count_script=$7
+strand=$7
+count_script=$8
 
     # Will create the ./results/htseq
     touch "$output2"
@@ -27,6 +28,7 @@ count_script=$7
                         -t transcript,exon,exon \
                         -i gene_id,gene_id,gene_id \
                         -m union,union,intersection-strict \
+                        -s "$strand" \
                         -c ./results/htseq/"$sample"_GF_htseq.{#}_temp.txt,./results/htseq/"$sample"_EF_htseq.{#}_temp.txt,./results/htseq/"$sample"_XF_htseq.{#}_temp.txt \
                         - \
                         "$annotation"

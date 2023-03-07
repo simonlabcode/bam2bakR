@@ -26,7 +26,8 @@ rule htseq_cnt:
         temp("results/htseq/{sample}_check.txt")
     params: 
         shellscript=workflow.source_path("../scripts/htseq.sh"),
-        pythonscript=workflow.source_path("../scripts/count_triple.py")
+        pythonscript=workflow.source_path("../scripts/count_triple.py"),
+        strand = "yes" if config["strandedness"] == "F" else: "reverse" 
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
@@ -36,7 +37,7 @@ rule htseq_cnt:
         """
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[annotation]} {params.pythonscript} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[annotation]} {params.strand} {params.pythonscript} 1> {log} 2>&1
         """
 
 rule normalize:
