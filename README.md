@@ -1,4 +1,4 @@
-# bam2bakR version 1.0.1
+# bam2bakR version 1.0.2
 
 Check out [bam2bakR's website](https://tl-snakemake.readthedocs.io/en/latest/) for revamped and extended documentation!
 
@@ -253,7 +253,7 @@ conda activate deploy_snakemake
 snakedeploy deploy-workflow https://github.com/simonlabcode/bam2bakR.git . --branch main
 ```
 
-`snakedeploy deploy-workflow https://github.com/simonlabcode/bam2bakR.git` copies the content of the `config` directory in the bam2bakR Github repo into the directoy specified (`.`, which means current directory, i.e., `workdir` in this example). It also creates a directory called `workflow` that contains a singular Snakefile that instructs Snakemake to use the workflow hosted on the main branch (that is what `--branch main` determines) of the bam2bakR Github repo. `--branch main` can also be replaced with `--tag 1.0.1` to ensure that you are consistently using the same version of bam2bakR (version 1.0.1 release).
+`snakedeploy deploy-workflow https://github.com/simonlabcode/bam2bakR.git` copies the content of the `config` directory in the bam2bakR Github repo into the directoy specified (`.`, which means current directory, i.e., `workdir` in this example). It also creates a directory called `workflow` that contains a singular Snakefile that instructs Snakemake to use the workflow hosted on the main branch (that is what `--branch main` determines) of the bam2bakR Github repo. `--branch main` can also be replaced with `--tag 1.0.2` to ensure that you are consistently using the same version of bam2bakR (version 1.0.2 release).
 
 Edit the config and add any data to `workdir` as you see fit (see **Setup** section steps 4 and 5 for more details). Once you are ready, run bam2bakR with:
 ```
