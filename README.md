@@ -1,4 +1,7 @@
 # bam2bakR version 1.0.1
+
+Check out [bam2bakR's website](https://tl-snakemake.readthedocs.io/en/latest/) for revamped and extended documentation!
+
 This is a Snakemake implementation of a portion of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and U-to-C or G-to-A mutations in mapped reads. bam2bakR currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to bam2bakR is a set of .bam files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns:
 * XF - Mature feature: ENSEMBL ID if the read mapped solely to exonic parts of a feature
 * GF - Gene feature: ENSEMBL ID when read is aligned to any part of feature (intronic or exonic)
