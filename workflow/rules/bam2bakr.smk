@@ -27,7 +27,7 @@ rule htseq_cnt:
     params: 
         shellscript=workflow.source_path("../scripts/htseq.sh"),
         pythonscript=workflow.source_path("../scripts/count_triple.py"),
-        strand = "yes" if config["strandedness"] == "F" else: "reverse" 
+        strand=lambda wildcards: "yes" if config["strandedness"] == "F" else: "reverse" 
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: workflow.cores
