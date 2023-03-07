@@ -10,6 +10,16 @@ annotation=$6
 strand=$7
 count_script=$8
 
+if [ "$strand" = "F" ]; then
+
+    strand="yes"
+
+else
+
+    strand="reverse"
+
+fi
+
     # Will create the ./results/htseq
     touch "$output2"
 
