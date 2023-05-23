@@ -74,6 +74,18 @@ for line in snpFile:
     line = line.strip().split(':')
     snp[line[2] + ':' + line[3]] = line[0] + ':' + line[1]
 
+# Create files for tracks
+if args.tracks:
+    # Create output files names
+    fileName = []
+    for mt in args.mutType:
+        for i in range(0,6):
+            fileName.append('_'.join([inputName, mt, str(i), 'reads.txt']))
+
+    # Open all files for writing
+    fs = []
+    for f in fileName:
+        fs.append(open(f, 'w'))
 
 
 
@@ -82,12 +94,15 @@ myfile = open(inputName + '_counts.csv', 'w', newline='')
 wr = csv.writer(myfile)
 wr.writerow(header)
 
-
+count = 0
+print(count)
 # Set .bam file for reading
 samfile = pysam.AlignmentFile(args.bam, 'rb')
+print(count)
 
 print('Start: ' + str(datetime.datetime.now()))
 for r in samfile:
+    count = count + 1
     # Initialize + acquire info: First read only
     if firstReadName != r.query_name:
         muts={'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0}
@@ -113,7 +128,7 @@ for r in samfile:
 
         r_info[10] = str( r_info[10] == 'TRUE' or ('N' in r.cigarstring) ).upper()     # sj: splice junction
 
-        if (r.is_paired and (r.is_read1 == (r.is_reverse == strand_check))) or (not r.is_paired and r.is_reverse):        # If read is first_in_pair and on reverse strand -or- second_in_pair and on forward strand then make sequence complement
+        if (r.is_paired and (r.is_read1 == (r.is_reverse == strand_check))) or (not r.is_paired and (r.is_reverse == strand_check)):        # If read is first_in_pair and on reverse strand -or- second_in_pair and on forward strand then make sequence complement
             r_info[9] = 'R'      # FR: forward or reverse read orientation
             MD = [[x[1], DNAcode[x[2]], min(x[0] - r.query_alignment_start + 1, r.query_alignment_length - (x[0] - r.query_alignment_start))] for x in r.get_aligned_pairs(matches_only = True, with_seq=True)]
             # Parse MD and Cigar strings, remove values that are softclipped
@@ -228,12 +243,14 @@ for r in samfile:
 
 print('end: ' + str(datetime.datetime.now()))
 
+print(count)
+
 ##### Close files ######
 myfile.close()
 
-# if args.tracks:
-    # for f in fs:
-        # f.close()
+if args.tracks:
+    for f in fs:
+        f.close()
 
 ##### Generate Output ######
 

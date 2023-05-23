@@ -1,45 +1,54 @@
-######## Parameters you MUST set #########
+##### Parameters you will likely have to change #####
 
-# location of ALL (including -s4U control) bam files
+# Run bam2bakR only? If true, will expect paths to bam files as input and alignment steps will be skipped
+bam2bakr: False
+
+# path to directory containing fastq files if bam2bakr is False
+# path to bam files if bam2bakr is True
 samples:
-  KO_1: data/samples/test_KO1.bam
-  KO_ctl: data/samples/test_KOctl.bam
-
-# sample IDs of -s4U control bam files (or leave blank if you have none)
-# Needs to be same sample ID(s) that show up under samples entry
-control_samples: ["KO_ctl"]
-
+  WT_1: data/fastq/WT_1
+  WT_2: data/fastq/WT_2
+  WT_ctl: data/fastq/WT_ctl
+  KO_1: data/fastq/KO_1
+  KO_2: data/fastq/KO_2
+  KO_ctl: data/fastq/KO_ctl
 
 # location of annotation gtf file
 annotation: data/annotation/GRCh38.gtf
 
-# location of genome fasta file
-genome_fasta: data/genome/GRCh38.fasta
+# -s4U control sample IDs
+control_samples: ['WT_ctl', 'KO_ctl']
 
-######## Parameters you should probably double check ########
+# location of genome fasta file
+genome_fasta: data/genome/GRCh38.fa
+
+##### Parameters that are always relevant #####
 
 # Format of reads
-FORMAT: "PE" # (PE, SE)
+FORMAT: "PE" # (PE, SE, NU)
                     # [SE - single end reads]
+                    # [NU - including non-unique] (not tested)
+
 
 # Strandedness of reads
 strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
 
-# Type of mutations of interest
+# Type of browser tracks to generate
 mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 
-# whether to make .tdf files or not
-make_tracks: True
+# Add a 'chr' to each chromosome number during alignment. [Useful when aliner index is number-based, but GTF annotation is chr-based]
+chr_tag: True
 
 # Minimum base quality to call mutation
 minqual: 40
 
-# Which columns to keep in final cB.csv.gz file
+# Which columns to keep in final cB.csv.gz file 
+# Don't include mut_tracks and the relevant nX, where X denotes either T (for TC mutations) or G (for GA mutations). These are always included
 keepcols: "sample,sj,io,ei,ai,GF,XF,rname"
 
 # String common to spike-in gene_ids in annotation gtf
-  # If you have no spike-ins, then this should be "\"\"", i.e., a string containing ""
+  # If you have no spike-ins, then this should be "\"\"", i.e., an empty string ("")
 spikename: "\"\""
 
 # If True, tracks will be normalized
@@ -47,3 +56,51 @@ normalize: True
 
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
 WSL: 1
+
+
+##### Parameters that are only relevant if bam2bakr is False #####
+
+# location of hisat2 indices (directory containing indices)
+HISAT2: data/hisat2/grch38_tran/
+
+# location of hisat3n indices (path to and common prefix of all .ht2 files)
+HISAT_3N: data/hisat_3n/GRCh38
+
+# location of STAR indices
+STAR_index: data/star/
+
+# If TRUE, hisat-3n will be used for alignment
+use_hisat3n: False
+
+# If TRUE STAR will be used for alignment;  if hisat-3n is also TRUE, hisat-3n will be used and not STAR
+use_star: False
+
+# If TRUE, index will be built for star and directory will be created at path set in STAR_index parameter
+build_star: False
+
+# If use_hisat3n TRUE, then this specifies path to hisat_3n executable
+hisat3n_path: hisat-3n
+  # If hisat-3n is on your PATH, this will just be hisat-3n
+
+# Are you on Yale's HPC where hisat-3n can be loaded as a module using Lmod system?
+Yale: True
+
+# Are you using a flattened annotation from FlatStacks?
+flattend: True
+
+# code specifying adapters to be trimmed that will be passed to cutadapt
+adapter: "-a AGATCGGAAGAGC -A AGATCGGAAGAGC"
+
+# Optional code to pass to cutadapt
+cutadapt_extra: "--minimum-length 20"
+  # No additional parameters are passed, so this can include any of cutadapt's optional parameters
+
+# Extra parameters to be passed to STAR
+star_extra: "--outFilterMismatchNmax 20"
+  # Already passing: "--outSAMtype BAM SortedByCoordinate --outSAMattributes NH HI AS NM MD --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile config["annotation"]
+  # Including any of the already set parameters will yield an error.
+
+# Extra parameters to be passed to Hisat2
+hisat2_extra: "--mp 1,0"
+  # No additional parameters are passed, so this can include any of hisat2's optional parameters
+

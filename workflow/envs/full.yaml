@@ -24,4 +24,3 @@ dependencies:
   - bioconductor-edger =3.36.0
   - r-r.utils
   - r-data.table
-

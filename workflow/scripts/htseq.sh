@@ -9,6 +9,9 @@ output2=$5
 annotation=$6
 strand=$7
 count_script=$8
+flattened=$9
+
+echo $flattened
 
 if [ "$strand" = "F" ]; then
 
@@ -24,7 +27,34 @@ fi
     touch "$output2"
 
 
-    samtools view -h -@ "$cpus" "$input" \
+    if [ "$flattened" = "True" ]; then
+    
+        echo "Flattened was true!"
+
+        samtools view -h -@ "$cpus" "$input" \
+        | parallel \
+            -L 2 \
+            -j "$cpus" \
+            --linebuffer \
+            --joblog "$sample"_htseq_parallel.log \
+            --roundrobin \
+            --header '(@.*\n)*' \
+            --pipe python $count_script \
+                        -f sam \
+                        --samout ./results/htseq/"$sample"_htseq.{#}_temp.sam \
+                        -t aggregate_gene,exonic_part,exonic_part \
+                        -i gene_id,transcripts,exon_id \
+                        -m union,union,intersection-strict \
+                        -s "$strand" \
+                        -c ./results/htseq/"$sample"_GF_htseq.{#}_temp.txt,./results/htseq/"$sample"_EF_htseq.{#}_temp.txt,./results/htseq/"$sample"_XF_htseq.{#}_temp.txt \
+                        - \
+                        "$annotation"
+
+    else
+
+        echo "Flattened was false!"
+
+        samtools view -h -@ "$cpus" "$input" \
         | parallel \
             -L 2 \
             -j "$cpus" \
@@ -42,6 +72,9 @@ fi
                         -c ./results/htseq/"$sample"_GF_htseq.{#}_temp.txt,./results/htseq/"$sample"_EF_htseq.{#}_temp.txt,./results/htseq/"$sample"_XF_htseq.{#}_temp.txt \
                         - \
                         "$annotation"
+
+    fi
+
 
     # Error catching
     if [ $(cut -f 7 "$sample"_htseq_parallel.log | grep '1' | wc -l ) -eq 0 ]; then

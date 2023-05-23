@@ -48,11 +48,16 @@ output=${11}
 
 
 # Sort the starting .bam file by coordinate
+echo '* Sorting bam files by coordiantes'
+
     samtools sort -@ "$cpus" -o ./results/tracks/"$sample"_sort.bam "$input2"
     samtools index -@ "$cpus" ./results/tracks/"$sample"_sort.bam
 
 
 # Make .chrom.sizes file from .bam file header (alternative to .genome file for toTDF)
+
+echo '* Making .chrom.sizes file'
+
     chrom_sizes=./results/tracks/$(echo ${genome_fasta##*/} | cut -f 1 -d '.')".chrom.sizes"
     if [ ! -f $chrom_sizes ]; then
             samtools view -H ./results/tracks/"$sample"_sort.bam \
@@ -64,6 +69,7 @@ output=${11}
 
     muts=$(echo $mut_tracks | tr ',' ' ')
 
+    echo '* Making track headers'
     for b in $muts; do
         if [ $b == "GA" ]; then
             colVal[0]='200,200,200'
@@ -92,6 +98,8 @@ output=${11}
 
 
     # Filter the reads
+    echo '* Filtering reads'
+
     parallel -j 1 samtools view -@ "$cpus" \
                                      -b \
                                      -N ./results/tracks/"$sample"_{1}_{2}_reads.txt \
@@ -132,6 +140,7 @@ output=${11}
 
     else
         # Make tracks
+        echo '*making tracks with STAR'
         parallel -j "$cpus" STAR \
                                 --runMode inputAlignmentsFromBAM \
                                 --inputBAMfile ./results/tracks/"$sample"_{1}_{2}.bam \
@@ -142,6 +151,7 @@ output=${11}
                                                                          ::: $(seq 0 5)
 
         # Take only unique component of track
+        echo '* Taking only unique components of tracks'
         parallel -j "$cpus" "awk -v norm=${normVal} \
                                         '{print \$1, \$2, \$3, {3}1*norm*\$4}' \
                                         ./results/tracks/${sample}_{1}_{2}_Signal.Unique.{4}.out.bg \
@@ -172,6 +182,7 @@ output=${11}
 
 
     # Make tdf files from the tracks
+    echo '* Make tdf files from tracks'
     parallel -j "$cpus" igvtools toTDF \
                                 -f mean,max \
                                 ./results/tracks/"$sample".{1}.{2}.{3}.bedGraph \
@@ -183,11 +194,13 @@ output=${11}
     rm -f igv.log
 
 
+    ## Can comment out for debugging purposes
     rm ./results/tracks/"$sample"*.bam
     rm ./results/tracks/"$sample"*_reads.txt
     rm ./results/tracks/"$sample"*.bedGraph
     rm ./results/tracks/"$sample"*.bai
     rm ./results/tracks/"$sample"*.out
+
     # rm -f "$sample"*.chrom.sizes
     #rm -f igv*
 

@@ -55,31 +55,33 @@ args = commandArgs(trailingOnly = TRUE)
 	# dirs <- opt$dirs %>% str_split(',') %>% unlist()
 
 	# Screw it, going to hardcode directory cause I can
-	dirs <- c(getwd(), "/results/bams/")
-
+	dirs <- paste0(getwd(), "/results/htseq/")
+    print(dirs)
 
         samplefiles <- list.files(path = dirs,
                                   pattern = 'mature.*.txt',
-                                  recursive = TRUE)
+                                  recursive = FALSE)
 
 	## Martin's old code that doesn't work in my workflow
         # samplenames <- gsub(".dir.*", "", samplefiles)
         samplenames <- paste0(dirs, samplefiles)
 
+    print(samplenames)
 	# Actual sample name wildcards
 	snames <- gsub(".*mature.|_htseq.*", "", samplefiles)
 	#snames <- gsub("htseq*", "", snames)
 
 
+    print(snames)
     # Loop through the samples to load them:
 
-    for (i in seq_along(samplefiles)){
+    for (i in seq_along(samplenames)){
 
-        df <- read_tsv(samplefiles[i],
+        df <- read_tsv(samplenames[i],
                        col_names = c('gene', 'count'),
                        col_types = 'ci')
 
-        df$sample <- paste0(samplenames[i])
+        df$sample <- paste0(snames[i])
 
         master <- rbind(master, df)
 
@@ -108,6 +110,8 @@ args = commandArgs(trailingOnly = TRUE)
     rownames(m) <- unlist(rnames)
     # head(m, 20)
 
+    print(rnames)
+
 # Correlation analysis
     #cor(m)
 
@@ -131,6 +135,8 @@ if (sum(is.finite(scale)) == length(scale)){
     sdf <- tibble(sample = snames,
                   scale = x)
 
+    print(sdf)
+
     write.table(sdf, file = 'scale',
                      quote = FALSE,
                      row.names = FALSE,
@@ -139,3 +145,4 @@ if (sum(is.finite(scale)) == length(scale)){
 } else {
     paste('no acceptable scale values')
 }
+

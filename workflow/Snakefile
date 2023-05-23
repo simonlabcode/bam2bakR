@@ -1,3 +1,5 @@
+
+
 from snakemake.utils import min_version
 
 ##### set minimum snakemake version #####
@@ -27,13 +29,34 @@ container: "docker://continuumio/miniconda3"
 
 ##### load rules #####
 
-include: "rules/common.smk"
-include: "rules/bam2bakr.smk"
+if config["bam2bakr"]:
+    include: "rules/common.smk"
+    include: "rules/bam2bakr.smk"
+else:
+    include: "rules/common.smk"
+    include: "rules/alignment.smk"
+    include: "rules/bam2bakr.smk"
+    include: "rules/rsem_plus.smk"
+
 
 
 ##### target rules #####
 
-rule all:
-    input:
-        "results/cB/cB.csv.gz",
-        expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+if STAR:
+    if config["bam2bakr"]:
+        rule all:
+            input:
+                "results/cB/cB.csv.gz",
+                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+
+    else:
+        rule all:
+            input:
+                "results/cB/cB.csv.gz",
+                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']), 
+                "results/transcript_fn/RSEM_plus.csv"
+else:
+    rule all:
+        input:
+            "results/cB/cB.csv.gz",
+            expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
