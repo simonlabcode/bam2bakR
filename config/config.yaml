@@ -95,7 +95,7 @@ hisat3n_path: hisat-3n
 chr_tag: True
 
 # Are you on Yale's HPC where hisat-3n can be loaded as a module using Lmod system?
-Yale: True
+Yale: False
 
 # Are you using a flattened annotation from FlatStacks?
 flattend: True
