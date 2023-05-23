@@ -1,17 +1,29 @@
 ##### Parameters you will likely have to change #####
 
-# Run bam2bakR only? If true, will expect paths to bam files as input and alignment steps will be skipped
-bam2bakr: False
+# Run bam2bakR only? If true, will expect paths to bam files as input and alignment steps will be skipped. If false,
+# paths to directories containing fastq files will be expected as input.
+bam2bakr: True
 
 # path to directory containing fastq files if bam2bakr is False
 # path to bam files if bam2bakr is True
+## example of what samples could look like for bam input
 samples:
-  WT_1: data/fastq/WT_1
-  WT_2: data/fastq/WT_2
-  WT_ctl: data/fastq/WT_ctl
-  KO_1: data/fastq/KO_1
-  KO_2: data/fastq/KO_2
-  KO_ctl: data/fastq/KO_ctl
+  WT_1: data/bam/WT_1.bam
+  WT_2: data/bam/WT_2.bam
+  WT_ctl: data/bam/WT_ctl.bam
+  KO_1: data/bam/KO_1.bam
+  KO_2: data/bam/KO_2.bam
+  KO_ctl: data/bam/KO_ctl.bam
+
+
+## example of what samples will look like for fastq input
+# samples:
+#   WT_1: data/fastq/WT_1
+#   WT_2: data/fastq/WT_2
+#   WT_ctl: data/fastq/WT_ctl
+#   KO_1: data/fastq/KO_1
+#   KO_2: data/fastq/KO_2
+#   KO_ctl: data/fastq/KO_ctl
 
 # location of annotation gtf file
 annotation: data/annotation/GRCh38.gtf
@@ -31,14 +43,11 @@ FORMAT: "PE" # (PE, SE, NU)
 
 
 # Strandedness of reads
-strandedness: "F" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
+strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs. its reverse complement).
 
 
 # Type of browser tracks to generate
 mut_tracks: "TC" # ("TC", "GA", "TC,GA")
-
-# Add a 'chr' to each chromosome number during alignment. [Useful when aliner index is number-based, but GTF annotation is chr-based]
-chr_tag: True
 
 # Minimum base quality to call mutation
 minqual: 40
@@ -81,6 +90,9 @@ build_star: False
 # If use_hisat3n TRUE, then this specifies path to hisat_3n executable
 hisat3n_path: hisat-3n
   # If hisat-3n is on your PATH, this will just be hisat-3n
+
+# Add a 'chr' to each chromosome number during alignment. [Useful when aliner index is number-based, but GTF annotation is chr-based]
+chr_tag: True
 
 # Are you on Yale's HPC where hisat-3n can be loaded as a module using Lmod system?
 Yale: True
