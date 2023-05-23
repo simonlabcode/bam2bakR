@@ -8,12 +8,12 @@ bam2bakr: True
 # path to bam files if bam2bakr is True
 ## example of what samples could look like for bam input
 samples:
-  WT_1: data/bam/WT_1.bam
-  WT_2: data/bam/WT_2.bam
-  WT_ctl: data/bam/WT_ctl.bam
-  KO_1: data/bam/KO_1.bam
-  KO_2: data/bam/KO_2.bam
-  KO_ctl: data/bam/KO_ctl.bam
+  WT_1: data/bam/WT_replicate_1.bam
+  WT_2: data/bam/WT_replicate_2.bam
+  WT_ctl: data/bam/WT_nos4U.bam
+  KO_1: data/bam/KO_replicate_1.bam
+  KO_2: data/bam/KO_replicate_2.bam
+  KO_ctl: data/bam/KO_nos4U.bam
 
 
 ## example of what samples will look like for fastq input
