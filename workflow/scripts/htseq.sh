@@ -74,8 +74,6 @@ fi
 
     fi
 
-    cp ./results/htseq/${sample}*temp.sam ./debugging
-
 
     # Error catching
     if [ $(cut -f 7 "$sample"_htseq_parallel.log | grep '1' | wc -l ) -eq 0 ]; then
@@ -116,4 +114,4 @@ fi
     echo "* HTSeq counts files merged for sample $sample"
 
     mv ${sample}_htseq_parallel.log ./results/htseq/
-    #rm ./results/htseq/${sample}*temp*
+    rm ./results/htseq/${sample}*temp*
