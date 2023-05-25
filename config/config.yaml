@@ -98,7 +98,7 @@ chr_tag: True
 Yale: False
 
 # Are you using a flattened annotation from FlatStacks?
-flattend: True
+flattened: False
 
 # code specifying adapters to be trimmed that will be passed to cutadapt
 adapter: "-a AGATCGGAAGAGC -A AGATCGGAAGAGC"

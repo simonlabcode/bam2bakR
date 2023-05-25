@@ -11,7 +11,6 @@ strand=$7
 count_script=$8
 flattened=$9
 
-echo $flattened
 
 if [ "$strand" = "F" ]; then
 
