@@ -66,6 +66,9 @@ normalize: True
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
 WSL: 1
 
+# Are there jI and jM tags in your bam file?
+remove_tags: False
+
 
 ##### Parameters that are only relevant if bam2bakr is False #####
 

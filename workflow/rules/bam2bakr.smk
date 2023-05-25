@@ -1,25 +1,62 @@
 
 if config["bam2bakr"]:
-    # Filter out multi-mappers and sort reads
-    rule sort_filter:
-        input:
-            get_input_bams
-        output:
-            "results/sf_reads/{sample}.s.sam",
-            "results/sf_reads/{sample}_fixed_mate.bam",
-            "results/sf_reads/{sample}.f.sam",
-        log:
-            "logs/sort_filter/{sample}.log"
-        params: 
-            shellscript=workflow.source_path("../scripts/sort_filter.sh")
-        threads: 8
-        conda:
-            "../envs/full.yaml"
-        shell:
-            """
-            chmod +x {params.shellscript}
-            {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
-            """
+    if config["remove_tags"]:
+        rule remove_tags:
+            input:
+                input_bam=get_input_bams,
+            output:
+                output_bam="results/remove_tags/{sample}_no_jI_jM.bam",
+            log:
+                "logs/remove_tags/{sample}.log"
+            conda:
+                "../envs/full.yaml"
+            script:
+                "../scripts/remove_tags.py"
+
+        # Filter out multi-mappers and sort reads
+        rule sort_filter:
+            input:
+                "results/remove_tags/{sample}_no_jI_jM.bam",
+            output:
+                "results/sf_reads/{sample}.s.sam",
+                "results/sf_reads/{sample}_fixed_mate.bam",
+                "results/sf_reads/{sample}.f.sam",
+            log:
+                "logs/sort_filter/{sample}.log"
+            params: 
+                shellscript=workflow.source_path("../scripts/sort_filter.sh")
+            threads: 8
+            conda:
+                "../envs/full.yaml"
+            shell:
+                """
+                chmod +x {params.shellscript}
+                {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
+                """
+
+    else:
+        # Filter out multi-mappers and sort reads
+        rule sort_filter:
+            input:
+                get_input_bams
+            output:
+                "results/sf_reads/{sample}.s.sam",
+                "results/sf_reads/{sample}_fixed_mate.bam",
+                "results/sf_reads/{sample}.f.sam",
+            log:
+                "logs/sort_filter/{sample}.log"
+            params: 
+                shellscript=workflow.source_path("../scripts/sort_filter.sh")
+            threads: 8
+            conda:
+                "../envs/full.yaml"
+            shell:
+                """
+                chmod +x {params.shellscript}
+                {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
+                """
+
+
 else:
     # Filter out multi-mappers and sort reads
     rule sort_filter:
@@ -41,6 +78,8 @@ else:
             chmod +x {params.shellscript}
             {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
             """
+
+
 
 # Use custom htseq script to quanity features 
 # Also creates bam files with tag designating feature that each read was mapped to; useful during mutation counting
