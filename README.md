@@ -4,7 +4,7 @@
 
 ## bam2bakR now includes optional fastq2bakR functionality. That is, you can now provide fastq files as input and adapter trimming + alignment will be performed
 
-This is a Snakemake implementation of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and U-to-C or G-to-A mutations in mapped reads. bam2bakR currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to bam2bakR is a set of .bam or .fastq files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns by default:
+This is a Snakemake implementation of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and T-to-C or G-to-A mutations in mapped reads. bam2bakR currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to bam2bakR is a set of .bam or .fastq files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns by default:
 * XF - Mature feature: ENSEMBL ID if the read mapped solely to exonic parts of a feature
 * GF - Gene feature: ENSEMBL ID when read is aligned to any part of feature (intronic or exonic)
 * rname - Chromosome name
@@ -24,7 +24,7 @@ In addition, you will need Git installed on your system so that you can clone th
 
 Finally, bam2bakR requires bam or fastq files from stranded library preps (i.e., information about whether a given read represents the original sequence of the RNA or its reverse complement must be retained). In addition, make sure that the aligner you used was configured to output bam files with an MD tag, which will keep track of the reference nucleotide at any mismatches between the aligned read and the reference genome. While this tag is not always included by default, most aligners have an option to add this tag to the list of default tags.
 
-## Setup
+## Setup for bam2bakR
 There are 4 steps required to get up and running with bam2bakR
 
 1. [Install conda (or mamba) on your system](#conda). This is the package manager that bam2bakR uses to make setting up the necessary dependencies a breeze.
@@ -98,12 +98,12 @@ In the `config/` directory you will find a file named `config.yaml`. If you open
 
 ``` yaml
 samples:
-  WT_1: data/samples/WT_replicate_1.bam
-  WT_2: data/samples/WT_replicate_2.bam
-  WT_ctl: data/samples/WT_nos4U.bam
-  KO_1: data/samples/KO_replicate_1.bam
-  KO_2: data/samples/KO_replicate_2.bam
-  KO_ctl: data/samples/KO_nos4U.bam
+  WT_1: data/bam/WT_replicate_1.bam
+  WT_2: data/bam/WT_replicate_2.bam
+  WT_ctl: data/bam/WT_nos4U.bam
+  KO_1: data/bam/KO_replicate_1.bam
+  KO_2: data/bam/KO_replicate_2.bam
+  KO_ctl: data/bam/KO_nos4U.bam
 ```
 `samples` is the list of sample IDs and paths to .bam files that you want to process. Delete the existing sample names and paths and add yours. The sample names in this example are `WT_1`, `WT_2`, `WT_ctl`, `KO_1`, `KO_2`, and `KO_ctl`. These are the sample names that will show up in the `sample` column of the output cB.csv file. The `:` is necessary to distinguish the sample name from what follows, the path to the relevant bam file. Note, the path is NOT an absolute path, it is relative to the directory that you deployed to (i.e., `workdir` in this example). Thus, in this example, the bam files are located in a directory called `samples` that is inside of a directory called `data` located in `workdir`. Your data can be wherever you want it to be, but it might be easiest if you put it in a `data` directory inside the bam2bakR directory as in this example. 
 
@@ -162,8 +162,39 @@ Once steps 1-3 are complete, bam2bakR can be run from the directory you deployed
 ``` bash
 snakemake --cores all --use-conda
 ```
-There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I would point you to the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html) 
+There are **A LOT** of adjustable parameters that you can play with when running a Snakemake pipeline. I will point you to the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html) 
 for the details on everything you can change when running the pipeline.
+
+## Setup for fastq2bakR
+
+fastq2bakR is an optional add-on to the bam2bakR workflow that includes adapter trimming and alignment of fastq files. Adapter trimming is performed with [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and alignment can be performed with one of three aligners:
+
+1. [HISAT2](http://daehwankimlab.github.io/hisat2/) (default)
+2. [STAR](https://github.com/alexdobin/STAR)
+3. [HISAT-3N](http://daehwankimlab.github.io/hisat2/hisat-3n/) (requires manual installation of HISAT-3N prior to running)
+
+Running fastq2bakR requires all of the same setup as running bam2bakR. The difference is that there are additional config file parameters that you may need to change to run fastq2bakR.
+
+Most importantly, you will need to change the value of `bam2bakr` from `True` (it's default value) to `False`.
+
+Secondly, the input (`samples`) is a little different. There is an example of what the input will look like for fastq2bakR in a commented out code block just below the bam2bakR example input. The major difference in that the instead of providing paths to individual files, you now have to provide paths to directories. Each fastq file or pair of fastq files must be in its own directory. 
+
+Finally, there are a number of parameters below the line that reads `##### Parameters that are only relevant if bam2bakr is False #####`. These parameters are:
+
+1. `HISAT2`: If using hisat2 for alignment, this should represent the path to the directory containing pre-built hisat2 alignment indices. As with other directory paths specified in the config file, this path is relative to the directory containing the config and workflow directories (the directory you deployed the workflow inside).
+2. `HISAT_3N`: If using HISAT-3N for alignment, this should represent the path to HISAT-3N alignment indices. NOTE: unlike for `HISAT2`, this should be the path to the directory containing the indices, **plus** (as described in the [HISAT-3N documentation](http://daehwankimlab.github.io/hisat2/hisat-3n/)) the name of the index files up to but not including the suffix `.3n.*.*.ht2`. 
+3. `STAR_index`: If using STAR for alignment, this should represent the path to STAR alignment indices. fastq2bakR also allows you to build STAR indices as part of the workflow, in which case this will be the directory at which the indices are created.
+4. `use_hisat3n`: If True, HISAT-3N will be used for alignment. **NOTE:** Unlike all other dependencies, HISAT-3N cannot be installed automatically via conda. Therefore, you will have to install HISAT-3N yourself to use it as an aligner.
+5. `use_star`: If True, STAR will be used for alignment.
+6. `build_star`: If True, STAR alignment indices will be created as part of the workflow
+7. `hisat3n_path`: As described in the description of the `use_hisat3n` parameter, you need to install HISAT-3N yourself if you want to use it as a part of fastq2bakR. `hisat3n_path` is thus the path to the executable to run hisat-3n (or just `hisat-3n` if HISAT-3N has been added to the PATH environment variable).
+8. `chr_tag`: If True, "chr" will be appended to chromosome names in bam files output by HISAT-2 or HISAT-3N. If your annotation/genome files have "chr" in the chromosome names (e.g., chr1, chr2, etc.), then you will need to set this to TRUE.
+9. `Yale`: If True, then HISAT-3N will be loaded as a module via the Lmod module system. The parameter is called `Yale` because Yale HPC uses an Lmod system, and the name of the module is hard coded in the workflow as `HISAT-3N`. In other words, HISAT-3N is loaded with `module load HISAT-3N` if this parameter is True.
+10. `flattened`: If TRUE, fastq2bakR will expect that the provided annotation file (`annotation` is flattened by DEXSeq).
+11. `adapter`: Code passed to cutadapt specifying adapters to be trimmed
+12. `cutadapt_extra`: Additional parameters to pass to cutadapt
+13. `star_extra`: Additional parameters to pass to STAR
+14. `hisat2_extra`: Additional parameters to pass to HISAT2
 
 ## Common problems
 
@@ -198,22 +229,5 @@ sum(counts$AG)/sum(counts$nA)
 sum(counts$TC)/sum(counts$nT)
 ```
 
-## Further automating dependency installation
-
-If you are having trouble installing mamba/conda or creating the required conda environment, you may like to try running bam2bakR inside of a [Docker](https://docs.docker.com/get-started/) container instead. This will automatically install mambaforge, create bam2bakR's conda environment, and even reproduce the exact operating system that I have predominantly tested bam2bakR in. The steps to get up and running with this alternative installation route are:
-
-1. [Install Docker](https://docs.docker.com/get-docker/). If you are running bam2bakR on a system where you are not the admin (e.g., a shared computing cluster), then you will want to use [Singularity](https://apptainer.org/) (recently changed name to Apptainer) instead. If using Apptainer, just replace `docker` in any code snippet that follows with `apptainer` and you should be good to go!
-1. Navigate to the directory where you want to run bam2bakR (i.e., the directory that you will call `snakemake --cores all` or something similar to start the pipeline)
-1. Pull the bam2bakr Docker image from Docker Hub by running: `docker pull isaacvock/bam2bakr:v1.0.1`
-1. Run the bam2bakr image with a [bind mount](https://docs.docker.com/get-started/06_bind_mounts/). This allows you to have access to all of the files inside your working directory while inside the image's software environment (i.e., Ubuntu + bam2bakR conda environment): 
-   ```
-   docker run -it --mount type=bind,src="$(pwd)", target=/pipeline isaacvock/bam2bakr:v1.0.1
-   ```
-1. Activate the conda environment: `conda activate docker_pipeline`
-1. Move into the working directory: `cd pipeline`
-1. Run bam2bakR: `snakemake --cores all`
-
-When you want to exit the Docker container, hit "Ctrl" + "d". Now everytime you want to run bam2bakR again, you just have to repeat steps 4 through 7.
-
 ## Questions?
-If you have any questions or run into any problems, feel free to reach out to me (Isaac Vock) at isaac.vock@gmail.com, or post them to Issues.
+If you have any questions or run into any problems, feel free to post them to Issues.
