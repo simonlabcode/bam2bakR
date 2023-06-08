@@ -28,7 +28,6 @@ fi
 
     if [ "$flattened" = "True" ]; then
     
-        echo "Flattened was true!"
 
         samtools view -h -@ "$cpus" "$input" \
         | parallel \
@@ -51,7 +50,6 @@ fi
 
     else
 
-        echo "Flattened was false!"
 
         samtools view -h -@ "$cpus" "$input" \
         | parallel \
