@@ -54,7 +54,7 @@ if FORMAT == 'PE':
                 h3n_path = config["hisat3n_path"],
                 muts = config["mut_tracks"],
                 yale = config["Yale"]
-            threads: workflow.cores
+            threads: 24
             conda:
                 "../envs/full.yaml"
             shell:
@@ -138,7 +138,7 @@ if FORMAT == 'PE':
                 awkscript = workflow.source_path("../scripts/fragment_sam_rsem.awk")
             log:
                 "logs/rsem_to_csv/{sample}.log"
-            threads: workflow.cores
+            threads: 24
             conda:
                 "../envs/full.yaml"
             shell:
@@ -159,7 +159,7 @@ if FORMAT == 'PE':
                 rscript = workflow.source_path("../scripts/RSEM_plus.R"),
             log:
                 "logs/transcript_fn/{sample}.log"
-            threads: workflow.cores
+            threads: 20
             conda:
                 "../envs/full.yaml"
             shell:
@@ -185,7 +185,7 @@ if FORMAT == 'PE':
            #     strand = config["strandedness"],
            #     chr = config["chr_tag"],
            #     h2 = config["HISAT2"]
-           # threads: workflow.cores
+           # threads: 20
            # conda:
            #     "../envs/full.yaml"
            # shell:
@@ -205,7 +205,7 @@ if FORMAT == 'PE':
                 "logs/hisat2_align/{sample}.log",
             params:
                 extra=config["hisat2_extra"],
-            threads: workflow.cores
+            threads: 20
             wrapper:
                 "v1.25.0/bio/hisat2/align"
 
@@ -246,7 +246,7 @@ else:
                 h3n_path = config["hisat3n_path"],
                 muts = config["mut_tracks"],
                 yale = config["Yale"]
-            threads: workflow.cores
+            threads: 20
             conda:
                 "../envs/full.yaml"
             shell:
@@ -327,7 +327,7 @@ else:
                 awkscript = workflow.source_path("../scripts/fragment_sam.awk")
             log:
                 "logs/rsem_to_csv/{sample}.log"
-            threads: workflow.cores
+            threads: 20
             conda:
                 "../envs/full.yaml"
             shell:
@@ -354,7 +354,7 @@ else:
             #    strand = config["strandedness"],
             #    chr = config["chr_tag"],
             #    h2 = config["HISAT2"]
-            #threads: workflow.cores
+            #threads: 20
             #conda:
             #    "../envs/full.yaml"
             #shell:
@@ -374,6 +374,6 @@ else:
                 "logs/hisat2_align/{sample}.log",
             params:
                 extra=config["hisat2_extra"],
-            threads: workflow.cores
+            threads: 20
             wrapper:
                 "v1.25.0/bio/hisat2/align"

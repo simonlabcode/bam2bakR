@@ -96,7 +96,7 @@ rule htseq_cnt:
         flattened=config["flattened"]
     log:
         "logs/htseq_cnt/{sample}.log"
-    threads: workflow.cores
+    threads: 3
     conda:
         "../envs/full.yaml"
     shell:
@@ -170,7 +170,7 @@ rule call_snps:
         temp("results/snps/mkdir.txt")
     log:
         "logs/call_snps/ctl_samps.log"
-    threads: workflow.cores
+    threads: 20
     conda:
         "../envs/full.yaml"
     shell:
@@ -197,7 +197,7 @@ rule cnt_muts:
         temp("results/counts/{sample}_check.txt")
     log:
         "logs/cnt_muts/{sample}.log"
-    threads: workflow.cores
+    threads: 20
     conda:
         "../envs/full.yaml"
     shell:
@@ -222,7 +222,7 @@ rule maketdf:
         pythonscript = workflow.source_path("../scripts/count_to_tracks.py")
     log:
         "logs/maketdf/{sample}.log"
-    threads: workflow.cores
+    threads: 20
     conda:
         "../envs/full.yaml"
     shell:
@@ -242,7 +242,7 @@ rule makecB:
         shellscript = workflow.source_path("../scripts/master.sh")
     log:
         "logs/makecB/master.log"
-    threads: workflow.cores
+    threads: 20
     conda:
         "../envs/full.yaml"
     shell:

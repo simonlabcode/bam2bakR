@@ -9,7 +9,7 @@ if STAR:
             rscript = workflow.source_path("../scripts/RSEM_plus.R"),
         log:
             "logs/transcript_fn/{s4U_sample}.log"
-        threads: workflow.cores
+        threads: 20
         conda:
             "../envs/full.yaml"
         shell:
