@@ -57,11 +57,11 @@ opt <- parse_args(opt_parser) # Load options from command line.
 options(echo = as.logical(opt$echocode))
 
 ### Check that pnew and pold make sense
-if(opts$pnew != -1 & opts$pnew < 0){
+if(opt$pnew != -1 & opt$pnew < 0){
   stop("pnew must be > 0 or equal to -1! Set to -1 if you want RSEM+ to estimate pnew for you.")
 }
 
-if(opts$pold != -1 & opts$pold < 0){
+if(opt$pold != -1 & opt$pold < 0){
   stop("pold must be > 0 or equal to -1! Set to -1 if you want RSEM+ to estimate pold for you.")
 }
 
@@ -84,7 +84,7 @@ rm(rsem)
 
 ### Estimate new and old mutation rate
 
-if(opts$pnew == -1 & opts$pold == -1){
+if(opt$pnew == -1 & opt$pold == -1){
 
   ## USER PROVIDED NEITHER PNEW OR POLD
 
@@ -108,20 +108,20 @@ if(opts$pnew == -1 & opts$pold == -1){
   pnew <- inv_logit(max(fit$par[1:2]))
   pold <- inv_logit(min(fit$par[1:2]))
 
-}else if(opts$pnew == -1 & opts$pold != -1){
+}else if(opt$pnew == -1 & opt$pold != -1){
 
   ## USER PROVIDED POLD BUT NOT PNEW
 
   # Binomial mixture likelihood
   mixture_lik <- function(param, TC, nT, n){
 
-      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 -inv_logit(param[1]))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opts$pold)^TC)*((1 - inv_logit(opts$pold))^(nT-TC)) ) )
+      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 -inv_logit(param[1]))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pold)^TC)*((1 - inv_logit(opt$pold))^(nT-TC)) ) )
 
       return(-logl)
 
   }
 
-  low_ps <- c(logit(opts$pold), -9)
+  low_ps <- c(logit(opt$pold), -9)
   high_ps <- c(0, 9)
 
   fit <- stats::optim(par=c(-2,0), mixture_lik, TC = cB$TC, nT = cB$nT,
@@ -130,9 +130,9 @@ if(opts$pnew == -1 & opts$pold == -1){
 
 
   pnew <- inv_logit(fit$par[1])
-  pold <- opts$pold
+  pold <- opt$pold
 
-}else if(opts$pnew != -1 & opts$pold == -1){
+}else if(opt$pnew != -1 & opt$pold == -1){
 
   ## USER PROVIDED PNEW BUT NOT POLD
 
@@ -140,27 +140,27 @@ if(opts$pnew == -1 & opts$pold == -1){
     # Binomial mixture likelihood
   mixture_lik <- function(param, TC, nT, n){
 
-      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opts$pnew)^TC)*((1 -inv_logit(opts$pnew))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
+      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pnew)^TC)*((1 -inv_logit(opt$pnew))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
 
       return(-logl)
 
   }
 
   low_ps <- c(-9, -9)
-  high_ps <- c(logit(opts$pnew), 9)
+  high_ps <- c(logit(opt$pnew), 9)
 
   fit <- stats::optim(par=c(-7,0), mixture_lik, TC = cB$TC, nT = cB$nT,
                                   n = cB$N, method = "L-BFGS-B", 
                                   lower = low_ps, upper = high_ps)
 
 
-  pnew <- opts$pnew
+  pnew <- opt$pnew
   pold <- inv_logit(fit$par[1])
 
 }else{
 
-  pnew <- opts$pnew
-  pold <- opts$pold
+  pnew <- opt$pnew
+  pold <- opt$pold
 
 }
 
