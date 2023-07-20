@@ -23,7 +23,8 @@ genome_fasta=$7
 WSL_b=$8
 normalize=$9
 pyscript=${10}
-output=${11}
+mut_pos=${11}
+output=${12}
 
 
     # Create ./results/tracks/
@@ -92,6 +93,12 @@ echo '* Making .chrom.sizes file'
 
             echo "track type=bedGraph name=\" $sample $b $count "plus \" description=\" $sample $b $count "positive strand\" visibility=full autoScale=off windowingFunction=mean viewLimits=0:10 color="${colVal[$count]} " altColor=10,10,10 priority=20" > ./results/tracks/"$sample"."$b"."$count".pos.bedGraph
             echo "track type=bedGraph name=\" $sample $b $count "minus \" description=\" $sample $b $count "minus strand\" visibility=full negateValues=on autoScale=off windowingFunction=mean viewLimits=-10:0 color=10,10,10 altColor="${colVal[$count]} " priority=20" > ./results/tracks/"$sample"."$b"."$count".min.bedGraph
+
+            if [ "$mut_pos" = "TRUE" ]; then
+                echo "track type=bedGraph name=\" Mut position $sample $b "plus \" description=\" $sample $b "positive strand\" visibility=full autoScale=off windowingFunction=maximum viewLimits=0:10 color="${colVal[2]} " altColor=10,10,10 priority=20" > ./results/tracks/"$sample"."$b".muts.pos.bedGraph
+                echo "track type=bedGraph name=\" Mut position $sample $b "minus \" description=\" $sample $b "minus strand\" visibility=full negateValues=on autoScale=off windowingFunction=maximum viewLimits=-10:0 color=10,10,10 altColor="${colVal[2]} " priority=20" > ./results/tracks/"$sample"."$b".muts.min.bedGraph
+            fi
+
 
         done
     done
@@ -190,6 +197,25 @@ echo '* Making .chrom.sizes file'
                                 "$chrom_sizes" ::: $muts \
                                              ::: $(seq 0 5) \
                                              ::: pos min
+
+    if [ "$mut_pos" = "TRUE" ]; then
+
+        # Scale mutation bed file
+        parallel -j "$cpus" "awk -v OFS='\t' '{print \$1, \$2, \$3, {2}1*norm*\$4}' \
+                                                    norm=${normVal} \
+                                                    ./results/counts/${sample}_{1}_{3}_muts.bedGraph\
+                                | bedtools sort -chrThenSizeA \
+                                    >> ./results/tracks/${sample}.{1}.muts.{3}.bedGraph" ::: $muts \
+                                                                                      ::: + - \
+                                                                                      :::+ pos min
+
+        parallel -j "$cpus" igvtools toTDF \
+                                    -f mean,max \
+                                    ./results/tracks/"$sample".{1}.muts.{2}.bedGraph \
+                                    ./results/tracks/"$sample".{1}.muts.{2}.tdf "$chrom_sizes" ::: $muts \
+                                                                                            ::: pos min
+    fi
+    
 
     rm -f igv.log
 

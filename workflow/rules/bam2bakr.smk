@@ -220,7 +220,8 @@ rule maketdf:
         expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
     params:
         shellscript = workflow.source_path("../scripts/tracks.sh"),
-        pythonscript = workflow.source_path("../scripts/count_to_tracks.py")
+        pythonscript = workflow.source_path("../scripts/count_to_tracks.py"),
+        mut_pos = config["mut_pos"],
     log:
         "logs/maketdf/{sample}.log"
     threads: 20
@@ -230,7 +231,7 @@ rule maketdf:
         """
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {output} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {params.mut_pos} {output} 1> {log} 2>&1
         """
 
 # Make cB file that will be input to bakR
