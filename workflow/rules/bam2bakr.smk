@@ -206,7 +206,7 @@ rule cnt_muts:
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
         chmod +x {params.awkscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} {params.pythonscript} {params.awkscript} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} {params.pythonscript} {params.awkscript} {params.mut_pos} 1> {log} 2>&1
         """
 
 # Make color-coded tracks
