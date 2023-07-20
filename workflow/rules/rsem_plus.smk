@@ -7,6 +7,8 @@ if STAR:
             outfile="results/transcript_fn/{s4U_sample}_RSEM_plus.csv",
         params:
             rscript = workflow.source_path("../scripts/RSEM_plus.R"),
+            pnew = get_pnew,
+            pold = get_pold,
         log:
             "logs/transcript_fn/{s4U_sample}.log"
         threads: 20
@@ -15,7 +17,7 @@ if STAR:
         shell:
             r"""
             chmod +x {params.rscript}
-            {params.rscript} -o {output.outfile} -c {input.counts} -r {input.rsem} -s {wildcards.s4U_sample} 1> {log} 2>&1
+            {params.rscript} -o {output.outfile} -c {input.counts} -r {input.rsem} -s {wildcards.s4U_sample} -n {params.pnew} -b {params.pold} 1> {log} 2>&1
             """
 
     rule combine_fn:

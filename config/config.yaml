@@ -119,3 +119,16 @@ star_extra: "--outFilterMismatchNmax 20"
 hisat2_extra: "--mp 1,0"
   # No additional parameters are passed, so this can include any of hisat2's optional parameters
 
+##### PARAMETERS THAT ONLY MATTER IF USING FASTQ2BAKR AND STAR #####
+
+pnews:
+  WT_1: 0.05 
+  WT_2: 0.05
+  KO_1: 0.05
+  KO_2: 0.05
+
+polds:
+  WT_1: 0.001
+  WT_2: 0.001
+  KO_1: 0.001
+  KO_2: 0.001
