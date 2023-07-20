@@ -33,8 +33,8 @@ def get_input_fastqs(wildcards):
     return fastq_files
 
 def get_pnew(wildcards):
-    return config["pnews"][wildcards.sample]
+    return config["pnews"][wildcards.s4U_sample]
 
 def get_pold(wildcards):
-    return config["polds"][wildcards.sample]
+    return config["polds"][wildcards.s4U_sample]
 
