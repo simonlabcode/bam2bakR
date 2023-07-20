@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser(description='This is python implementation of T
 requiredNamed = parser.add_argument_group('required named arguments')
 requiredNamed.add_argument('-b', '--bam', type=str, required=True, metavar = 'in_file.bam',
                     help='Bam file to process')
-parser.add_argument('--mutType', default='TC', type=str, choices=['TC', 'GA', 'TC,GA'],
+parser.add_argument('--mutType', default='TC', type=str,
                     help='Type of mutation to record (default: TC)')
 parser.add_argument('--reads', default='PE', type=str, choices=['PE', 'SE'],
                     help='Type of mutation to record (default: PE)')
@@ -61,6 +61,11 @@ firstReadName = ''
 muts = {'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0}
 DNAcode={'A': 'T', 'C': 'G', 'T': 'A', 'G': 'C', 'N': 'N', 'a': 't', 'c': 'g', 't': 'a', 'g': 'c', 'n': 'n'}  # DNA code for comp and revcomp transformation
 header = ['qname', 'nA', 'nC', 'nT', 'nG', 'rname', 'GF', 'EF', 'XF', 'FR', 'sj', 'ai', 'io', 'ei', 'TA', 'CA', 'GA', 'NA', 'AT', 'CT', 'GT', 'NT', 'AC', 'TC', 'GC', 'NC', 'AG', 'TG', 'CG', 'NG', 'AN', 'TN', 'CN', 'GN']
+
+# For counting mutations at individual positions
+if args.mutPos:
+    header.extend(['gmutloc', 'tp'])
+
 
 r_info = [''] + 4*[0] + 9*['']
 dovetail = []
