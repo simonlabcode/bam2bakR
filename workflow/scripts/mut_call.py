@@ -100,14 +100,12 @@ wr = csv.writer(myfile)
 wr.writerow(header)
 
 count = 0
-print(count)
+
 # Set .bam file for reading
 samfile = pysam.AlignmentFile(args.bam, 'rb')
-print(count)
 
 print('Start: ' + str(datetime.datetime.now()))
 for r in samfile:
-    count = count + 1
     # Initialize + acquire info: First read only
     if firstReadName != r.query_name:
         muts={'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0}
@@ -248,7 +246,6 @@ for r in samfile:
 
 print('end: ' + str(datetime.datetime.now()))
 
-print(count)
 
 ##### Close files ######
 myfile.close()
