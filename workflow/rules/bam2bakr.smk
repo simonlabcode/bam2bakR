@@ -241,7 +241,9 @@ rule makecB:
     output:
         "results/cB/cB.csv.gz"
     params:
-        shellscript = workflow.source_path("../scripts/master.sh")
+        shellscript = workflow.source_path("../scripts/master.sh"),
+        mut_pos = config["mut_pos"],
+        min_pos_coverage = config["min_pos_coverage"],
     log:
         "logs/makecB/master.log"
     threads: 20
@@ -250,5 +252,5 @@ rule makecB:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1
+        {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} {params.mut_pos} {params.min_pos_coverage} 1> {log} 2>&1
         """

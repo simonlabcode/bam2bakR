@@ -5,6 +5,8 @@ cpus=$1
 cBout=$2
 keepcols=$3
 mut_tracks=$4
+mut_pos=$5
+pos_cutoff=$6
 
 #day=$(date +"%y%m%d")
 
@@ -111,3 +113,36 @@ echo "** cB file created: cB.csv.gz"
 
 # Clean up files
 rm -f 0
+
+
+# Read all _cU.csv.gz files and save them as cU-DATE.csv.gz
+if [ $mut_pos = 'TRUE' ]; then
+    parallel -j 1 --plus "cat <(echo Filename:{1%_cU.csv.gz}) <(pigz -d -k -c -p $cpus {1})" ::: ./results/counts/*_cU.csv.gz \
+        | awk -v OFS="," '
+                $1 ~ /Filename/ {
+                    split($1, sample, ":")
+                    next
+                }
+                NR == 2 {
+                    header = $0
+                    print "sample", $0
+                    next
+                }
+                $0 == header { 
+                    next
+                }
+                {
+                    print sample[2], $0
+                }' \
+        | pigz -p $cpus > ./results/cB/cU-${day}.csv.gz
+
+
+   pigz -d -p $cpus -c cU-${day}.csv.gz \
+	| awk -F "," \
+	      -v cutoff="$pos_cutoff" \
+	      'NR == 1 || $(NF-1) >= cutoff { print}' | pigz -p $cpus >  ./results/cB/cU-${day}-filtered.csv.gz
+
+
+echo "** cU file created: cU-${day}.csv.gz"
+
+fi
