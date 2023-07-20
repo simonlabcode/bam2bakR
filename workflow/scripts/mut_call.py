@@ -255,52 +255,52 @@ if args.tracks:
 
 ##### Generate Output ######
 
-# ### saving _muts.rds file
-# if args.mutsRDS:
-    # with open(inputName + '_muts.csv', 'w', newline='') as myfile:
-        # wr = csv.writer(myfile)
-        # wr.writerow(['rname', 'gloc', 'trials', 'n'])           # header
-        # for position, counts in freq.items():
-            # row = position.split(':')
-            # row[1] = int(row[1]) + 1                            # adjust position because we are 0-based
-            # row.extend(counts)
-            # wr.writerow(row)
+### saving _muts.rds file
+if args.mutsRDS:
+    with open(inputName + '_muts.csv', 'w', newline='') as myfile:
+        wr = csv.writer(myfile)
+        wr.writerow(['rname', 'gloc', 'trials', 'n'])           # header
+        for position, counts in freq.items():
+            row = position.split(':')
+            row[1] = int(row[1]) + 1                            # adjust position because we are 0-based
+            row.extend(counts)
+            wr.writerow(row)
 
-    # del freq
+    del freq
 
 
 
-# ### saving cU.rds file
-# if args.mutPos:
-    # with open(inputName + '_cU.csv', 'w', newline='') as myfile:
-        # wr = csv.writer(myfile)
-        # wr.writerow(['rname', 'gloc', 'GF', 'XF', 'ai', 'tp', 'trials', 'n'])
-        # for position, counts in cU.items():
-            # row = position.split(':')
-            # row[1] = int(row[1]) + 1                        # adjust position because we are 0-based
-            # row.extend(counts)
-            # wr.writerow(row)
+### saving cU.rds file
+if args.mutPos:
+    with open(inputName + '_cU.csv', 'w', newline='') as myfile:
+        wr = csv.writer(myfile)
+        wr.writerow(['rname', 'gloc', 'GF', 'XF', 'ai', 'tp', 'trials', 'n'])
+        for position, counts in cU.items():
+            row = position.split(':')
+            row[1] = int(row[1]) + 1                        # adjust position because we are 0-based
+            row.extend(counts)
+            wr.writerow(row)
 
-    # del cU
-# print('cU: ' + str(datetime.datetime.now()))
+    del cU
+print('cU: ' + str(datetime.datetime.now()))
 
-# ### saving mutation bedGraph files
-# if args.mutPos:
-    # fileName = []
-    # strand = {'F' : 0, 'R' : 1}
-    # for b in args.mutType:
-        # for s in ['pos', 'min']:
-            # fileName.append( open('_'.join([inputName, b, s, 'muts.bedGraph']), 'w') )
+### saving mutation bedGraph files
+if args.mutPos:
+    fileName = []
+    strand = {'F' : 0, 'R' : 1}
+    for b in args.mutType:
+        for s in ['pos', 'min']:
+            fileName.append( open('_'.join([inputName, b, s, 'muts.bedGraph']), 'w') )
 
-    # fs = []
-    # for f in fileName:
-        # fs.append( csv.writer(f, delimiter = '\t') )
+    fs = []
+    for f in fileName:
+        fs.append( csv.writer(f, delimiter = '\t') )
 
-    # for position, counts in cU_freq.items():
-            # row = position.split(':')
-            # fs[ strand[row[2]] + args.mutType.index(row[3]) * 2 ].writerow([row[0], row[1], int(row[1]) + 1, counts])
+    for position, counts in cU_freq.items():
+            row = position.split(':')
+            fs[ strand[row[2]] + args.mutType.index(row[3]) * 2 ].writerow([row[0], row[1], int(row[1]) + 1, counts])
 
-    # for f in fileName:
-        # f.close()
+    for f in fileName:
+        f.close()
 
-#print('bedgraph: ' + str(datetime.datetime.now()))
+print('bedgraph: ' + str(datetime.datetime.now()))

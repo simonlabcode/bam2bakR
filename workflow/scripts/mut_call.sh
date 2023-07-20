@@ -13,6 +13,7 @@ format=$9
 strand=${10}
 mutcnt=${11}
 awkscript=${12}
+mut_pos = ${13}
 
 # Create results/counts/
 touch "$output2"
@@ -82,6 +83,7 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
                                               --minQual $minqual \
 											  --SNPs "./results/snps/snp.txt" \
                                               --strandedness $strand \
+                                              $( if [ $mut_pos = 'TRUE' ]; then echo '--mutPos '; fi ) \
                                               --reads $format" ::: ./results/counts/*_"$sample"_frag.bam \
 
 
@@ -105,3 +107,98 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
 	rm -f ./results/counts/*_"$sample"_frag.bam
 
 	echo '* Cleaning up fragmented .bam files'
+
+    # 2) .bedGraph files
+    if [ $mut_pos = 'TRUE' ]; then
+        parallel -j $cpus "awk -v 'OFS=\t' '
+                                            {
+                                                bdg[\$1\":\"\$2] += \$4
+                                            }
+                                            END {
+                                                for (pos in bdg) {
+                                                    split(pos, p, \":\")
+                                                    print p[1], p[2], p[2] + 1, bdg[pos]
+                                                    }
+                                            }' ./results/counts/*_${sample}_frag_{1}_{2}_muts.bedGraph > ./results/counts/${sample}_{1}_{2}_muts.bedGraph" ::: $(echo $mut_tracks | tr ',' ' ') \
+                                                                                                                                    ::: pos min
+
+        rm  ./results/counts/*_"$sample"_frag_*_muts.bedGraph
+    fi   
+
+    # 3) _cU.csv files
+    if [ $mut_pos = 'TRUE' ]; then
+        # Pre-sort cU fragments
+        parallel -j $cpus "tail -n +2 {1} \
+                                | LC_COLLATE=C sort > ./results/counts/{1.}_sort.csv" ::: ./results/counts/*_"$sample"_frag_cU.csv
+        rm ./results/counts/*_"$sample"_frag_cU.csv                    
+
+        # Combine pre-sorted fragments
+        LC_COLLATE=C sort -m ./results/counts/*_"$sample"_frag_cU_sort.csv > ./results/counts/"$sample"_cU_comb.csv 
+        rm ./results/counts/*_"$sample"_frag_cU_sort.csv
+
+        # Get ammount of data
+        cUsize=$(wc -l ./results/counts/"$sample"_cU_comb.csv | cut -d ' ' -f 1)
+
+        # Split file to sorted fragments keeping the same position groups in the same file fragment 
+        awk -v FS="," \
+            -v cpus=$cpus \
+            -v cUsize=$cUsize \
+            -v sample=$sample \
+            'BEGIN { 
+                    fragment_size = int(cUsize / cpus) + 1
+                    i = 1
+            }
+            NR == (fragment_size * i - 1 ) { x = $1","$2 } 
+
+            NR < (fragment_size * i ) { print >> ./results/counts/i"_"sample"_cU_comb.csv" }
+
+            NR >= (fragment_size * i ) { if ($1","$2 == x) 
+                                            { 
+                                                print >> ./results/counts/i"_"sample"_cU_comb.csv"
+                                            } 
+                                        else 
+                                            {           
+                                                i++
+                                                print >> ./results/counts/i"_"sample"_cU_comb.csv"
+                                            }
+                
+            }' ./results/counts/"$sample"_cU_comb.csv
+
+        rm ./results/counts/"$sample"_cU_comb.csv
+
+        # Awk script for processing sorted cU files; assumes all same positions are grouped together in subsequent lines
+            # Thanks to this we have to keep in memory only one genomic position at given time
+        function awkProcessCU () {
+            awk -v FS="," 'NR == 1 {
+                        nuc = $1":"$2
+                }
+                $1":"$2 != nuc {
+                        for (pos in trial) {
+                            if (n[pos] >= 0)
+                                print pos","trial[pos]","n[pos]
+                        }
+                        delete trial
+                        delete n
+                        nuc = $1":"$2
+                }
+                $1":"$2 == nuc {
+                        trial[$1","$2","$3","$4","$5","$6] += $7
+                        n[$1","$2","$3","$4","$5","$6] += $8
+                }
+                END {
+                        for (pos in trial) {
+                            if (n[pos] >= 0)
+                                print pos","trial[pos]","n[pos]
+                        }
+                }' $1
+        }
+
+        export -f awkProcessCU
+
+        # Add header and process sorted fragments in parallel
+        cat <(echo "rname,gloc,GF,XF,ai,tp,trials,n") \
+            <(parallel -j $cpus awkProcessCU {1} ::: ./results/counts/*_${sample}_cU_comb.csv) \
+            | pigz -p $cpus > ./results/counts/"$sample"_cU.csv.gz
+
+        rm ./results/counts/*_${sample}_cU_comb.csv
+    fi

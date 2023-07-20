@@ -191,7 +191,8 @@ rule cnt_muts:
         strand = config["strandedness"],
         shellscript = workflow.source_path("../scripts/mut_call.sh"),
         pythonscript = workflow.source_path("../scripts/mut_call.py"),
-        awkscript = workflow.source_path("../scripts/fragment_sam.awk")
+        awkscript = workflow.source_path("../scripts/fragment_sam.awk"),
+        mut_pos = config["mut_pos"],
     output:
         "results/counts/{sample}_counts.csv.gz",
         temp("results/counts/{sample}_check.txt")

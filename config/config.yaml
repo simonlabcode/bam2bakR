@@ -4,6 +4,10 @@
 # paths to directories containing fastq files will be expected as input.
 bam2bakr: True
 
+# Output information about mutational content at individual positions (i.e., individual nucleotides)
+mut_pos: False
+
+
 # path to directory containing fastq files if bam2bakr is False
 # path to bam files if bam2bakr is True
 ## example of what samples could look like for bam input
@@ -118,4 +122,10 @@ star_extra: "--outFilterMismatchNmax 20"
 # Extra parameters to be passed to Hisat2
 hisat2_extra: "--mp 1,0"
   # No additional parameters are passed, so this can include any of hisat2's optional parameters
+
+
+##### PARAMETERS THAT ONLY MATTER IF MUT_POS IS TRUE #####
+
+# Minimum number of reads overlapping a position to track its mutational content (if mut_pos is TRUE)
+min_pos_coverage: 50
 
