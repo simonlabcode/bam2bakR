@@ -32,3 +32,5 @@ def get_input_fastqs(wildcards):
     fastq_files = sorted(glob.glob(f"{fastq_path}/*.fastq*"))
     return fastq_files
 
+MutTypes = config['mut_tracks']
+Mutation_Types = MutTypes.split(',')

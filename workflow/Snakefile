@@ -50,7 +50,7 @@ if config["mut_pos"]:
                     "results/cB/cB.csv.gz",
                     "results/cB/mutpos.csv.gz",
                     "results/cB/mutpos_filtered.csv.gz",
-                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
 
         else:
             rule all:
@@ -58,7 +58,7 @@ if config["mut_pos"]:
                     "results/cB/cB.csv.gz",
                     "results/cB/mutpos.csv.gz",
                     "results/cB/mutpos_filtered.csv.gz",
-                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']), 
+                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']), 
                     "results/transcript_fn/RSEM_plus.csv"
     else:
         rule all:
@@ -66,7 +66,7 @@ if config["mut_pos"]:
                 "results/cB/cB.csv.gz",
                 "results/cB/mutpos.csv.gz",
                 "results/cB/mutpos_filtered.csv.gz",
-                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
 
 else:
     if STAR:
@@ -74,17 +74,17 @@ else:
             rule all:
                 input:
                     "results/cB/cB.csv.gz",
-                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
 
         else:
             rule all:
                 input:
                     "results/cB/cB.csv.gz",
-                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']), 
+                    expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']), 
                     "results/transcript_fn/RSEM_plus.csv"
     else:
         rule all:
             input:
                 "results/cB/cB.csv.gz",
-                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
+                expand("results/tracks/{sample}.{mut}.{id}.{strand}.tdf", sample = SAMP_NAMES, mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min']) 
 

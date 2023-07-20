@@ -217,7 +217,7 @@ rule maketdf:
 	    "results/normalization/scale"
     output:
         temp("results/tracks/{sample}_success.txt"),
-        expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
+        expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=Mutation_Types, id=[0,1,2,3,4,5], strand = ['pos', 'min'])
     params:
         shellscript = workflow.source_path("../scripts/tracks.sh"),
         pythonscript = workflow.source_path("../scripts/count_to_tracks.py"),
