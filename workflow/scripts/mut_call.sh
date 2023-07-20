@@ -133,7 +133,7 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
     if [ "$mut_pos" = "True" ]; then
         # Pre-sort cU fragments
         parallel -j $cpus "tail -n +2 {1} \
-                                | LC_COLLATE=C sort > ./results/counts/{1.}_sort.csv" ::: ./results/counts/*_"$sample"_frag_cU.csv
+                                | LC_COLLATE=C sort > {1.}_sort.csv" ::: ./results/counts/*_"$sample"_frag_cU.csv
         rm ./results/counts/*_"$sample"_frag_cU.csv                    
 
         # Combine pre-sorted fragments
@@ -154,16 +154,16 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
             }
             NR == (fragment_size * i - 1 ) { x = $1","$2 } 
 
-            NR < (fragment_size * i ) { print >> ./results/counts/i"_"sample"_cU_comb.csv" }
+            NR < (fragment_size * i ) { print >> "./results/counts/"i"_"sample"_cU_comb.csv" }
 
             NR >= (fragment_size * i ) { if ($1","$2 == x) 
                                             { 
-                                                print >> ./results/counts/i"_"sample"_cU_comb.csv"
+                                                print >> "./results/counts/"i"_"sample"_cU_comb.csv"
                                             } 
                                         else 
                                             {           
                                                 i++
-                                                print >> ./results/counts/i"_"sample"_cU_comb.csv"
+                                                print >> "./results/counts/"i"_"sample"_cU_comb.csv"
                                             }
                 
             }' ./results/counts/"$sample"_cU_comb.csv
