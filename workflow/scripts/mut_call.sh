@@ -83,7 +83,7 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
                                               --minQual $minqual \
 											  --SNPs "./results/snps/snp.txt" \
                                               --strandedness $strand \
-                                              $( if [ $mut_pos = 'TRUE' ]; then echo '--mutPos '; fi ) \
+                                              $( if [ "$mut_pos" = "True" ]; then echo '--mutPos '; fi ) \
                                               --reads $format" ::: ./results/counts/*_"$sample"_frag.bam \
 
 
@@ -109,7 +109,7 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
 	echo '* Cleaning up fragmented .bam files'
 
     # 2) .bedGraph files
-    if [ $mut_pos = 'TRUE' ]; then
+    if [ "$mut_pos" = "True" ]; then
         parallel -j $cpus "awk -v 'OFS=\t' '
                                             {
                                                 bdg[\$1\":\"\$2] += \$4
@@ -126,7 +126,7 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
     fi   
 
     # 3) _cU.csv files
-    if [ $mut_pos = 'TRUE' ]; then
+    if [ "$mut_pos" = "True" ]; then
         # Pre-sort cU fragments
         parallel -j $cpus "tail -n +2 {1} \
                                 | LC_COLLATE=C sort > ./results/counts/{1.}_sort.csv" ::: ./results/counts/*_"$sample"_frag_cU.csv

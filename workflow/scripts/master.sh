@@ -7,7 +7,7 @@ keepcols=$3
 mut_tracks=$4
 mut_pos=$5
 
-if [ $mut_pos = 'TRUE' ]; then
+if [ "$mut_pos" = "True" ]; then
 
     pos_cutoff=$6
     mutposout=$7
@@ -123,7 +123,7 @@ rm -f 0
 
 
 # Read all _cU.csv.gz files and save them as cU-DATE.csv.gz
-if [ $mut_pos = 'TRUE' ]; then
+if [ "$mut_pos" = "True" ]; then
     parallel -j 1 --plus "cat <(echo Filename:{1%_cU.csv.gz}) <(pigz -d -k -c -p $cpus {1})" ::: ./results/counts/*_cU.csv.gz \
         | awk -v OFS="," '
                 $1 ~ /Filename/ {

@@ -30,7 +30,7 @@ output=${12}
     # Create ./results/tracks/
     touch "$output"
 
-	if [ $normalize ]; then
+	if [ "$normalize" = "True" ]; then
 		normVal=$(awk -v sam=$sample '$1 == sam {print $2}' ./results/normalization/scale)
 	else
 		normVal='1'
@@ -94,7 +94,7 @@ echo '* Making .chrom.sizes file'
             echo "track type=bedGraph name=\" $sample $b $count "plus \" description=\" $sample $b $count "positive strand\" visibility=full autoScale=off windowingFunction=mean viewLimits=0:10 color="${colVal[$count]} " altColor=10,10,10 priority=20" > ./results/tracks/"$sample"."$b"."$count".pos.bedGraph
             echo "track type=bedGraph name=\" $sample $b $count "minus \" description=\" $sample $b $count "minus strand\" visibility=full negateValues=on autoScale=off windowingFunction=mean viewLimits=-10:0 color=10,10,10 altColor="${colVal[$count]} " priority=20" > ./results/tracks/"$sample"."$b"."$count".min.bedGraph
 
-            if [ "$mut_pos" = "TRUE" ]; then
+            if [ "$mut_pos" = "True" ]; then
                 echo "track type=bedGraph name=\" Mut position $sample $b "plus \" description=\" $sample $b "positive strand\" visibility=full autoScale=off windowingFunction=maximum viewLimits=0:10 color="${colVal[2]} " altColor=10,10,10 priority=20" > ./results/tracks/"$sample"."$b".muts.pos.bedGraph
                 echo "track type=bedGraph name=\" Mut position $sample $b "minus \" description=\" $sample $b "minus strand\" visibility=full negateValues=on autoScale=off windowingFunction=maximum viewLimits=-10:0 color=10,10,10 altColor="${colVal[2]} " priority=20" > ./results/tracks/"$sample"."$b".muts.min.bedGraph
             fi
@@ -198,7 +198,7 @@ echo '* Making .chrom.sizes file'
                                              ::: $(seq 0 5) \
                                              ::: pos min
 
-    if [ "$mut_pos" = "TRUE" ]; then
+    if [ "$mut_pos" = "True" ]; then
 
         # Scale mutation bed file
         parallel -j "$cpus" "awk -v OFS='\t' '{print \$1, \$2, \$3, {2}1*norm*\$4}' \
