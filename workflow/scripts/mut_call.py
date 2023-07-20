@@ -99,7 +99,6 @@ myfile = open(inputName + '_counts.csv', 'w', newline='')
 wr = csv.writer(myfile)
 wr.writerow(header)
 
-count = 0
 
 # Set .bam file for reading
 samfile = pysam.AlignmentFile(args.bam, 'rb')
