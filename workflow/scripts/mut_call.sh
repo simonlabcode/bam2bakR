@@ -13,7 +13,7 @@ format=$9
 strand=${10}
 mutcnt=${11}
 awkscript=${12}
-mut_pos = ${13}
+mut_pos=${13}
 
 # Create results/counts/
 touch "$output2"

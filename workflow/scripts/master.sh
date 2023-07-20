@@ -6,9 +6,14 @@ cBout=$2
 keepcols=$3
 mut_tracks=$4
 mut_pos=$5
-pos_cutoff=$6
-mutposout=$7
-mutposfilter=$8
+
+if [ $mut_pos = 'TRUE' ]; then
+
+    pos_cutoff=$6
+    mutposout=$7
+    mutposfilter=$8
+
+fi
 
 #day=$(date +"%y%m%d")
 
