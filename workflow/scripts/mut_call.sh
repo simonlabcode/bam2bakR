@@ -123,6 +123,10 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
                                                                                                                                     ::: pos min
 
         rm  ./results/counts/*_"$sample"_frag_*_muts.bedGraph
+
+        echo "Finished mutation position bedgraph processing"
+
+
     fi   
 
     # 3) _cU.csv files
@@ -201,4 +205,6 @@ fragment_size=$(echo "scale=0; $num_reads/$cpus" | bc)
             | pigz -p $cpus > ./results/counts/"$sample"_cU.csv.gz
 
         rm ./results/counts/*_${sample}_cU_comb.csv
+
+        echo "Finished mutation position counts processing"
     fi
