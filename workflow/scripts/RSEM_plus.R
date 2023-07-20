@@ -58,11 +58,11 @@ options(echo = as.logical(opt$echocode))
 
 ### Check that pnew and pold make sense
 if(opts$pnew != -1 & opts$pnew < 0){
-  stop("pnew must be > 0 or -1! Set to -1 if you want RSEM+ to estimate pnew for you.")
+  stop("pnew must be > 0 or equal to -1! Set to -1 if you want RSEM+ to estimate pnew for you.")
 }
 
 if(opts$pold != -1 & opts$pold < 0){
-  stop("pold must be > 0 or -1! Set to -1 if you want RSEM+ to estimate pold for you.")
+  stop("pold must be > 0 or equal to -1! Set to -1 if you want RSEM+ to estimate pold for you.")
 }
 
 
