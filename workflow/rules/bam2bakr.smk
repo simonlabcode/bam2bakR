@@ -234,23 +234,47 @@ rule maketdf:
         {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {params.mut_pos} {output} 1> {log} 2>&1
         """
 
-# Make cB file that will be input to bakR
-rule makecB:
-    input:
-        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
-    output:
-        "results/cB/cB.csv.gz"
-    params:
-        shellscript = workflow.source_path("../scripts/master.sh"),
-        mut_pos = config["mut_pos"],
-        min_pos_coverage = config["min_pos_coverage"],
-    log:
-        "logs/makecB/master.log"
-    threads: 20
-    conda:
-        "../envs/full.yaml"
-    shell:
-        """
-        chmod +x {params.shellscript}
-        {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} {params.mut_pos} {params.min_pos_coverage} 1> {log} 2>&1
-        """
+if config["mut_pos"]:
+    # Make cB file that will be input to bakR
+    rule makecB:
+        input:
+            expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+        output:
+            cB = "results/cB/cB.csv.gz",
+            mutpos = "results/cB/mutpos.csv.gz",
+            mutposfilter = "results/cB/mutpos_filtered.csv.gz"
+        params:
+            shellscript = workflow.source_path("../scripts/master.sh"),
+            mut_pos = config["mut_pos"],
+            min_pos_coverage = config["min_pos_coverage"],
+        log:
+            "logs/makecB/master.log"
+        threads: 20
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            {params.shellscript} {threads} {output.cB} {config[keepcols]} {config[mut_tracks]} {params.mut_pos} {params.min_pos_coverage} {output.mutpos} {output.mutposfilter} 1> {log} 2>&1
+            """
+else:
+    # Make cB file that will be input to bakR
+    rule makecB:
+        input:
+            expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+        output:
+            "results/cB/cB.csv.gz"
+        params:
+            shellscript = workflow.source_path("../scripts/master.sh"),
+            mut_pos = config["mut_pos"],
+            min_pos_coverage = config["min_pos_coverage"],
+        log:
+            "logs/makecB/master.log"
+        threads: 20
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} {params.mut_pos} {params.min_pos_coverage} 1> {log} 2>&1
+            """

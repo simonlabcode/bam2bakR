@@ -7,6 +7,8 @@ keepcols=$3
 mut_tracks=$4
 mut_pos=$5
 pos_cutoff=$6
+mutposout=$7
+mutposfilter=$8
 
 #day=$(date +"%y%m%d")
 
@@ -134,15 +136,15 @@ if [ $mut_pos = 'TRUE' ]; then
                 {
                     print sample[2], $0
                 }' \
-        | pigz -p $cpus > ./results/cB/cU-${day}.csv.gz
+        | pigz -p $cpus > "$mutposout"
 
 
-   pigz -d -p $cpus -c cU-${day}.csv.gz \
+   pigz -d -p $cpus -c "$mutposout" \
 	| awk -F "," \
 	      -v cutoff="$pos_cutoff" \
-	      'NR == 1 || $(NF-1) >= cutoff { print}' | pigz -p $cpus >  ./results/cB/cU-${day}-filtered.csv.gz
+	      'NR == 1 || $(NF-1) >= cutoff { print}' | pigz -p $cpus >  "$mutposfilter"
 
 
-echo "** cU file created: cU-${day}.csv.gz"
+echo "**  site-specific mutation file created: mutpos.csv.gz"
 
 fi

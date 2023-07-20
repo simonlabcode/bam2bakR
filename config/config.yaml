@@ -51,7 +51,7 @@ strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs.
 
 
 # Type of browser tracks to generate
-mut_tracks: "TC" # ("TC", "GA", "TC,GA")
+mut_tracks: "TC" # comma separated list of mutation types to track (e.g., "TC", "GA", "TC,GA")
 
 # Minimum base quality to call mutation
 minqual: 40
