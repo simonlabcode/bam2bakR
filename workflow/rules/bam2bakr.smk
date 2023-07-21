@@ -83,28 +83,58 @@ else:
 
 # Use custom htseq script to quanity features 
 # Also creates bam files with tag designating feature that each read was mapped to; useful during mutation counting
-rule htseq_cnt:
-    input:
-        "results/sf_reads/{sample}.s.sam"
-    output:
-        "results/htseq/{sample}_tl.bam",
-        temp("results/htseq/{sample}_check.txt")
-    params: 
-        shellscript=workflow.source_path("../scripts/htseq.sh"),
-        pythonscript=workflow.source_path("../scripts/count_triple.py"),
-        strand=config["strandedness"],
-        flattened=config["flattened"]
-    log:
-        "logs/htseq_cnt/{sample}.log"
-    threads: 3
-    conda:
-        "../envs/full.yaml"
-    shell:
-        """
-        chmod +x {params.shellscript}
-        chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[annotation]} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
-        """
+if config["flattened"]:
+
+    rule htseq_cnt:
+        input:
+            "results/sf_reads/{sample}.s.sam"
+        output:
+            "results/htseq/{sample}_tl.bam",
+            temp("results/htseq/{sample}_check.txt")
+        params: 
+            shellscript=workflow.source_path("../scripts/htseq.sh"),
+            pythonscript=workflow.source_path("../scripts/count_triple.py"),
+            strand=config["strandedness"],
+            flattened=config["flattened"],
+            flatstack=config["flat_annotation"],
+        log:
+            "logs/htseq_cnt/{sample}.log"
+        threads: 3
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            chmod +x {params.pythonscript}
+            {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.flatstack} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
+            """
+
+else:
+
+    rule htseq_cnt:
+        input:
+            "results/sf_reads/{sample}.s.sam"
+        output:
+            "results/htseq/{sample}_tl.bam",
+            temp("results/htseq/{sample}_check.txt")
+        params: 
+            shellscript=workflow.source_path("../scripts/htseq.sh"),
+            pythonscript=workflow.source_path("../scripts/count_triple.py"),
+            strand=config["strandedness"],
+            flattened=config["flattened"],
+            annotation=config["annotation"]
+        log:
+            "logs/htseq_cnt/{sample}.log"
+        threads: 3
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            chmod +x {params.pythonscript}
+            {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.annotation} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
+            """
+
 
 # Calculate normalization scale factor to be applied to tracks        
 if NORMALIZE:
@@ -116,14 +146,15 @@ if NORMALIZE:
         log:
             "logs/normalize/normalize.log"
         params:
-            rscript=workflow.source_path("../scripts/normalize.R")
+            rscript=workflow.source_path("../scripts/normalize.R"),
+            spikename=config["spikename"]
         threads: 1
         conda:
             "../envs/full.yaml"
         shell:
             r"""
             chmod +x {params.rscript}
-            {params.rscript} --dirs ./results/htseq/ --spikename {config[spikename]}
+            {params.rscript} --dirs ./results/htseq/ --spikename {params.spikename}
             mv scale {output}
             """
 else:
@@ -163,7 +194,8 @@ rule call_snps:
         expand("results/htseq/{ctl}_tl.bam", ctl = CTL_NAMES)
     params:
         nctl = nctl,
-        shellscript = workflow.source_path("../scripts/call_snps.sh")
+        shellscript = workflow.source_path("../scripts/call_snps.sh"),
+        fasta = config["genome_fasta"],
     output:
         "results/snps/snp.txt",
         "results/snps/snp.vcf",
@@ -176,7 +208,7 @@ rule call_snps:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {params.nctl} {output} {config[genome_fasta]} {input} 1> {log} 2>&1
+        {params.shellscript} {threads} {params.nctl} {output} {params.fasta} {input} 1> {log} 2>&1
         """
 
 # Count mutations 

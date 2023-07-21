@@ -38,6 +38,9 @@ else:
     include: "rules/bam2bakr.smk"
     include: "rules/rsem_plus.smk"
 
+if config["flattened"]:
+    include: "rules/flatten.smk"
+
 
 
 ##### target rules #####
