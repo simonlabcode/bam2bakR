@@ -1,10 +1,10 @@
 if STAR:
     rule transcript_fn:
         input:
-            rsem="results/rsem_csv/{s4U_sample}_rsem.csv.gz",
-            counts="results/counts/{s4U_sample}_counts.csv.gz",
+            rsem="results/rsem_csv/{sample}_rsem.csv.gz",
+            counts="results/counts/{sample}_counts.csv.gz",
         output:
-            outfile="results/transcript_fn/{s4U_sample}_RSEM_plus.csv",
+            outfile="results/transcript_fn/{sample}_RSEM_plus.csv",
         params:
             rscript = workflow.source_path("../scripts/RSEM_plus.R"),
             pnew = get_pnew,
@@ -22,7 +22,7 @@ if STAR:
 
     rule combine_fn:
         input:
-            expand("results/transcript_fn/{samps}_RSEM_plus.csv", samps = s4U_SAMPS),
+            expand("results/transcript_fn/{samps}_RSEM_plus.csv", samps = SAMP_NAMES),
         output:
             "results/transcript_fn/RSEM_plus.csv"
         log:

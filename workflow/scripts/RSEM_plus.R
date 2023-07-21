@@ -75,8 +75,6 @@ rsem <- fread(opt$rsem)
     # according to mutType argument
 counts <- counts[,c("GF", "XF", "EF", "qname", "TC", "nT")]
 
-cB <- counts[!grepl("__", XF), .N, by = .(XF, TC, nT)]
-
 cT <- setDT(inner_join(rsem, counts, by = "qname"))
 
 rm(counts)
@@ -84,125 +82,142 @@ rm(rsem)
 
 ### Estimate new and old mutation rate
 
-if(opt$pnew == -1 & opt$pold == -1){
+if(opt$pnew == 0){
 
-  ## USER PROVIDED NEITHER PNEW OR POLD
+  message("Provided pnew is 0, so assuming this is a -s4U control sample.")
 
-  # Binomial mixture likelihood
-  mixture_lik <- function(param, TC, nT, n){
+  # Calculate logit(fn) with analytical Bayesian approach
+  Fn_est <- cT[,.(fn_est = 0,
+                  nreads = sum(pt)), by = .(XF, TF)]
 
-      logl <- sum(n*log(inv_logit(param[3])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[2])^TC)*((1 -inv_logit(param[2]))^(nT-TC)) +  (1-inv_logit(param[3]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
-
-      return(-logl)
-
-  }
-
-  low_ps <- c(-9, -9, -9)
-  high_ps <- c(0, 0, 9)
-
-  fit <- stats::optim(par=c(-7,-2,0), mixture_lik, TC = cB$TC, nT = cB$nT,
-                                  n = cB$N, method = "L-BFGS-B", 
-                                  lower = low_ps, upper = high_ps)
-
-
-  pnew <- inv_logit(max(fit$par[1:2]))
-  pold <- inv_logit(min(fit$par[1:2]))
-
-}else if(opt$pnew == -1 & opt$pold != -1){
-
-  ## USER PROVIDED POLD BUT NOT PNEW
-
-  # Binomial mixture likelihood
-  mixture_lik <- function(param, TC, nT, n){
-
-      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 -inv_logit(param[1]))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pold)^TC)*((1 - inv_logit(opt$pold))^(nT-TC)) ) )
-
-      return(-logl)
-
-  }
-
-  low_ps <- c(logit(opt$pold), -9)
-  high_ps <- c(0, 9)
-
-  fit <- stats::optim(par=c(-2,0), mixture_lik, TC = cB$TC, nT = cB$nT,
-                                  n = cB$N, method = "L-BFGS-B", 
-                                  lower = low_ps, upper = high_ps)
-
-
-  pnew <- inv_logit(fit$par[1])
-  pold <- opt$pold
-
-}else if(opt$pnew != -1 & opt$pold == -1){
-
-  ## USER PROVIDED PNEW BUT NOT POLD
-
-
-    # Binomial mixture likelihood
-  mixture_lik <- function(param, TC, nT, n){
-
-      logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pnew)^TC)*((1 -inv_logit(opt$pnew))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
-
-      return(-logl)
-
-  }
-
-  low_ps <- c(-9, -9)
-  high_ps <- c(logit(opt$pnew), 9)
-
-  fit <- stats::optim(par=c(-7,0), mixture_lik, TC = cB$TC, nT = cB$nT,
-                                  n = cB$N, method = "L-BFGS-B", 
-                                  lower = low_ps, upper = high_ps)
-
-
-  pnew <- opt$pnew
-  pold <- inv_logit(fit$par[1])
+  Fn_est$sample <- opt$sample
 
 }else{
 
-  pnew <- opt$pnew
-  pold <- opt$pold
+  cB <- counts[!grepl("__", XF), .N, by = .(XF, TC, nT)]
 
+  if(opt$pnew == -1 & opt$pold == -1){
+
+    ## USER PROVIDED NEITHER PNEW OR POLD
+
+    # Binomial mixture likelihood
+    mixture_lik <- function(param, TC, nT, n){
+
+        logl <- sum(n*log(inv_logit(param[3])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[2])^TC)*((1 -inv_logit(param[2]))^(nT-TC)) +  (1-inv_logit(param[3]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
+
+        return(-logl)
+
+    }
+
+    low_ps <- c(-9, -9, -9)
+    high_ps <- c(0, 0, 9)
+
+    fit <- stats::optim(par=c(-7,-2,0), mixture_lik, TC = cB$TC, nT = cB$nT,
+                                    n = cB$N, method = "L-BFGS-B", 
+                                    lower = low_ps, upper = high_ps)
+
+
+    pnew <- inv_logit(max(fit$par[1:2]))
+    pold <- inv_logit(min(fit$par[1:2]))
+
+  }else if(opt$pnew == -1 & opt$pold != -1){
+
+    ## USER PROVIDED POLD BUT NOT PNEW
+
+    # Binomial mixture likelihood
+    mixture_lik <- function(param, TC, nT, n){
+
+        logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 -inv_logit(param[1]))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pold)^TC)*((1 - inv_logit(opt$pold))^(nT-TC)) ) )
+
+        return(-logl)
+
+    }
+
+    low_ps <- c(logit(opt$pold), -9)
+    high_ps <- c(0, 9)
+
+    fit <- stats::optim(par=c(-2,0), mixture_lik, TC = cB$TC, nT = cB$nT,
+                                    n = cB$N, method = "L-BFGS-B", 
+                                    lower = low_ps, upper = high_ps)
+
+
+    pnew <- inv_logit(fit$par[1])
+    pold <- opt$pold
+
+  }else if(opt$pnew != -1 & opt$pold == -1){
+
+    ## USER PROVIDED PNEW BUT NOT POLD
+
+
+      # Binomial mixture likelihood
+    mixture_lik <- function(param, TC, nT, n){
+
+        logl <- sum(n*log(inv_logit(param[2])*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(opt$pnew)^TC)*((1 -inv_logit(opt$pnew))^(nT-TC)) +  (1-inv_logit(param[2]))*(factorial(nT)/(factorial(nT-TC)*factorial(TC)))*(inv_logit(param[1])^TC)*((1 - inv_logit(param[1]))^(nT-TC)) ) )
+
+        return(-logl)
+
+    }
+
+    low_ps <- c(-9, -9)
+    high_ps <- c(logit(opt$pnew), 9)
+
+    fit <- stats::optim(par=c(-7,0), mixture_lik, TC = cB$TC, nT = cB$nT,
+                                    n = cB$N, method = "L-BFGS-B", 
+                                    lower = low_ps, upper = high_ps)
+
+
+    pnew <- opt$pnew
+    pold <- inv_logit(fit$par[1])
+
+  }else{
+
+    pnew <- opt$pnew
+    pold <- opt$pold
+
+  }
+
+
+
+
+  ### Get priors
+
+
+
+  # Add mutation rates
+  cT$pnew <- pnew
+  cT$pold <- pold
+
+  cB$pnew <- pnew
+  cB$pold <- pold
+
+  # Likelihood function for mixture model
+  mixed_lik <- function(pnew, pold, TC, nT, n, logit_fn, p_sd = 1, p_mean = 0){
+    logl <- sum(n*(log(inv_logit(logit_fn)*dbinom(TC, size = nT, prob = pnew) + (1-inv_logit(logit_fn))*dbinom(TC, nT, pold) ) ) ) + log(stats::dnorm(logit_fn, mean = p_mean, sd = p_sd))
+    return(-logl)
+  }
+
+  # Estimate GF for prior
+  Fn_prior <- cB %>% dplyr::ungroup() %>%
+    dplyr::group_by(XF, TC, nT, pnew, pold) %>%
+    dplyr::summarise(n = sum(N)) %>%
+    dplyr::group_by(XF) %>%
+    dplyr::summarise(logit_fn_rep = stats::optim(0, mixed_lik, nT = nT, TC = TC, n = n, pnew = pnew, pold = pold, method = "L-BFGS-B", lower = -7, upper = 7)$par, nreads =sum(n), .groups = "keep") %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(prior = inv_logit(logit_fn_rep)) %>%
+    dplyr::select(XF, prior)
+
+
+  # Add prior info
+  cT <- setDT(inner_join(cT, Fn_prior, by = "XF"))
+
+  # Calculate logit(fn) with analytical Bayesian approach
+  Fn_est <- cT[,.(fn_est = (sum((pt*dbinom(TC, nT, pnew)*prior)/(dbinom(TC, nT, pnew)*prior + dbinom(TC, nT, pold)*(1-prior)) ))/(sum(pt)),
+                  nreads = sum(pt)), by = .(XF, TF)]
+
+  Fn_est$sample <- opt$sample
 }
 
 
-
-
-### Get priors
-
-
-
-# Add mutation rates
-cT$pnew <- pnew
-cT$pold <- pold
-
-cB$pnew <- pnew
-cB$pold <- pold
-
-# Likelihood function for mixture model
-mixed_lik <- function(pnew, pold, TC, nT, n, logit_fn, p_sd = 1, p_mean = 0){
-  logl <- sum(n*(log(inv_logit(logit_fn)*dbinom(TC, size = nT, prob = pnew) + (1-inv_logit(logit_fn))*dbinom(TC, nT, pold) ) ) ) + log(stats::dnorm(logit_fn, mean = p_mean, sd = p_sd))
-  return(-logl)
-}
-
-# Estimate GF for prior
-Fn_prior <- cB %>% dplyr::ungroup() %>%
-  dplyr::group_by(XF, TC, nT, pnew, pold) %>%
-  dplyr::summarise(n = sum(N)) %>%
-  dplyr::group_by(XF) %>%
-  dplyr::summarise(logit_fn_rep = stats::optim(0, mixed_lik, nT = nT, TC = TC, n = n, pnew = pnew, pold = pold, method = "L-BFGS-B", lower = -7, upper = 7)$par, nreads =sum(n), .groups = "keep") %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(prior = inv_logit(logit_fn_rep)) %>%
-  dplyr::select(XF, prior)
-
-
-# Add prior info
-cT <- setDT(inner_join(cT, Fn_prior, by = "XF"))
-
-# Calculate logit(fn) with analytical Bayesian approach
-Fn_est <- cT[,.(fn_est = (sum((pt*dbinom(TC, nT, pnew)*prior)/(dbinom(TC, nT, pnew)*prior + dbinom(TC, nT, pold)*(1-prior)) ))/(sum(pt)),
-                nreads = sum(pt)), by = .(XF, TF)]
-
-Fn_est$sample <- opt$sample
 
 write_csv(Fn_est, file = opt$output)
 
