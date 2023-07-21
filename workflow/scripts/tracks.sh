@@ -108,12 +108,15 @@ echo '* Making .chrom.sizes file'
     # Filter the reads
     echo '* Filtering reads'
 
-    parallel -j 1 samtools view -@ "$cpus" \
-                                     -b \
-                                     -N ./results/tracks/"$sample"_{1}_{2}_reads.txt \
-                                     -o ./results/tracks/"$sample"_{1}_{2}.bam \
-                                     ./results/tracks/"$sample"_sort.bam ::: $muts \
-                                                        ::: $(seq 0 5)
+
+    for muts_element in ${muts[@]}; do
+
+        parallel -j 1 samtools view -@ "$cpus" \
+                                        -b \
+                                        -N ./results/tracks/"$sample"_{1}_{2}_reads.txt \
+                                        -o ./results/tracks/"$sample"_{1}_{2}.bam \
+                                        ./results/tracks/"$sample"_sort.bam ::: $muts_element \
+                                                            ::: $(seq 0 5)
 
 
     if [ $WSL_b = 0 ]; then
