@@ -171,6 +171,8 @@ if(opt$pnew == 0){
 
   }else{
 
+    ## USER PROVIDED BOTH PNEW AND POLD
+    
     pnew <- opt$pnew
     pold <- opt$pold
 
@@ -210,7 +212,7 @@ if(opt$pnew == 0){
   # Add prior info
   cT <- setDT(inner_join(cT, Fn_prior, by = "XF"))
 
-  # Calculate logit(fn) with analytical Bayesian approach
+  ### Calculate logit(fn) with analytical Bayesian approach
   Fn_est <- cT[,.(fn_est = (sum((pt*dbinom(TC, nT, pnew)*prior)/(dbinom(TC, nT, pnew)*prior + dbinom(TC, nT, pold)*(1-prior)) ))/(sum(pt)),
                   nreads = sum(pt)), by = .(XF, TF)]
 
