@@ -10,7 +10,7 @@ if STAR:
             pnew = get_pnew,
             pold = get_pold,
         log:
-            "logs/transcript_fn/{s4U_sample}.log"
+            "logs/transcript_fn/{sample}.log"
         threads: 20
         conda:
             "../envs/full.yaml"
@@ -26,7 +26,7 @@ if STAR:
         output:
             "results/transcript_fn/RSEM_plus.csv"
         log:
-            "logs/transcript_fn/combine_fn.log"
+            "logs/combine_fn/combine_fn.log"
         threads: 1
         conda:
             "../envs/full.yaml"
