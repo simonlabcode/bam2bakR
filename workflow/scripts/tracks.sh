@@ -118,6 +118,7 @@ echo '* Making .chrom.sizes file'
                                         ./results/tracks/"$sample"_sort.bam ::: $muts_element \
                                                             ::: $(seq 0 5)
 
+    done
 
     if [ $WSL_b = 0 ]; then
 
