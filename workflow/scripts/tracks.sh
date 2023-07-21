@@ -108,6 +108,7 @@ echo '* Making .chrom.sizes file'
     # Filter the reads
     echo '* Filtering reads'
 
+    muts_array=($(echo $mut_tracks | tr ',' ' '))
 
     for muts_element in ${muts[@]}; do
 
