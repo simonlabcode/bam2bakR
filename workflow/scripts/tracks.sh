@@ -108,18 +108,13 @@ echo '* Making .chrom.sizes file'
     # Filter the reads
     echo '* Filtering reads'
 
-    muts_array=($(echo $mut_tracks | tr ',' ' '))
+    parallel -j 1 samtools view -@ "$cpus" \
+                                     -b \
+                                     -N ./results/tracks/"$sample"_{1}_{2}_reads.txt \
+                                     -o ./results/tracks/"$sample"_{1}_{2}.bam \
+                                     ./results/tracks/"$sample"_sort.bam ::: $muts \
+                                                        ::: $(seq 0 5)
 
-    for muts_element in ${muts[@]}; do
-
-        parallel -j 1 samtools view -@ "$cpus" \
-                                        -b \
-                                        -N ./results/tracks/"$sample"_{1}_{2}_reads.txt \
-                                        -o ./results/tracks/"$sample"_{1}_{2}.bam \
-                                        ./results/tracks/"$sample"_sort.bam ::: $muts_element \
-                                                            ::: $(seq 0 5)
-
-    done
 
     if [ $WSL_b = 0 ]; then
 
@@ -153,15 +148,24 @@ echo '* Making .chrom.sizes file'
 
     else
         # Make tracks
+
         echo '*making tracks with STAR'
-        parallel -j "$cpus" STAR \
-                                --runMode inputAlignmentsFromBAM \
-                                --inputBAMfile ./results/tracks/"$sample"_{1}_{2}.bam \
-                                --outWigType bedGraph \
-                                --outWigNorm None \
-                                --outWigStrand Stranded \
-                                --outFileNamePrefix ./results/tracks/"$sample"_{1}_{2}_ ::: $muts \
-                                                                         ::: $(seq 0 5)
+
+        muts_array=($(echo "$mut_tracks" | tr ',' ' '))
+
+        for muts_element in ${muts_array[@]}; do
+
+            parallel -j "$cpus" STAR \
+                                    --runMode inputAlignmentsFromBAM \
+                                    --inputBAMfile ./results/tracks/"$sample"_{1}_{2}.bam \
+                                    --outWigType bedGraph \
+                                    --outWigNorm None \
+                                    --outWigStrand Stranded \
+                                    --outFileNamePrefix ./results/tracks/"$sample"_{1}_{2}_ ::: $muts_element \
+                                                                            ::: $(seq 0 5)
+
+        done
+
 
         # Take only unique component of track
         echo '* Taking only unique components of tracks'
