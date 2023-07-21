@@ -127,11 +127,15 @@ hisat2_extra: "--mp 1,0"
 pnews:
   WT_1: 0.05 
   WT_2: 0.05
+  WT_ctl: 0
   KO_1: 0.05
   KO_2: 0.05
+  KO_ctl: 0
 
 polds:
   WT_1: 0.001
   WT_2: 0.001
+  WT_ctl: 0
   KO_1: 0.001
   KO_2: 0.001
+  KO_ctl: 0
