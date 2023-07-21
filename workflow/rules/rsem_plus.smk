@@ -17,7 +17,7 @@ if STAR:
         shell:
             r"""
             chmod +x {params.rscript}
-            {params.rscript} -o {output.outfile} -c {input.counts} -r {input.rsem} -s {wildcards.s4U_sample} -n {params.pnew} -b {params.pold} 1> {log} 2>&1
+            {params.rscript} -o {output.outfile} -c {input.counts} -r {input.rsem} -s {wildcards.sample} -n {params.pnew} -b {params.pold} 1> {log} 2>&1
             """
 
     rule combine_fn:
