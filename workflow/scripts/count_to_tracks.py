@@ -26,7 +26,7 @@ parser.add_argument('-i', '--inputFile', type=str,
                     help='Name of gzip compressed csv file that will be processed')
 parser.add_argument('-s', '--sample', type=str,
                     help='Sample name used for name of output file')
-parser.add_argument('--mutType', default='TC', type=str, choices=['TC', 'GA', 'TC,GA'],
+parser.add_argument('--mutType', default='TC', type=str,
                     help='Type of mutation to record')
 
 args = parser.parse_args()

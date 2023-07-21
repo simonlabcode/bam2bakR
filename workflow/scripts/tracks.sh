@@ -45,6 +45,7 @@ output=${12}
 
     python $pyscript \
         -i $input1 \
+        --mutType $mut_tracks \
         -s ./results/tracks/$sample
 
 
