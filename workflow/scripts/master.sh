@@ -141,6 +141,7 @@ if [ "$mut_pos" = "True" ]; then
                 {
                     print sample[2], $0
                 }' \
+        | awk '{ if (NR > 1) {$1 = substr($1, 18); print } else print }' \
         | pigz -p $cpus > "$mutposout"
 
 
