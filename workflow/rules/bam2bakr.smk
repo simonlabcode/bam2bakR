@@ -87,7 +87,8 @@ if config["flattened"]:
 
     rule htseq_cnt:
         input:
-            "results/sf_reads/{sample}.s.sam"
+            sam="results/sf_reads/{sample}.s.sam",
+            flatstack=config["flat_annotation"]
         output:
             "results/htseq/{sample}_tl.bam",
             temp("results/htseq/{sample}_check.txt")
@@ -96,7 +97,6 @@ if config["flattened"]:
             pythonscript=workflow.source_path("../scripts/count_triple.py"),
             strand=config["strandedness"],
             flattened=config["flattened"],
-            flatstack=config["flat_annotation"],
         log:
             "logs/htseq_cnt/{sample}.log"
         threads: 3
@@ -106,14 +106,15 @@ if config["flattened"]:
             """
             chmod +x {params.shellscript}
             chmod +x {params.pythonscript}
-            {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.flatstack} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
+            {params.shellscript} {threads} {wildcards.sample} {input.sam} {output} {input.flatstack} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
             """
 
 else:
 
     rule htseq_cnt:
         input:
-            "results/sf_reads/{sample}.s.sam"
+            sam="results/sf_reads/{sample}.s.sam",
+            annotation=config["annotation"]
         output:
             "results/htseq/{sample}_tl.bam",
             temp("results/htseq/{sample}_check.txt")
@@ -122,7 +123,6 @@ else:
             pythonscript=workflow.source_path("../scripts/count_triple.py"),
             strand=config["strandedness"],
             flattened=config["flattened"],
-            annotation=config["annotation"]
         log:
             "logs/htseq_cnt/{sample}.log"
         threads: 3
@@ -132,7 +132,7 @@ else:
             """
             chmod +x {params.shellscript}
             chmod +x {params.pythonscript}
-            {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.annotation} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
+            {params.shellscript} {threads} {wildcards.sample} {input.sam} {output} {input.annotation} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
             """
 
 
