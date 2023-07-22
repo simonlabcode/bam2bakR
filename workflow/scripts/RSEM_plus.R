@@ -77,13 +77,15 @@ counts <- counts[,c("GF", "XF", "EF", "qname", "TC", "nT")]
 
 cT <- setDT(inner_join(rsem, counts, by = "qname"))
 
-rm(counts)
-rm(rsem)
+
 
 ### Estimate new and old mutation rate
 
 if(opt$pnew == 0){
 
+  rm(counts)
+  rm(rsem)
+  
   message("Provided pnew is 0, so assuming this is a -s4U control sample.")
 
   # Calculate logit(fn) with analytical Bayesian approach
@@ -95,6 +97,9 @@ if(opt$pnew == 0){
 }else{
 
   cB <- counts[!grepl("__", XF), .N, by = .(XF, TC, nT)]
+
+  rm(counts)
+  rm(rsem)
 
   if(opt$pnew == -1 & opt$pold == -1){
 
