@@ -129,3 +129,4 @@ hisat2_extra: "--mp 1,0"
 # Minimum number of reads overlapping a position to track its mutational content (if mut_pos is TRUE)
 min_pos_coverage: 50
 
+max_pos_coverage: 1000000

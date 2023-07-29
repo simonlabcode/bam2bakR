@@ -12,6 +12,7 @@ if [ "$mut_pos" = "True" ]; then
     pos_cutoff=$6
     mutposout=$7
     mutposfilter=$8
+    high_cutoff=$9
 
 fi
 
@@ -148,7 +149,8 @@ if [ "$mut_pos" = "True" ]; then
    pigz -d -p $cpus -c "$mutposout" \
 	| awk -F "," \
 	      -v cutoff="$pos_cutoff" \
-	      'NR == 1 || $(NF-1) >= cutoff { print}' | pigz -p $cpus >  "$mutposfilter"
+          -v upper="$high_cutoff" \
+	      'NR == 1 || $(NF-1) >= cutoff && $(NF-1) <= upper { print}' | pigz -p $cpus >  "$mutposfilter"
 
 
 echo "**  site-specific mutation file created: mutpos.csv.gz"
