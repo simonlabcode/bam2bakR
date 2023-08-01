@@ -6,7 +6,7 @@ rule flatten:
     log:
         "logs/get-genome.log",
     conda: 
-        "../envs/full.yaml"
+        "../envs/flatten.yaml"
     threads: 1
     script:
         "../scripts/dexseq_prepare_annotation.py"
