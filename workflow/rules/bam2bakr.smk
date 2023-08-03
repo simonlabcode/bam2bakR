@@ -258,6 +258,26 @@ if config["mut_pos"]:
             chmod +x {params.shellscript}
             {params.shellscript} {threads} {output.cB} {config[keepcols]} {config[mut_tracks]} {params.mut_pos} {params.min_pos_coverage} {output.mutpos} {output.mutposfilter} {params.max_pos_coverage} 1> {log} 2>&1
             """
+
+    #rule dataset:
+    #    input:
+    #        mutpos="results/cB/mutpos.csv.gz",
+    #    output:
+    #        dataset=directory("results/mutpos_dataset/"),
+    #    params:
+    #        rscript=workflow.source_path("../scripts/mutpos_dataset.R"),
+    #    log:
+    #        "logs/dataset/dataset.log"
+    #    threads: 20
+    #    conda:
+    #        "../envs/arrow.yaml"
+    #    shell:
+    #        r"""
+    #        chmod +x {params.rscript}
+    #        {params.rscript} --mutpos {input} --output {output}
+    #        """
+
+
 else:
     # Make cB file that will be input to bakR
     rule makecB:
