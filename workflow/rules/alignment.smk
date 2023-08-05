@@ -99,7 +99,7 @@ if FORMAT == 'PE':
                 idxfa="index/reference.idx.fa",
                 n2g="index/reference.n2g.idx.fa",
             params:
-                extra="--gff3 {}".format(str(config["rsem_annotation"])),
+                extra="--gtf {}".format(str(config["annotation"])),
             log:
                 "logs/rsem/prepare-reference.log",
             threads: 36
