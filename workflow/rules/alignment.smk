@@ -104,7 +104,7 @@ if FORMAT == 'PE':
                 "logs/rsem/prepare-reference.log",
             threads: 36
             wrapper:
-                "v1.23.4/bio/rsem/prepare-reference"
+                "v2.3.1/bio/rsem/prepare-reference"
                 
         rule RSEM:
             input:
