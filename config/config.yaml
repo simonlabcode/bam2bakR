@@ -28,6 +28,8 @@ samples:
 # location of annotation gtf file
 annotation: data/annotation/GRCh38.gtf
 
+rsem_annotation: data/annotation/GRCh38.gff
+
 # location of flattened annotation (will be created by pipeline if it does not already exist)
 flat_annotation: data/annotation/GRCh38_flat.gtf
 
