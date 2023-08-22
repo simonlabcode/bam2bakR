@@ -229,5 +229,18 @@ sum(counts$AG)/sum(counts$nA)
 sum(counts$TC)/sum(counts$nT)
 ```
 
+## Citations
+
+Please cite the following if you end up using bam2bakR in published work:
+
+[TimeLapse-seq paper](https://www.nature.com/articles/nmeth.4582), where initial pipeline was introduced:
+
+- Schofield JA, Duffy EE, Kiefer L, Sullivan MC, and Simon MD. 2018. TimeLapse-seq: adding a temporal dimension to RNA sequencing through nucleoside recoding. *Nature Methods*. **15**:221-225. doi:10.1038/nmeth.4582.
+
+[bakR paper](https://rnajournal.cshlp.org/content/29/7/958.abstract), where Snakemake implementation was introduced:
+
+- Vock IW and Simon MD. 2023. bakR: uncovering differential RNA synthesis and degradation kinetics transcriptome-wide with Bayesian hierarchical modeling. *RNA*:*rna.079451.122*. doi:10.1261/rna.079451.122.
+
+
 ## Questions?
 If you have any questions or run into any problems, feel free to post them to Issues.
