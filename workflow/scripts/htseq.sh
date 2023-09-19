@@ -41,7 +41,7 @@ fi
                         -f sam \
                         --samout ./results/htseq/"$sample"_htseq.{#}_temp.sam \
                         -t aggregate_gene,exonic_part,exonic_part \
-                        -i gene_id,exon_id,transcript_id \
+                        -i gene_id,exon_id,transcripts \
                         -m union,union,intersection-strict \
                         -s "$strand" \
                         -c ./results/htseq/"$sample"_GF_htseq.{#}_temp.txt,./results/htseq/"$sample"_EF_htseq.{#}_temp.txt,./results/htseq/"$sample"_XF_htseq.{#}_temp.txt \
