@@ -63,7 +63,7 @@ fi
                         -f sam \
                         --samout ./results/htseq/"$sample"_htseq.{#}_temp.sam \
                         -t transcript,exon,exon \
-                        -i gene_id,gene_id,gene_id \
+                        -i gene_id,gene_id,transcript_id \
                         -m union,union,intersection-strict \
                         -s "$strand" \
                         -c ./results/htseq/"$sample"_GF_htseq.{#}_temp.txt,./results/htseq/"$sample"_EF_htseq.{#}_temp.txt,./results/htseq/"$sample"_XF_htseq.{#}_temp.txt \
