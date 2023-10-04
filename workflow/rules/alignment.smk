@@ -148,26 +148,6 @@ if FORMAT == 'PE':
                 chmod +x {params.awkscript}
                 {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.pythonscript} {params.awkscript} 1> {log} 2>&1
                 """
-
-        rule transcript_fn:
-            input:
-                rsem="results/rsem_csv/{sample}_rsem.csv.gz",
-                counts="results/counts/{sample}_counts.csv.gz",
-            output:
-                outfile="results/transcript_fn/{sample}_RSEM_plus.csv",
-            params:
-                rscript = workflow.source_path("../scripts/RSEM_plus.R"),
-            log:
-                "logs/transcript_fn/{sample}.log"
-            threads: 20
-            conda:
-                "../envs/full.yaml"
-            shell:
-                r"""
-                chmod +x {params.rscript}
-                {params.rscript} -o {output.outfile} -c {input.counts} -r {input.rsem} 1> {log} 2>&1
-                """
-
     # Run hisat2
     else:
         ## Old way of running hisat2 with custom script
