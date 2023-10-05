@@ -45,7 +45,7 @@ fi
 
 
 # Read all _counts.csv.gz files and save them as master-DATE.csv.gz and cB-DATE.csv.gz
-parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p $cpus {1} | sed 's/\r//')" ::: $directory/*_counts* \
+parallel -j 1 --compress --plus "base={1}; base=\$(basename \${base}); cat <(echo Filename:\${base%_counts.csv.gz}) <(pigz -d -k -c -p $cpus {1} | sed 's/\r//')" ::: $directory/*_counts* \
     | awk -v OFS="," '
             $1 ~ /Filename/ {
                 split($1, sample, ":")
