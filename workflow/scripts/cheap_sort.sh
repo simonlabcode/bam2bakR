@@ -16,7 +16,7 @@ if [ "$gzipped" = "TRUE" ]; then
     header=$(head -n 1 $dir/input_decompressed.csv)
     tail -n +2 $dir/input_decompressed.csv > $dir/no_header.csv
 
-    #rm -f ./results/read_to_transcripts/input_decompressed.csv
+    rm -f $dir/input_decompressed.csv
 
 
 else
@@ -46,6 +46,6 @@ echo $header > $output_file
 cat $dir/sorted_no_header.csv >> $output_file
 
 # Clean up temporary files
-#rm -f $dir/sorted_no_header.csv
-#rm -f $dir/chunk_*
-#rm -f $dir/no_header.csv
+rm -f $dir/sorted_no_header.csv
+rm -f $dir/chunk_*
+rm -f $dir/no_header.csv
