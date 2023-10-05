@@ -240,6 +240,133 @@ rule cnt_muts:
         {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} {params.pythonscript} {params.awkscript} 1> {log} 2>&1
         """
 
+### Get the set of transcripts that a read aligned to
+### and combine that info with mutation counting on genome
+### aligned bams
+if config["transcripts_cB"]:
+
+    rule read_to_transcripts:
+        input:
+            bam="results/bams/{sample}-Aligned.toTranscriptome.out.bam",
+        output:
+            table=temp("results/read_to_transcripts/{sample}.csv")
+        log:
+            "logs/read_to_transcripts/{sample}.log"
+        conda:
+            "../envs/full.yaml"
+        threads: 1
+        script:
+            "../scripts/count_transcriptome.py"
+
+    # Sort transcript mapping table
+    # to facilitate memory efficient joining later
+    rule sort_transcripts_table:
+        input:
+            transcripts="results/read_to_transcripts/{sample}.csv",
+        output:
+            sorted="results/read_to_transcripts/{sample}_sorted.csv"
+        log:
+            "logs/sort_transcripts_table/{sample}.log"
+        params:
+            script = workflow.source_path("../scripts/cheap_sort.sh"),
+            lines = config["chunk_size"],
+        conda:
+            "../envs/full.yaml"
+        threads: 1
+        shell:
+            """
+            chmod +x {params.script}
+            {params.script} {input} {output} 1 {params.lines} FALSE ./results/read_to_transcripts
+            """
+    
+    # Sort mutation counts
+    # to facilitate memory efficient joining later
+    rule sort_counts:
+        input:
+            counts="results/counts/{sample}_counts.csv.gz",
+        output:
+            sorted="results/sort_counts/{sample}_sorted.csv"
+        log:
+            "logs/sort_counts/{sample}.log"
+        params:
+            script = workflow.source_path("../scripts/cheap_sort.sh"),
+            lines = config["chunk_size"],
+        conda:
+            "../envs/full.yaml"
+        threads: 1
+        shell:
+            """
+            chmod +x {params.script}
+            {params.script} {input} {output} 1 {params.lines} TRUE ./results/sort_counts
+            """
+
+    rule merge_counts:
+        input:
+            muts="results/sort_counts/{sample}_sorted.csv",
+            transcripts="results/read_to_transcripts/{sample}_sorted.csv"
+        output:
+            merged=temp("results/merge_counts/{sample}_counts.csv")
+        conda:
+            "../envs/full.yaml"
+        threads: 1
+        script:
+            "../scripts/noram_join.py"
+
+    rule compress_counts:
+        input:
+            "results/merge_counts/{sample}_counts.csv"
+        output:
+            "results/merge_counts/{sample}_counts.csv.gz"
+        conda:
+            "../envs/full.yaml"
+        threads: 8
+        shell:
+            "pigz -p {threads} -c {input} > {output}"
+
+
+    # Make cB file that will be input to bakR
+    rule makecB:
+        input:
+            expand("results/merge_counts/{sample}_counts.csv.gz", sample=SAMP_NAMES)
+        output:
+            "results/cB/cB.csv.gz"
+        params:
+            shellscript = workflow.source_path("../scripts/master.sh"),
+            keepcols = config["keepcols"]
+        log:
+            "logs/makecB/master.log"
+        threads: 20
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            {params.shellscript} {threads} {output} {params.keepcols} {config[mut_tracks]} ./results/merge_counts TRUE 1> {log} 2>&1
+            """
+
+
+else:
+
+    # Make cB file that will be input to bakR
+    rule makecB:
+        input:
+            expand("results/counts/{sample}_counts.csv.gz", sample=SAMP_NAMES)
+        output:
+            "results/cB/cB.csv.gz"
+        params:
+            shellscript = workflow.source_path("../scripts/master.sh")
+        log:
+            "logs/makecB/master.log"
+        threads: 20
+        conda:
+            "../envs/full.yaml"
+        shell:
+            """
+            chmod +x {params.shellscript}
+            {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} ./results/counts FALSE 1> {log} 2>&1
+            """
+
+
 # Make color-coded tracks
 rule maketdf:
     input:
@@ -264,21 +391,3 @@ rule maketdf:
         {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {output} 1> {log} 2>&1
         """
 
-# Make cB file that will be input to bakR
-rule makecB:
-    input:
-        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
-    output:
-        "results/cB/cB.csv.gz"
-    params:
-        shellscript = workflow.source_path("../scripts/master.sh")
-    log:
-        "logs/makecB/master.log"
-    threads: 20
-    conda:
-        "../envs/full.yaml"
-    shell:
-        """
-        chmod +x {params.shellscript}
-        {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1
-        """

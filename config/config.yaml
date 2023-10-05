@@ -37,6 +37,10 @@ control_samples: ['WT_ctl', 'KO_ctl']
 # location of genome fasta file
 genome_fasta: data/genome/GRCh38.fa
 
+# If using STAR, do you want to note all of the transcripts a read aligned to in the final cB?
+transcripts_cB: True
+
+
 ##### Parameters that are always relevant #####
 
 # Format of reads
@@ -121,6 +125,11 @@ star_extra: "--outFilterMismatchNmax 20"
 # Extra parameters to be passed to Hisat2
 hisat2_extra: "--mp 1,0"
   # No additional parameters are passed, so this can include any of hisat2's optional parameters
+
+# Number of lines to split csv into when sorting it
+  # Each chunk is sorted independently and then merged
+  # to limit RAM usage for sorting large table
+chunk_size: 25000
 
 ##### PARAMETERS THAT ONLY MATTER IF USING FASTQ2BAKR AND STAR #####
 

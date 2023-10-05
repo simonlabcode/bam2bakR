@@ -5,6 +5,10 @@ cpus=$1
 cBout=$2
 keepcols=$3
 mut_tracks=$4
+directory=$5
+transcripts=$6
+
+
 
 #day=$(date +"%y%m%d")
 
@@ -21,12 +25,27 @@ base=$(echo $mut_tracks | awk -v OFS="," '
                                }')
 
 
-keepcols=${keepcols}","${base}","${mut_tracks}
+if [ "$transcripts" = "TRUE" ]; then
+    
+    keepcols=${keepcols}","${base}","${mut_tracks}
 
-#cd ./results/counts
+    echo "keepcols is $keepcols"
+
+else
+    
+    keepcols=${keepcols}","${base}","${mut_tracks}
+
+    echo "keepcols is $keepcols"
+
+fi
+
+
+
+# I feel like this should work: cat <(echo Filename:$(basename "{1}" _counts.csv.gz))
+
 
 # Read all _counts.csv.gz files and save them as master-DATE.csv.gz and cB-DATE.csv.gz
-parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p $cpus {1})" ::: ./results/counts/*_counts* \
+parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p $cpus {1} | sed 's/\r//')" ::: $directory/*_counts* \
     | awk -v OFS="," '
             $1 ~ /Filename/ {
                 split($1, sample, ":")
@@ -56,7 +75,7 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     if ($i in names) {
                         f[++nf] = i
                     }
-                }
+                }              
             }
             {
                 out = ""
@@ -89,7 +108,6 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     print row, count[row]
                 }
             } '\
-    | awk '{ if (NR > 1) {$1 = substr($1, 18); print } else print }' \
 	| pigz -p $cpus > "$cBout"
 
 

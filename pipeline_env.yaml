@@ -1,3 +1,4 @@
+name: bam2bakR
 channels:
   - conda-forge
   - bioconda
