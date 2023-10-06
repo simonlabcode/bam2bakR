@@ -42,7 +42,7 @@ do
 done
 
 # Stage 3: Merge sorted files into a single sorted file (without header)
-sort -m -t, -k$sort_column -V -o $dir/$sample/sorted_no_header.csv $dir/chunk_*
+sort -m -t, -k$sort_column -V -o $dir/$sample/sorted_no_header.csv $dir/$sample/chunk_*
 
 # Add header back to the sorted file
 echo $header > $output_file
