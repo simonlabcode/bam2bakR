@@ -276,7 +276,7 @@ if config["transcripts_cB"]:
         shell:
             """
             chmod +x {params.script}
-            {params.script} {input} {output} 1 {params.lines} FALSE ./results/read_to_transcripts
+            {params.script} {input} {output} 1 {params.lines} FALSE ./results/read_to_transcripts {wildcards.sample}
             """
     
     # Sort mutation counts
@@ -297,7 +297,7 @@ if config["transcripts_cB"]:
         shell:
             """
             chmod +x {params.script}
-            {params.script} {input} {output} 1 {params.lines} TRUE ./results/sort_counts
+            {params.script} {input} {output} 1 {params.lines} TRUE ./results/sort_counts {wildcards.sample}
             """
 
     rule merge_counts:
