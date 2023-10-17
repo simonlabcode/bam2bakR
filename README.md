@@ -71,11 +71,11 @@ answer with `yes`. Prepending to PATH means that after closing your current term
 
 ### Deploy workflow<a name="deploy"></a>
 
-Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snakedeploy](https://snakedeploy.readthedocs.io/en/latest/index.html). To get started with Snakedeploy, you first need to create a simple conda environment with Snakemake and Snakedeploy:
+Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snakedeploy](https://snakedeploy.readthedocs.io/en/latest/index.html). To get started with Snakedeploy, you first need to create a simple conda environment with Snakemake and Snakedeploy (Python version has to be pinned to < 3.12 due to bugs discussed [here](https://github.com/snakemake/snakemake/issues/2459) and [here](https://github.com/snakemake/snakemake/issues/2480)):
 
 
 ``` bash
-mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy
+mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy python<3.12
 ```
 
 Next, create a directory that you want to run bam2bakR in (I'll refer to it as `workdir`) and move into it:
