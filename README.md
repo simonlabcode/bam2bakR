@@ -75,7 +75,7 @@ Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snak
 
 
 ``` bash
-mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy python<3.12
+mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy "python<3.12"
 ```
 
 Next, create a directory that you want to run bam2bakR in (I'll refer to it as `workdir`) and move into it:
