@@ -84,7 +84,7 @@ if FORMAT == 'PE':
                 ),
             conda:
                 "../envs/star.yaml"
-            threads: 36
+            threads: 24
             script: 
                 "../scripts/star-align.py"
 
@@ -102,7 +102,7 @@ if FORMAT == 'PE':
                 extra="--gtf {}".format(str(config["annotation"])),
             log:
                 "logs/rsem/prepare-reference.log",
-            threads: 36
+            threads: 20
             wrapper:
                 "v2.3.1/bio/rsem/prepare-reference"
                 
@@ -122,7 +122,7 @@ if FORMAT == 'PE':
                 "logs/rsem/calculate_expression/{sample}.log",
             conda:
                 "../envs/rsem.yaml"
-            threads: 36
+            threads: 20
             script:
                 "../scripts/rsem-calc.py"
 
@@ -138,7 +138,7 @@ if FORMAT == 'PE':
                 awkscript = workflow.source_path("../scripts/fragment_sam_rsem.awk")
             log:
                 "logs/rsem_to_csv/{sample}.log"
-            threads: 24
+            threads: 20
             conda:
                 "../envs/full.yaml"
             shell:
@@ -254,7 +254,7 @@ else:
                 ),
             conda:
                 "../envs/star.yaml"
-            threads: 36
+            threads: 24
             script: 
                 "../scripts/star-align.py"
 
@@ -272,7 +272,7 @@ else:
                 extra="--gtf {}".format(str(config["annotation"])),
             log:
                 "logs/rsem/prepare-reference.log",
-            threads: 36
+            threads: 20
             wrapper:
                 "v1.23.4/bio/rsem/prepare-reference"
 
@@ -291,7 +291,7 @@ else:
                 "logs/rsem/calculate_expression/{sample}.log",
             conda:
                 "../envs/rsem.yaml"
-            threads: 36
+            threads: 20
             script:
                 "../scripts/rsem-calc.py"
 
