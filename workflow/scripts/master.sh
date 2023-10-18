@@ -27,7 +27,7 @@ base=$(echo $mut_tracks | awk -v OFS="," '
 
 if [ "$transcripts" = "TRUE" ]; then
     
-    keepcols=${keepcols}","${base}","${mut_tracks}
+    keepcols=${keepcols}","${base}","${mut_tracks}",transcripts"
 
     echo "keepcols is $keepcols"
 
