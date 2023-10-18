@@ -126,6 +126,10 @@ star_extra: "--outFilterMismatchNmax 20"
 hisat2_extra: "--mp 1,0"
   # No additional parameters are passed, so this can include any of hisat2's optional parameters
 
+# Extra parameters to be passed to RSEM
+rsem_extra: ""
+
+
 # Number of lines to split csv into when sorting it
   # Each chunk is sorted independently and then merged
   # to limit RAM usage for sorting large table

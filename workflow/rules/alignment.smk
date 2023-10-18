@@ -118,6 +118,7 @@ if FORMAT == 'PE':
                 # optional, specify if sequencing is paired-end
                 paired_end= True,
                 # additional optional parameters to pass to rsem, for example,
+                extra = config["rsem_extra"],
             log:
                 "logs/rsem/calculate_expression/{sample}.log",
             conda:
@@ -287,6 +288,7 @@ else:
                 # optional, specify if sequencing is paired-end
                 paired_end= False,
                 # additional optional parameters to pass to rsem, for example,
+                extra = config["rsem_extra"],
             log:
                 "logs/rsem/calculate_expression/{sample}.log",
             conda:
