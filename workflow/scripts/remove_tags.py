@@ -20,7 +20,7 @@ def remove_tags(input_bam, output_bam):
     # Iterate over each read in the input BAM file
     for read in input_file:
         # Remove the 'jI' and 'jM' tags, if present
-        read.tags = [(tag, value) for tag, value in read.tags if tag not in ['jI', 'jM']]
+        read.tags = [(tag, value) for tag, value in read.tags if tag not in ['jI', 'jM', 'GF', 'XF', 'EF']]
 
         # Write the modified read to the output BAM file
         output_file.write(read)
