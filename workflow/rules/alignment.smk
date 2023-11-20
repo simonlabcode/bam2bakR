@@ -8,7 +8,7 @@ if config['build_star']:
             directory(config['STAR_index']),
         threads: 4
         params:
-            extra="--sjdbGTFfile {}".format(str(config["annotation"])),
+            extra="--sjdbGTFfile {} {}".format(str(config["annotation"]), str(config["star_build_params"])),
         log:
             "logs/star_index_genome.log",
         wrapper:

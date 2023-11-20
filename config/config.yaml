@@ -122,6 +122,10 @@ star_extra: "--outFilterMismatchNmax 20"
   # Already passing: "--outSAMtype BAM SortedByCoordinate --outSAMattributes NH HI AS NM MD --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile config["annotation"]
   # Including any of the already set parameters will yield an error.
 
+# Extra parameters to be passed to STAR index build
+star_build_params: ""
+
+
 # Extra parameters to be passed to Hisat2
 hisat2_extra: "--mp 1,0"
   # No additional parameters are passed, so this can include any of hisat2's optional parameters
