@@ -2,7 +2,7 @@
 
 ## Check out [bam2bakR's website](https://tl-snakemake.readthedocs.io/en/latest/) for revamped and extended documentation!
 
-## bam2bakR now includes optional fastq2bakR functionality. That is, you can now provide fastq files as input and adapter trimming + alignment will be performed. Documentation for fastq2bakR is present at the end of the README
+## bam2bakR now includes optional fastq2bakR functionality. That is, you can now provide fastq files as input and adapter trimming + alignment will be performed. Documentation for fastq2bakR is present at the end of the README and on the bam2bakR website.
 
 This is a Snakemake implementation of the [TimeLapse pipeline](https://bitbucket.org/mattsimon9/timelapse_pipeline/src/master/) developed by the [Simon lab](https://simonlab.yale.edu/) at Yale. The contributors to the original pipeline are Matthew Simon, Jeremy Schofield, Martin Machyna, Lea Kiefer, and Joshua Zimmer. The original TimeLapse pipeline was developed to process fastq files from TimeLapse-seq (or similar methods, e.g., SLAM-seq, TUC-seq, etc.), map them to a reference genome, and T-to-C or G-to-A mutations in mapped reads. bam2bakR currently includes the basic TimeLapse pipeline functionality downstream of alignment. Thus, the input to bam2bakR is a set of .bam or .fastq files and the output is a cB.csv file, which as described on the TimeLapse pipeline bitbucket, contains the following columns by default:
 * XF - Mature feature: ENSEMBL ID if the read mapped solely to exonic parts of a feature
@@ -71,11 +71,11 @@ answer with `yes`. Prepending to PATH means that after closing your current term
 
 ### Deploy workflow<a name="deploy"></a>
 
-Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snakedeploy](https://snakedeploy.readthedocs.io/en/latest/index.html). To get started with Snakedeploy, you first need to create a simple conda environment with Snakemake and Snakedeploy:
+Version 1.0.1 of bam2bakR is now compatible with deployment using the tool [Snakedeploy](https://snakedeploy.readthedocs.io/en/latest/index.html). To get started with Snakedeploy, you first need to create a simple conda environment with Snakemake and Snakedeploy (Python version has to be pinned to < 3.12 due to bugs discussed [here](https://github.com/snakemake/snakemake/issues/2459) and [here](https://github.com/snakemake/snakemake/issues/2480)):
 
 
 ``` bash
-mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy
+mamba create -c conda-forge -c bioconda --name deploy_snakemake snakemake snakedeploy "python<3.12"
 ```
 
 Next, create a directory that you want to run bam2bakR in (I'll refer to it as `workdir`) and move into it:
@@ -228,6 +228,19 @@ sum(counts$AG)/sum(counts$nA)
 # T-to-C mutation rate
 sum(counts$TC)/sum(counts$nT)
 ```
+
+## Citations
+
+Please cite the following if you end up using bam2bakR in published work:
+
+[TimeLapse-seq paper](https://www.nature.com/articles/nmeth.4582), where initial pipeline was introduced:
+
+- Schofield JA, Duffy EE, Kiefer L, Sullivan MC, and Simon MD. 2018. TimeLapse-seq: adding a temporal dimension to RNA sequencing through nucleoside recoding. *Nature Methods*. **15**:221-225. doi:10.1038/nmeth.4582.
+
+[bakR paper](https://rnajournal.cshlp.org/content/29/7/958.abstract), where Snakemake implementation was introduced:
+
+- Vock IW and Simon MD. 2023. bakR: uncovering differential RNA synthesis and degradation kinetics transcriptome-wide with Bayesian hierarchical modeling. *RNA*:*rna.079451.122*. doi:10.1261/rna.079451.122.
+
 
 ## Questions?
 If you have any questions or run into any problems, feel free to post them to Issues.
