@@ -96,7 +96,7 @@ if NORMALIZE:
             "logs/normalize/normalize.log",
         threads: 1
         params:
-            rscript=workflow.source_path("../scripts/bam2bakR/normalize.R"),
+            rscript=workflow.source_path("../scripts/normalize.R"),
             spikename=config["spikename"],
         conda:
             "../envs/full.yaml"
