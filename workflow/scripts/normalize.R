@@ -56,7 +56,7 @@ master <- tibble()
 
 
 # Screw it, going to hardcode directory cause I can
-dirs <- paste0(getwd(), "./results/featurecounts_exons/")
+dirs <- paste0(getwd(), "/results/featurecounts_exons/")
 
 # Currently will not work alone due to fact that CORE files also have .featureCounts
 samplefiles <- list.files(path = dirs,
