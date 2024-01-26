@@ -72,7 +72,7 @@ samplefiles <- samplefiles[!grepl("\\.bam\\.featureCounts$", samplefiles)]
 print(samplefiles)
 
 # Create full directory path
-samplenames <- paste0(dir, samplefiles)
+samplenames <- paste0(dirs, samplefiles)
 
 # Actual sample name wildcards
 snames <- gsub(".featureCounts", "", samplefiles)
