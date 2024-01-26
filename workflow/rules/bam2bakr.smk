@@ -18,7 +18,7 @@ if config["bam2bakr"]:
             input:
                 "results/remove_tags/{sample}_no_jI_jM.bam",
             output:
-                "results/sf_reads/{sample}.s.sam",
+                "results/sf_reads/{sample}.s.bam",
                 "results/sf_reads/{sample}_fixed_mate.bam",
                 "results/sf_reads/{sample}.f.sam",
             log:
@@ -40,7 +40,7 @@ if config["bam2bakr"]:
             input:
                 get_input_bams
             output:
-                "results/sf_reads/{sample}.s.sam",
+                "results/sf_reads/{sample}.s.bam",
                 "results/sf_reads/{sample}_fixed_mate.bam",
                 "results/sf_reads/{sample}.f.sam",
             log:
@@ -63,7 +63,7 @@ else:
         input:
             "results/bams/{sample}Aligned.out.bam"
         output:
-            "results/sf_reads/{sample}.s.sam",
+            "results/sf_reads/{sample}.s.bam",
             "results/sf_reads/{sample}_fixed_mate.bam",
             "results/sf_reads/{sample}.f.sam",
         log:
@@ -82,57 +82,28 @@ else:
 
 
 
-# Use custom htseq script to quanity features 
-# Also creates bam files with tag designating feature that each read was mapped to; useful during mutation counting
-rule htseq_cnt:
-    input:
-        "results/sf_reads/{sample}.s.sam"
-    output:
-        "results/htseq/{sample}_tl.bam",
-        temp("results/htseq/{sample}_check.txt")
-    params: 
-        shellscript=workflow.source_path("../scripts/htseq.sh"),
-        pythonscript=workflow.source_path("../scripts/count_triple.py"),
-        strand=config["strandedness"],
-        flattened=config["flattened"],
-        annotation=config["annotation"],
-    log:
-        "logs/htseq_cnt/{sample}.log"
-    threads: 3
-    conda:
-        "../envs/full.yaml"
-    shell:
-        """
-        chmod +x {params.shellscript}
-        chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.annotation} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
-        """
 
 # Calculate normalization scale factor to be applied to tracks        
 if NORMALIZE:
     rule normalize:
         input:
-            expand("results/htseq/{sample}_tl.bam", sample = SAMP_NAMES)
+            expand("results/sf_reads/{sample}.s.bam", sample = SAMP_NAMES)
         output:
             "results/normalization/scale"
         log:
             "logs/normalize/normalize.log"
-        params:
-            rscript=workflow.source_path("../scripts/normalize.R"),
-            spikename=config["spikename"],
         threads: 1
         conda:
             "../envs/full.yaml"
         shell:
-            r"""
-            chmod +x {params.rscript}
-            {params.rscript} --dirs ./results/htseq/ --spikename {params.spikename}
-            mv scale {output}
             """
+            touch {output}
+            """
+
 else:
     rule normalize:
         input:
-            expand("results/htseq/{sample}_tl.bam", sample = SAMP_NAMES)
+            expand("results/sf_reads/{sample}.s.bam", sample = SAMP_NAMES)
         output:
             "results/normalization/scale"
         log:
@@ -164,7 +135,7 @@ rule call_snps:
     input:
         str(config["genome_fasta"]),
         get_index_name(),
-        expand("results/htseq/{ctl}_tl.bam", ctl = CTL_NAMES)
+        expand("results/sf_reads/{ctl}.s.bam", ctl = CTL_NAMES)
     params:
         nctl = nctl,
         shellscript = workflow.source_path("../scripts/call_snps.sh"),
@@ -246,7 +217,7 @@ rule merge_features_and_muts:
 rule maketdf:
     input:
         "results/counts/{sample}_counts.csv.gz",
-        "results/htseq/{sample}_tl.bam",
+        "results/sf_reads/{sample}.s.bam",
 	    "results/normalization/scale"
     output:
         temp("results/tracks/{sample}_success.txt"),

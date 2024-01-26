@@ -32,4 +32,4 @@ samtools sort -@ "$cpus" -n "$input" | samtools fixmate -@ "$cpus" - - | samtool
 
 
 
-samtools sort -@ "$cpus" -n -o "$output" "$output3"
+samtools sort -@ "$cpus" -n -O bam -o "$output" "$output3"
