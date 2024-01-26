@@ -69,6 +69,8 @@ print(samplefiles)
 # Remove the CORE files
 samplefiles <- samplefiles[!grepl("\\.bam\\.featureCounts$", samplefiles)]
 
+print(samplefiles)
+
 # Create full directory path
 samplenames <- paste0(dir, samplefiles)
 
