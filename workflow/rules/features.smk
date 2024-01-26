@@ -15,7 +15,7 @@ rule featurecounts_genes:
     threads: 20
     params:
         strand=FC_STRAND,  # optional; strandness of the library (0: unstranded [default], 1: stranded, and 2: reversely stranded)
-        extra=FC_GENES_PARAMS,
+        extra=config["fc_genes_extra"] + FC_GENES_PARAMS,
     log:
         "logs/featurecounts_gene/{sample}.log",
     wrapper:
@@ -37,7 +37,7 @@ rule featurecounts_exons:
     threads: 20
     params:
         strand=FC_STRAND,  # optional; strandness of the library (0: unstranded [default], 1: stranded, and 2: reversely stranded)
-        extra=FC_EXONS_PARAMS,
+        extra=config["fc_exons_extra"] + FC_EXONS_PARAMS,
     log:
         "logs/featurecounts_exons/{sample}.log",
     wrapper:

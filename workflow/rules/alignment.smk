@@ -238,7 +238,7 @@ else:
             extra=config["cutadapt_extra"],
         log:
             "logs/cutadapt/{sample}.log",
-        threads: 8 
+        threads: 8
         wrapper:
             "v1.25.0/bio/cutadapt/se"
 

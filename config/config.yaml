@@ -66,6 +66,21 @@ WSL: 1
 remove_tags: False
 
 
+### Optional parameters for featureCounts
+# Parameters automatically specified:
+  # Genes: -R -f -g gene_id -t transcript
+  # Exons: -R -g gene_id -J
+# If FORMAT = "PE", then "-p --countReadPairs" is also automatically set
+#
+# !!DO NOT REDUNDANTLY SPECIFY AUTOMATICALLY SPECIFIED PARAMETERS!!
+
+# Parameters for assignment of reads to genes
+fc_genes_extra: ""
+
+# Parameters for assignment of reads to exons
+fc_exons_extra: ""
+
+
 ##### Parameters that are only relevant if bam2bakr is False #####
 
 # location of hisat2 indices (directory containing indices)

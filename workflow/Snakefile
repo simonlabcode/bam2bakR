@@ -11,6 +11,17 @@ min_version("6.4.1")
 configfile: "config/config.yaml"
 
 
+##### Impute potentially missing config parameters
+
+
+if "fc_genes_extra" not in config:
+    config["fc_genes_extra"] = ""
+
+
+if "fc_exons_extra" not in config:
+    config["fc_exons_extra"] = ""
+
+
 ##### setup report #####
 
 
