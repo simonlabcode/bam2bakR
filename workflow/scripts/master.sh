@@ -5,6 +5,18 @@ cpus=$1
 cBout=$2
 keepcols=$3
 mut_tracks=$4
+directory=$5
+mut_pos=$6
+
+if [ "$mut_pos" = "True" ]; then
+
+    pos_cutoff=$7
+    mutposout=$8
+    mutposfilter=$9
+    high_cutoff=${10}
+
+fi
+
 
 #day=$(date +"%y%m%d")
 
@@ -21,12 +33,16 @@ base=$(echo $mut_tracks | awk -v OFS="," '
                                }')
 
 
+
 keepcols=${keepcols}","${base}","${mut_tracks}
 
-#cd ./results/counts
+
+
+# I feel like this should work: cat <(echo Filename:$(basename "{1}" _counts.csv.gz))
+
 
 # Read all _counts.csv.gz files and save them as master-DATE.csv.gz and cB-DATE.csv.gz
-parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz -d -k -c -p $cpus {1})" ::: ./results/counts/*_counts* \
+parallel -j $cpus --compress --plus "base={1}; base=\$(basename \${base}); cat <(echo Filename:\${base%_counts.csv.gz}) <(pigz -d -k -c -p 1 {1} | sed 's/\r$//')" ::: $directory/*_counts* \
     | awk -v OFS="," '
             $1 ~ /Filename/ {
                 split($1, sample, ":")
@@ -56,7 +72,7 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     if ($i in names) {
                         f[++nf] = i
                     }
-                }
+                }              
             }
             {
                 out = ""
@@ -89,7 +105,6 @@ parallel -j 1 --compress --plus "cat <(echo Filename:{1%_counts.csv.gz}) <(pigz 
                     print row, count[row]
                 }
             } '\
-    | awk '{ if (NR > 1) {$1 = substr($1, 18); print } else print }' \
 	| pigz -p $cpus > "$cBout"
 
 
@@ -111,3 +126,38 @@ echo "** cB file created: cB.csv.gz"
 
 # Clean up files
 rm -f 0
+
+
+# Read all _cU.csv.gz files and save them as cU-DATE.csv.gz
+if [ "$mut_pos" = "True" ]; then
+    parallel -j $cpus --plus "cat <(echo Filename:{1%_cU.csv.gz}) <(pigz -d -k -c -p 1 {1})" ::: ./results/counts/*_cU.csv.gz \
+        | awk -v OFS="," '
+                $1 ~ /Filename/ {
+                    split($1, sample, ":")
+                    next
+                }
+                NR == 2 {
+                    header = $0
+                    print "sample", $0
+                    next
+                }
+                $0 == header { 
+                    next
+                }
+                {
+                    print sample[2], $0
+                }' \
+        | awk '{ if (NR > 1) {$1 = substr($1, 18); print } else print }' \
+        | pigz -p $cpus > "$mutposout"
+
+
+   pigz -d -c "$mutposout" \
+	| awk -F "," \
+	      -v cutoff="$pos_cutoff" \
+          -v upper="$high_cutoff" \
+	      'NR == 1 || $(NF-1) >= cutoff && $(NF-1) <= upper { print}' | pigz -p $cpus >  "$mutposfilter"
+
+
+echo "**  site-specific mutation file created: mutpos.csv.gz"
+
+fi

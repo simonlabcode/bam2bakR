@@ -32,3 +32,40 @@ def get_input_fastqs(wildcards):
     fastq_files = sorted(glob.glob(f"{fastq_path}/*.fastq*"))
     return fastq_files
 
+
+### FeatureCounts parameters
+
+# Get strandedness parameter
+if config["strandedness"] == "R":
+
+    FC_STRAND = 2
+
+elif config["strandedness"] == "F":
+
+    FC_STRAND = 1
+
+else:
+
+    FC_STRAND = 0
+
+
+## Get extra parameters for gene calling
+
+if FORMAT == "PE":
+
+    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript -p --countReadPairs  --nonOverlap 0 --primary"
+
+else:
+
+    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript  --nonOverlap 0 --primary"
+
+
+## Get extra parameters for exon calling 
+
+if FORMAT == "PE":
+
+    FC_EXONS_PARAMS = " -R CORE -g gene_id -J -p --countReadPairs --nonOverlap 0 --primary"
+
+else:
+
+    FC_EXONS_PARAMS= " -R CORE -g gene_id -J  --nonOverlap 0 --primary"

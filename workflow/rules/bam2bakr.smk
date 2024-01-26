@@ -162,12 +162,12 @@ rule index:
 # Identify SNPs to be accounted for when counting mutations
 rule call_snps:
     input:
+        str(config["genome_fasta"]),
         get_index_name(),
         expand("results/htseq/{ctl}_tl.bam", ctl = CTL_NAMES)
     params:
         nctl = nctl,
         shellscript = workflow.source_path("../scripts/call_snps.sh"),
-        genome_fasta=config["genome_fasta"],
     output:
         "results/snps/snp.txt",
         "results/snps/snp.vcf",
@@ -180,28 +180,31 @@ rule call_snps:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {params.nctl} {output} {params.genome_fasta} {input} 1> {log} 2>&1
+        {params.shellscript} {threads} {params.nctl} {output} {input} 1> {log} 2>&1
         """
 
+# TO-DO:
+# 1) Add mutation position optimizations and functionality
 # Count mutations 
 rule cnt_muts:
     input:
-        "results/htseq/{sample}_tl.bam",
+        "results/sf_reads/{sample}.s.bam",
         "results/snps/snp.txt"
     params:
-        format = config["FORMAT"],
+        format = FORMAT,
         minqual = config["minqual"],
         mut_tracks = config["mut_tracks"],
         strand = config["strandedness"],
         shellscript = workflow.source_path("../scripts/mut_call.sh"),
         pythonscript = workflow.source_path("../scripts/mut_call.py"),
-        awkscript = workflow.source_path("../scripts/fragment_sam.awk")
+        awkscript = workflow.source_path("../scripts/fragment_sam.awk"),
+        mutpos = False
     output:
         "results/counts/{sample}_counts.csv.gz",
         temp("results/counts/{sample}_check.txt")
     log:
         "logs/cnt_muts/{sample}.log"
-    threads: 20
+    threads: 32
     conda:
         "../envs/full.yaml"
     shell:
@@ -209,8 +212,35 @@ rule cnt_muts:
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
         chmod +x {params.awkscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} {params.pythonscript} {params.awkscript} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.minqual} {params.mut_tracks} {params.format} {params.strand} {params.pythonscript} {params.awkscript} {params.mutpos} 1> {log} 2>&1
         """
+
+
+# Merge mutation counts with feature assignment
+rule merge_features_and_muts:
+    input:
+        get_merge_input,
+    output:
+        "results/merge_features_and_muts/{sample}_counts.csv.gz"
+    params:
+        genes_included = True,
+        exons_included = True,
+        exonbins_included = False,
+        transcripts_included = False,
+        rscript = workflow.source_path("../scripts/merge_features_and_muts.R")
+    log:
+        "logs/merge_features_and_muts/{sample}.log"
+    threads: 20
+    conda: 
+        "../envs/full.yaml"
+    shell:
+        """
+        chmod +x {params.rscript}
+
+        {params.rscript} -g {params.genes_included} -e {params.exons_included} -b {params.exonbins_included} \
+        -t {params.transcripts_included} -o {output} -s {wildcards.sample} 1> {log} 2>&1
+        """
+
 
 # Make color-coded tracks
 rule maketdf:
@@ -243,13 +273,14 @@ rule maketdf:
 # Make cB file that will be input to bakR
 rule makecB:
     input:
-        expand("results/counts/{sample}_counts.csv.gz", sample=config["samples"])
+        expand("results/merge_features_and_muts/{sample}_counts.csv.gz", sample=config["samples"])
     output:
         "results/cB/cB.csv.gz"
     params:
         shellscript = workflow.source_path("../scripts/master.sh"),
         keepcols = config["keepcols"],
         mut_tracks = config["mut_tracks"],
+        mut_pos = False,
     log:
         "logs/makecB/master.log"
     threads: 20
@@ -258,5 +289,6 @@ rule makecB:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {output} {params.keepcols} {params.mut_tracks} 1> {log} 2>&1
+        {params.shellscript} {threads} {output.cB} {params.keepcols} {params.mut_tracks} \
+        ./results/merge_features_and_muts/ {params.mut_pos} 1> {log} 2>&1
         """
