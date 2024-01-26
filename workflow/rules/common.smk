@@ -33,7 +33,7 @@ def get_input_bams(wildcards):
 
 def get_input_fastqs(wildcards):
     fastq_path = config["samples"][wildcards.sample]
-    fastq_files = sorted(glob.glob(f"{fastq_path}/*.fastq*"))
+    fastq_files = sorted(glob.glob(fastq_path + "/*.fastq*"))
     return fastq_files
 
 
