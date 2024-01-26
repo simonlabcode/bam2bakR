@@ -1,5 +1,4 @@
 import glob
-
 SAMP_NAMES = list(config["samples"].keys())
 
 CTL_NAMES = list(config["control_samples"])
@@ -33,7 +32,7 @@ def get_input_bams(wildcards):
 
 def get_input_fastqs(wildcards):
     fastq_path = config["samples"][wildcards.sample]
-    fastq_files = sorted(glob.glob(fastq_path + "/*.fastq*"))
+    fastq_files = sorted(glob.glob(f"{fastq_path}/*.fastq*"))
     return fastq_files
 
 
@@ -101,3 +100,8 @@ if FORMAT == "PE":
 
 else:
     FC_EXONS_PARAMS = " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
+rlap 0 --primary"
+
+else:
+
+	FC_EXONS_PARAMS= " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
