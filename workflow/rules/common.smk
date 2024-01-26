@@ -51,6 +51,17 @@ def get_merge_input(wildcards):
 
     return MERGE_INPUT
 
+# Columns in final cB
+keepcols = ['sample', 'sj', 'rname']
+
+
+keepcols.append("GF")
+
+
+keepcols.append("XF")
+
+
+keepcols = ','.join(keepcols)
 
 
 # Get strandedness parameter

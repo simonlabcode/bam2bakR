@@ -249,7 +249,7 @@ rule makecB:
         cB = "results/cB/cB.csv.gz",
     params:
         shellscript = workflow.source_path("../scripts/master.sh"),
-        keepcols = config["keepcols"],
+        keepcols = keepcols,
         mut_tracks = config["mut_tracks"],
         mut_pos = False,
     log:
