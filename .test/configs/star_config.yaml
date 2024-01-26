@@ -38,7 +38,7 @@ samples:
 annotation: data/annotation/genome.gtf
 
 # -s4U control sample IDs
-control_samples: ['WT_ctl', 'KO_ctl']
+control_samples: ['WT_ctl']
 
 # location of genome fasta file
 genome_fasta: data/genome/genome.fasta
