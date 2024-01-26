@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - featurecounts
+      - featurecount
   pull_request:
     branches_ignore: []
 
