@@ -127,9 +127,7 @@ if FORMAT == "PE":
                 isoforms_results="results/rsem/{sample}.isoforms.results",
                 bam="results/rsem/{sample}.transcript.bam",
             params:
-                # optional, specify if sequencing is paired-end
                 paired_end=True,
-                # additional optional parameters to pass to rsem, for example,
             log:
                 "logs/rsem/calculate_expression/{sample}.log",
             conda:
@@ -240,7 +238,7 @@ else:
             extra=config["cutadapt_extra"],
         log:
             "logs/cutadapt/{sample}.log",
-        threads: 8  # set desired number of threads here
+        threads: 8 
         wrapper:
             "v1.25.0/bio/cutadapt/se"
 
