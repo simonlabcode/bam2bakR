@@ -9,6 +9,21 @@ on:
     branches_ignore: []
 
 jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout with submodules
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - name: Formatting
+      uses: github/super-linter@v5
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: featurecount
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_SNAKEMAKE_SNAKEFMT: true
   linting:
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - linting
+      - formatting
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
