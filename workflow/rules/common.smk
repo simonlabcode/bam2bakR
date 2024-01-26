@@ -94,9 +94,7 @@ else:
 ## Get extra parameters for exon calling
 
 if FORMAT == "PE":
-    FC_EXONS_PARAMS = (
-        " -R CORE -g gene_id -J -p --countReadPairs --nonOverlap 0 --primary"
-    )
+    FC_EXONS_PARAMS = " -R CORE -g gene_id -J -p --countReadPairs --nonOverlap 0 --primary"
 
 else:
     FC_EXONS_PARAMS = " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
