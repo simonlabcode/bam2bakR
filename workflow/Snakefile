@@ -37,7 +37,7 @@ else:
     include: "rules/alignment.smk"
     include: "rules/bam2bakr.smk"
 
-
+include: "rules/features.smk"
 
 ##### target rules #####
 
