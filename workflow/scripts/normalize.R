@@ -32,24 +32,26 @@ args = commandArgs(trailingOnly = TRUE)
     opt <- parse_args(opt_parser) # Load options from command line.
 
 # Set R code printing for debug mode
-    options(echo = as.logical(opt$echocode))
+options(echo = as.logical(opt$echocode))
 
 
 # Load libraries:
-    library(tidyverse)
-    library(edgeR)
-    library(MASS)
-    library(data.table)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(edgeR)
+library(MASS)
+library(data.table)
 
 
 # Set date
 
-    date <- Sys.Date()
-    date
+date <- Sys.Date()
+date
 
 # Define the data frame
 
-    master <- tibble()
+master <- tibble()
 
 
 
