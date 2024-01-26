@@ -98,7 +98,3 @@ if FORMAT == "PE":
 
 else:
     FC_EXONS_PARAMS = " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
-
-else:
-
-	FC_EXONS_PARAMS= " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
