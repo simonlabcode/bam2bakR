@@ -57,13 +57,15 @@ args = commandArgs(trailingOnly = TRUE)
 dirs <- paste0(getwd(), "./results/featurecounts_exons/")
 
 # Currently will not work alone due to fact that CORE files also have .featureCounts
-samplenames <- list.files(path = dirs,
+samplefiles <- list.files(path = dirs,
                           pattern = "\\.featureCounts$",
-                          recursive = FALSE,
-                          full.names = TRUE)
+                          recursive = FALSE)
 
 # Remove the CORE files
-samplenames <- samplenames[!grepl("\\.bam\\.featureCounts$", samplenames)]
+samplefiles <- samplefiles[!grepl("\\.bam\\.featureCounts$", samplefiles)]
+
+# Create full directory path
+samplenames <- paste0(dir, samplefiles)
 
 # Actual sample name wildcards
 snames <- gsub(".featureCounts", "", samplefiles)
