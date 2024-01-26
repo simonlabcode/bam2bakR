@@ -69,14 +69,15 @@ else:
         log:
             "logs/sort_filter/{sample}.log"
         params: 
-            shellscript=workflow.source_path("../scripts/sort_filter.sh")
+            shellscript=workflow.source_path("../scripts/sort_filter.sh"),
+            read_format=config["FORMAT"],
         threads: 8
         conda:
             "../envs/full.yaml"
         shell:
             """
             chmod +x {params.shellscript}
-            {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[FORMAT]} 1> {log} 2>&1
+            {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.read_format} 1> {log} 2>&1
             """
 
 
@@ -93,7 +94,8 @@ rule htseq_cnt:
         shellscript=workflow.source_path("../scripts/htseq.sh"),
         pythonscript=workflow.source_path("../scripts/count_triple.py"),
         strand=config["strandedness"],
-        flattened=config["flattened"]
+        flattened=config["flattened"],
+        annotation=config["annotation"],
     log:
         "logs/htseq_cnt/{sample}.log"
     threads: 3
@@ -103,7 +105,7 @@ rule htseq_cnt:
         """
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {output} {config[annotation]} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {output} {params.annotation} {params.strand} {params.pythonscript} {params.flattened} 1> {log} 2>&1
         """
 
 # Calculate normalization scale factor to be applied to tracks        
@@ -116,14 +118,15 @@ if NORMALIZE:
         log:
             "logs/normalize/normalize.log"
         params:
-            rscript=workflow.source_path("../scripts/normalize.R")
+            rscript=workflow.source_path("../scripts/normalize.R"),
+            spikename=config["spikename"],
         threads: 1
         conda:
             "../envs/full.yaml"
         shell:
             r"""
             chmod +x {params.rscript}
-            {params.rscript} --dirs ./results/htseq/ --spikename {config[spikename]}
+            {params.rscript} --dirs ./results/htseq/ --spikename {params.spikename}
             mv scale {output}
             """
 else:
@@ -163,7 +166,8 @@ rule call_snps:
         expand("results/htseq/{ctl}_tl.bam", ctl = CTL_NAMES)
     params:
         nctl = nctl,
-        shellscript = workflow.source_path("../scripts/call_snps.sh")
+        shellscript = workflow.source_path("../scripts/call_snps.sh"),
+        genome_fasta=config["genome_fasta"],
     output:
         "results/snps/snp.txt",
         "results/snps/snp.vcf",
@@ -176,7 +180,7 @@ rule call_snps:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {params.nctl} {output} {config[genome_fasta]} {input} 1> {log} 2>&1
+        {params.shellscript} {threads} {params.nctl} {output} {params.genome_fasta} {input} 1> {log} 2>&1
         """
 
 # Count mutations 
@@ -219,7 +223,11 @@ rule maketdf:
         expand("results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf", mut=config["mut_tracks"], id=[0,1,2,3,4,5], strand = ['pos', 'min'])
     params:
         shellscript = workflow.source_path("../scripts/tracks.sh"),
-        pythonscript = workflow.source_path("../scripts/count_to_tracks.py")
+        pythonscript = workflow.source_path("../scripts/count_to_tracks.py"),
+        mut_tracks=config["mut_tracks"],
+        genome_fasta=config["genome_fasta"],
+        wsl=config["WSL"],
+        normalize=config["normalize"],
     log:
         "logs/maketdf/{sample}.log"
     threads: 20
@@ -229,7 +237,7 @@ rule maketdf:
         """
         chmod +x {params.shellscript}
         chmod +x {params.pythonscript}
-        {params.shellscript} {threads} {wildcards.sample} {input} {config[mut_tracks]} {config[genome_fasta]} {config[WSL]} {config[normalize]} {params.pythonscript} {output} 1> {log} 2>&1
+        {params.shellscript} {threads} {wildcards.sample} {input} {params.mut_tracks} {params.genome_fasta} {params.wsl} {params.normalize} {params.pythonscript} {output} 1> {log} 2>&1
         """
 
 # Make cB file that will be input to bakR
@@ -239,7 +247,9 @@ rule makecB:
     output:
         "results/cB/cB.csv.gz"
     params:
-        shellscript = workflow.source_path("../scripts/master.sh")
+        shellscript = workflow.source_path("../scripts/master.sh"),
+        keepcols = config["keepcols"],
+        mut_tracks = config["mut_tracks"],
     log:
         "logs/makecB/master.log"
     threads: 20
@@ -248,5 +258,5 @@ rule makecB:
     shell:
         """
         chmod +x {params.shellscript}
-        {params.shellscript} {threads} {output} {config[keepcols]} {config[mut_tracks]} 1> {log} 2>&1
+        {params.shellscript} {threads} {output} {params.keepcols} {params.mut_tracks} 1> {log} 2>&1
         """
