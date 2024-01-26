@@ -21,9 +21,9 @@ bam2bakr: False
   # Each set of fastq files must be in a different directory
 # path to bam files if bam2bakr is True
 samples:
-    WT_1: data/WT1
-    WT_2: data/WT2
-    WT_ctl: data/WTctl
+  WT_1: data/WT1
+  WT_2: data/WT2
+  WT_ctl: data/WTctl
 
 ## example of what samples will look like for fastq input
 # samples:

@@ -29,7 +29,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Linting
-      uses: ezherman/snakemake-github-action@5027c0e706ada924ab91e0501bd92185fc98de3c
+      uses: snakemake/snakemake-github-action@v1.22.0
       with:
         directory: .test
         snakefile: workflow/Snakefile
@@ -44,13 +44,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Test workflow (star)
-      uses: ezherman/snakemake-github-action@5027c0e706ada924ab91e0501bd92185fc98de3c
+      uses: snakemake/snakemake-github-action@v1.22.0
       with:
         directory: .test
         snakefile: workflow/Snakefile
         args: "--configfile .test/configs/star_config.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
     - name: Test workflow (bam)
-      uses: ezherman/snakemake-github-action@5027c0e706ada924ab91e0501bd92185fc98de3c
+      uses: snakemake/snakemake-github-action@v1.22.0
       with:
         directory: .test
         snakefile: workflow/Snakefile
