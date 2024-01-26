@@ -25,6 +25,8 @@ jobs:
     needs:
       - linting
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - name: Test workflow (star)
       uses: ezherman/snakemake-github-action@5027c0e706ada924ab91e0501bd92185fc98de3c
       with:
