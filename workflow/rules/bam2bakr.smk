@@ -246,7 +246,7 @@ rule makecB:
     input:
         expand("results/merge_features_and_muts/{sample}_counts.csv.gz", sample=config["samples"])
     output:
-        "results/cB/cB.csv.gz"
+        cB = "results/cB/cB.csv.gz",
     params:
         shellscript = workflow.source_path("../scripts/master.sh"),
         keepcols = config["keepcols"],
