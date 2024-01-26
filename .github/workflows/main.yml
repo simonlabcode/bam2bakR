@@ -33,3 +33,9 @@ jobs:
         directory: .test
         snakefile: workflow/Snakefile
         args: "--configfile .test/configs/star_config.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+    - name: Test workflow (bam)
+      uses: ezherman/snakemake-github-action@5027c0e706ada924ab91e0501bd92185fc98de3c
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--configfile .test/configs/bam2bakR.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
