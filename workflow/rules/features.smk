@@ -4,13 +4,13 @@
 # Assign reads to genes
 rule featurecounts_genes:
     input:
-        samples = "results/sf_reads/{sample}.s.bam",
-        annotation = config["annotation"]
+        samples="results/sf_reads/{sample}.s.bam",
+        annotation=config["annotation"],
     output:
         multiext(
             "results/featurecounts_genes/{sample}",
             ".featureCounts",
-            ".featureCounts.summary"
+            ".featureCounts.summary",
         ),
     threads: 20
     params:
@@ -25,8 +25,8 @@ rule featurecounts_genes:
 # Assign reads to exons
 rule featurecounts_exons:
     input:
-        samples = "results/sf_reads/{sample}.s.bam",
-        annotation = config["annotation"]
+        samples="results/sf_reads/{sample}.s.bam",
+        annotation=config["annotation"],
     output:
         multiext(
             "results/featurecounts_exons/{sample}",
@@ -42,4 +42,3 @@ rule featurecounts_exons:
         "logs/featurecounts_exons/{sample}.log",
     wrapper:
         "v3.0.2/bio/subread/featurecounts"
-
