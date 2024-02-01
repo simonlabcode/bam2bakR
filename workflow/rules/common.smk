@@ -41,8 +41,14 @@ def get_input_bams(wildcards):
 
 # Relevant if providing fastq files as input
 def get_input_fastqs(wildcards):
+    if config["samples"][wildcards.sample].endswith("/"):
+        fastq_path = str(config["samples"][wildcards.sample])
+        fastq_path = fastq_path[:-1]
+    else:
+        fastq_path = str(config["samples"][wildcards.sample])
+
     fastq_path = config["samples"][wildcards.sample]
-    fastq_files = sorted(glob.glob(f"{fastq_path}/*.fastq*"))
+    fastq_files = sorted(glob.glob("{}/*.fastq*".format(fastq_path)))
     return fastq_files
 
 
