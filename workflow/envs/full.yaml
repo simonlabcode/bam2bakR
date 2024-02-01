@@ -7,8 +7,6 @@ dependencies:
   - samtools =1.12
   - gawk =4.2.1
   - python =3.8.6
-  - snakemake-minimal >=5.24.1
-  - htseq =2.0.1
   - hisat2 >=2.2.1
   - parallel =20210222
   - pigz =2.6
@@ -18,9 +16,11 @@ dependencies:
   - bcftools = 1.12
   - igvtools =2.3.93
   - bc
-  - r-base =4.1.1
+  - r-base
   - r-optparse =1.7.3
-  - r-tidyverse =1.3.2
+  - r-dplyr
+  - r-readr
+  - r-tidyr
   - r-mass =7.3.58.1
   - bioconductor-edger =3.36.0
   - r-r.utils

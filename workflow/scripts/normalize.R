@@ -21,6 +21,9 @@ args = commandArgs(trailingOnly = TRUE)
         make_option(c("-s", "--spikename", type="character"),
                      default = "",
                      help = 'character string that is common identifier of spikeins gene_name'),
+        make_option(c("-o", "--output", type="character"),
+                    default = "./results/normalization/scale",
+                    help = 'File to output scale factors to'),
         make_option(c("-e", "--echocode", type="logical"),
                      default = "FALSE",
                      help = 'print R code to stdout'))
@@ -29,120 +32,128 @@ args = commandArgs(trailingOnly = TRUE)
     opt <- parse_args(opt_parser) # Load options from command line.
 
 # Set R code printing for debug mode
-    options(echo = as.logical(opt$echocode))
+options(echo = as.logical(opt$echocode))
 
 
 # Load libraries:
-    library(tidyverse)
-    library(edgeR)
-    library(MASS)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(edgeR)
+library(MASS)
+library(data.table)
 
 
 # Set date
 
-    date <- Sys.Date()
-    date
+date <- Sys.Date()
+date
 
 # Define the data frame
 
-    master <- tibble()
+master <- tibble()
 
 
-# # Load and clean master data
 
-    # Define samples to load
-        ## Martin's old code
-	# dirs <- opt$dirs %>% str_split(',') %>% unlist()
+# Screw it, going to hardcode directory cause I can
+dirs <- paste0(getwd(), "/results/featurecounts_exons/")
 
-	# Screw it, going to hardcode directory cause I can
-	dirs <- paste0(getwd(), "/results/htseq/")
-    print(dirs)
+# Currently will not work alone due to fact that CORE files also have .featureCounts
+samplefiles <- list.files(path = dirs,
+                          pattern = "\\.featureCounts$",
+                          recursive = FALSE)
 
-        samplefiles <- list.files(path = dirs,
-                                  pattern = 'mature.*.txt',
-                                  recursive = FALSE)
+print(dirs)
+print(samplefiles)
 
-	## Martin's old code that doesn't work in my workflow
-        # samplenames <- gsub(".dir.*", "", samplefiles)
-        samplenames <- paste0(dirs, samplefiles)
+# Remove the CORE files
+samplefiles <- samplefiles[!grepl("\\.bam\\.featureCounts$", samplefiles)]
 
-    print(samplenames)
-	# Actual sample name wildcards
-	snames <- gsub(".*mature.|_htseq.*", "", samplefiles)
-	#snames <- gsub("htseq*", "", snames)
+print(samplefiles)
+
+# Create full directory path
+samplenames <- paste0(dirs, samplefiles)
+
+# Actual sample name wildcards
+snames <- gsub(".featureCounts", "", samplefiles)
 
 
-    print(snames)
-    # Loop through the samples to load them:
+# Loop through the samples to load them:
 
-    for (i in seq_along(samplenames)){
+for (i in seq_along(samplenames)){
 
-        df <- read_tsv(samplenames[i],
-                       col_names = c('gene', 'count'),
-                       col_types = 'ci')
+    df <- fread(samplenames[i],
+                sep = "\t")
+    
+    colnames(df) <- c("Geneid", "Chr", "Start", "End",
+                      "Strand", "Length", "count")
 
-        df$sample <- paste0(snames[i])
+    df$sample <- paste0(snames[i])
 
-        master <- rbind(master, df)
+    master <- rbind(master, df)
 
-    }
+}
 
-    rm(df)
+rm(df)
 
-    # glimpse(master)
 
-    m <- master %>%
-        pivot_wider(names_from = sample, values_from = count) %>%
-        filter(!grepl('(__not_aligned|__alignment_not_unique|__ambiguous|__no_feature|__too_low_aQual)', gene))
+m <- master %>%
+    dplyr::select(-Chr, -Start, -End, -Strand, -Length) %>%
+    pivot_wider(names_from = sample, values_from = count)
 
-    # Filter only for spikeins. gene_name (or other identifier must contain universal character string opt$spikename)
-    if (opt$spikename != "") {
-        m <- m %>%
-                filter(grepl(opt$spikename, gene))
+# Filter only for spikeins. gene_name (or other identifier must contain universal character string opt$spikename)
+if (opt$spikename != "") {
+    m <- m %>%
+            filter(grepl(opt$spikename, gene))
 
-        print(paste0("* Calculating normalization factors from spikeins with name *", opt$spikename))
-    }
+    print(paste0("* Calculating normalization factors from spikeins with name *", opt$spikename))
+}
 
-    # head(m, 20)
-    rnames <- m[,1]
-    m <- as.matrix(m[,-1])
-    storage.mode(m) <- "numeric"
-    rownames(m) <- unlist(rnames)
-    # head(m, 20)
+# Turn into a count matrix accceptable for edgeR
+rnames <- m[,1]
+m <- as.matrix(m[,-1])
+storage.mode(m) <- "numeric"
+rownames(m) <- unlist(rnames)
 
-    print(rnames)
 
-# Correlation analysis
-    #cor(m)
-
-# Examine RNA seq by edgeR:
+### Normalize by edgeR:
 
 # Add dummy IDs (don't need them yet)
-    ers <- rep("X", time = dim(m)[2])
-    ers <- factor(ers)
+ers <- rep("X", time = dim(m)[2])
+ers <- factor(ers)
 
 # Filter to only data-containing genes:
-    keep <- rowSums(m > 0) > 1
-    erde <- DGEList(m[keep,], group = ers)
-    erde <- calcNormFactors(erde, method = "upperquartile")
-    scale <- erde$samples$norm.factors*erde$samples$lib.size
-    # scale
+keep <- rowSums(m > 0) > 1
+erde <- DGEList(m[keep,], group = ers)
+erde <- calcNormFactors(erde, method = "upperquartile")
+scale <- erde$samples$norm.factors*erde$samples$lib.size
 
 if (sum(is.finite(scale)) == length(scale)){
 
-    x <- mean(scale)/scale
+  x <- mean(scale)/scale
+  
+  sdf <- tibble(sample = snames,
+                scale = x)
+  
 
-    sdf <- tibble(sample = snames,
-                  scale = x)
-
-    print(sdf)
-
-    write.table(sdf, file = 'scale',
-                     quote = FALSE,
-                     row.names = FALSE,
-                     col.names = FALSE)
+  write.table(sdf, file = opt$output,
+                   quote = FALSE,
+                   row.names = FALSE,
+                   col.names = FALSE)
 
 } else {
-    paste('no acceptable scale values')
+  
+  warning('!!no acceptable scale values!! Reverting to scale factor of 1')
+  
+  x <- rep(1, times = length(snames))
+  
+  sdf <- tibble(sample = snames,
+                scale = x)
+  
+
+  write.table(sdf, file = opt$output,
+              quote = FALSE,
+              row.names = FALSE,
+              col.names = FALSE)
 }
 

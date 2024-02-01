@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser(description='This is python implementation of T
 requiredNamed = parser.add_argument_group('required named arguments')
 requiredNamed.add_argument('-b', '--bam', type=str, required=True, metavar = 'in_file.bam',
                     help='Bam file to process')
-parser.add_argument('--mutType', default='TC', type=str, choices=['TC', 'GA', 'TC,GA'],
+parser.add_argument('--mutType', default='TC', type=str,
                     help='Type of mutation to record (default: TC)')
 parser.add_argument('--reads', default='PE', type=str, choices=['PE', 'SE'],
                     help='Type of mutation to record (default: PE)')
@@ -55,14 +55,18 @@ else:
 
 # Initialize variables
 freq = {}               # dictionary for _muts.csv file with structure -> key='chrom:pos'  valuses=[trials, muts]
-cU_freq = {}            # mutation frequency for bedGraph files => key='chrom:pos:FR:muttype'  values=mut_count
-cU = {}                 # dictionary for cU file => key='chrom:pos:GF:XF:ai:muttype'  values=[trial, mut_count]
+cU = {}
 firstReadName = ''
-muts = {'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0}
+muts = {'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0, 'NN': 0}
 DNAcode={'A': 'T', 'C': 'G', 'T': 'A', 'G': 'C', 'N': 'N', 'a': 't', 'c': 'g', 't': 'a', 'g': 'c', 'n': 'n'}  # DNA code for comp and revcomp transformation
-header = ['qname', 'nA', 'nC', 'nT', 'nG', 'rname', 'GF', 'EF', 'XF', 'FR', 'sj', 'ai', 'io', 'ei', 'TA', 'CA', 'GA', 'NA', 'AT', 'CT', 'GT', 'NT', 'AC', 'TC', 'GC', 'NC', 'AG', 'TG', 'CG', 'NG', 'AN', 'TN', 'CN', 'GN']
+header = ['qname', 'nA', 'nC', 'nT', 'nG', 'rname', 'FR', 'sj', 'TA', 'CA', 'GA', 'NA', 'AT', 'CT', 'GT', 'NT', 'AC', 'TC', 'GC', 'NC', 'AG', 'TG', 'CG', 'NG', 'AN', 'TN', 'CN', 'GN', 'NN']
 
-r_info = [''] + 4*[0] + 9*['']
+# For counting mutations at individual positions
+if args.mutPos:
+    header.extend(['gmutloc', 'tp'])
+
+
+r_info = [''] + 4*[0] + 3*['']
 dovetail = []
 MDstore = {}
 
@@ -94,19 +98,28 @@ myfile = open(inputName + '_counts.csv', 'w', newline='')
 wr = csv.writer(myfile)
 wr.writerow(header)
 
-count = 0
-print(count)
+# NO LONGER WRITING TO CU AS I ITERATE OVER BAM FILE
+# TO SAVE ON DISK SPACE.
+# # Initialize cU file
+# if args.mutPos:
+#     wr.writerow(['rname', 'gloc', 'GF', 'XF', 'ai', 'tp', 'trials', 'n'])
+#
+#     mycU = open(inputName + '_cU.csv', 'w', newline='')
+#     cUwr = csv.writer(mycU)
+#     cUwr.writerow(['rname', 'gloc', 'GF', 'XF', 'ai', 'tp', 'trials', 'n'])
+
+
+
 # Set .bam file for reading
 samfile = pysam.AlignmentFile(args.bam, 'rb')
-print(count)
 
 print('Start: ' + str(datetime.datetime.now()))
 for r in samfile:
-    count = count + 1
+
     # Initialize + acquire info: First read only
     if firstReadName != r.query_name:
-        muts={'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0}
-        r_info = [''] + 4*[0] + 9*['']
+        muts={'TA': 0, 'CA': 0, 'GA': 0, 'NA': 0, 'AT': 0, 'CT': 0, 'GT': 0, 'NT': 0, 'AC': 0, 'TC': 0, 'GC': 0, 'NC': 0, 'AG': 0, 'TG': 0, 'CG': 0, 'NG': 0, 'AN': 0, 'TN': 0, 'CN': 0, 'GN': 0, 'NN': 0}
+        r_info = [''] + 4*[0] + 3*['']
         dovetail = []
         MDstore = {}
         gmutloc = []
@@ -114,22 +127,15 @@ for r in samfile:
 
         r_info[0] = r.query_name            # Read name
         r_info[5] = r.reference_name        # Chromosome name
-        r_info[6] = r.get_tag('GF')         # GF tag
-        r_info[7] = r.get_tag('EF')         # EF tag
-        r_info[8] = r.get_tag('XF')         # XF tag
-
-        r_info[11] = str( r.get_tag('XF') == '__no_feature' and r.get_tag('GF') != '__no_feature' ).upper()     # ai: read anywhere in intron
-        r_info[12] = str( r.get_tag('EF') == '__no_feature' and r.get_tag('GF') != '__no_feature' ).upper()     # io: intron only read
-        r_info[13] = str( r.get_tag('XF') == '__no_feature' and r.get_tag('EF') != '__no_feature' ).upper()     # ei: exon-intron boundary read
 
 
     # Gather alignmet information + Resolve dovetailing: Both reads
     if ('I' not in r.cigarstring) and ('D' not in r.cigarstring):       # Any read without insertions/deletions
 
-        r_info[10] = str( r_info[10] == 'TRUE' or ('N' in r.cigarstring) ).upper()     # sj: splice junction
+        r_info[7] = str( r_info[7] == 'TRUE' or ('N' in r.cigarstring) ).upper()     # sj: splice junction
 
         if (r.is_paired and (r.is_read1 == (r.is_reverse == strand_check))) or (not r.is_paired and (r.is_reverse == strand_check)):        # If read is first_in_pair and on reverse strand -or- second_in_pair and on forward strand then make sequence complement
-            r_info[9] = 'R'      # FR: forward or reverse read orientation
+            r_info[6] = 'R'      # FR: forward or reverse read orientation
             MD = [[x[1], DNAcode[x[2]], min(x[0] - r.query_alignment_start + 1, r.query_alignment_length - (x[0] - r.query_alignment_start))] for x in r.get_aligned_pairs(matches_only = True, with_seq=True)]
             # Parse MD and Cigar strings, remove values that are softclipped
             # MD = [[gen_position, ref_base, base_readEnd_distance]]
@@ -138,7 +144,7 @@ for r in samfile:
             r.query_sequence = ''.join([DNAcode[x] for x in r.query_sequence])
             r.query_qualities = temp_qual
         else:
-            r_info[9] = 'F'
+            r_info[6] = 'F'
             MD = [[x[1], x[2], min(x[0] - r.query_alignment_start + 1, r.query_alignment_length - (x[0] - r.query_alignment_start))] for x in r.get_aligned_pairs(matches_only = True, with_seq=True)]
 
 
@@ -198,7 +204,7 @@ for r in samfile:
                 if (b[0].upper() in args.base):
                     whichMut = [mut for mut in args.mutType if mut[0] == b[0].upper()]     # Find out which mutation types use this reference base e.g. T -> TC, TG, TA, TN
                     for mt in whichMut:
-                        key = r.reference_name + ':' + str(pos) + ':' + r_info[6] + ':' + r_info[8] + ':' + r_info[11] + ':' + mt
+                        key = r.reference_name + ':' + str(pos) + ':' + mt
                         if key not in cU:
                             cU[key] = [1, 0]
                         else:
@@ -211,14 +217,10 @@ for r in samfile:
                 # mutPos bedGraph data + cU.rds n data
                 if args.mutPos:
                     if (b[0].upper() + b[1]) in args.mutType:
-                        key = r.reference_name + ':' + str(pos) + ':' + r_info[6] + ':' + r_info[8] + ':' + r_info[11] + ':' + b[0].upper() + b[1]
+                        key = r.reference_name + ':' + str(pos) + ':' + b[0].upper() + b[1]
                         cU[key][1] += 1
 
-                        key = r.reference_name + ':' + str(pos) + ':' + r_info[9] + ':' + b[0].upper() + b[1]
-                        if key not in cU_freq:
-                            cU_freq[key] = 1
-                        else:
-                            cU_freq[key] += 1
+                        key = r.reference_name +  ':' + str(pos) + ':' + r_info[6] + ':' + b[0].upper() + b[1]
 
                         gmutloc.append(str(pos))            # Record position of muatation
                         tp.append(b[0].upper() + b[1])      # Record type of mutation
@@ -232,6 +234,20 @@ for r in samfile:
             r_info.extend( [ '|'.join(gmutloc), '|'.join(tp) ] )
         wr.writerow(r_info)
 
+        # Was doing this to save on RAM
+        # Realized this inflated disk space usage tremendously
+        # Will save here for posterity's sake
+        # # Write to cU file
+        # if args.mutPos:
+        #
+        #     for position, counts in cU.items():
+        #         row = position.split(':')
+        #         row[1] = int(row[1]) + 1                        # adjust position because we are 0-based
+        #         row.extend(counts)
+        #         cUwr.writerow(row)
+        # 
+        #     cU = {}
+
         # Save read name to track files
         if args.tracks:
             for index, mut in enumerate(args.mutType):
@@ -243,63 +259,27 @@ for r in samfile:
 
 print('end: ' + str(datetime.datetime.now()))
 
-print(count)
 
 ##### Close files ######
 myfile.close()
+
+### saving cU.rds file
+if args.mutPos:
+    with open(inputName + '_cU.csv', 'w', newline='') as myfile:
+        wr = csv.writer(myfile)
+        wr.writerow(['rname', 'gloc', 'tp', 'trials', 'n'])
+        for position, counts in cU.items():
+            row = position.split(':')
+            row[1] = int(row[1]) + 1                        # adjust position because we are 0-based
+            row.extend(counts)
+            wr.writerow(row)
+
+    del cU
+print('cU: ' + str(datetime.datetime.now()))
+
+
 
 if args.tracks:
     for f in fs:
         f.close()
 
-##### Generate Output ######
-
-# ### saving _muts.rds file
-# if args.mutsRDS:
-    # with open(inputName + '_muts.csv', 'w', newline='') as myfile:
-        # wr = csv.writer(myfile)
-        # wr.writerow(['rname', 'gloc', 'trials', 'n'])           # header
-        # for position, counts in freq.items():
-            # row = position.split(':')
-            # row[1] = int(row[1]) + 1                            # adjust position because we are 0-based
-            # row.extend(counts)
-            # wr.writerow(row)
-
-    # del freq
-
-
-
-# ### saving cU.rds file
-# if args.mutPos:
-    # with open(inputName + '_cU.csv', 'w', newline='') as myfile:
-        # wr = csv.writer(myfile)
-        # wr.writerow(['rname', 'gloc', 'GF', 'XF', 'ai', 'tp', 'trials', 'n'])
-        # for position, counts in cU.items():
-            # row = position.split(':')
-            # row[1] = int(row[1]) + 1                        # adjust position because we are 0-based
-            # row.extend(counts)
-            # wr.writerow(row)
-
-    # del cU
-# print('cU: ' + str(datetime.datetime.now()))
-
-# ### saving mutation bedGraph files
-# if args.mutPos:
-    # fileName = []
-    # strand = {'F' : 0, 'R' : 1}
-    # for b in args.mutType:
-        # for s in ['pos', 'min']:
-            # fileName.append( open('_'.join([inputName, b, s, 'muts.bedGraph']), 'w') )
-
-    # fs = []
-    # for f in fileName:
-        # fs.append( csv.writer(f, delimiter = '\t') )
-
-    # for position, counts in cU_freq.items():
-            # row = position.split(':')
-            # fs[ strand[row[2]] + args.mutType.index(row[3]) * 2 ].writerow([row[0], row[1], int(row[1]) + 1, counts])
-
-    # for f in fileName:
-        # f.close()
-
-#print('bedgraph: ' + str(datetime.datetime.now()))
