@@ -13,9 +13,9 @@ format=$7
 samtools sort -@ "$cpus" -n "$input" | samtools fixmate -@ "$cpus" - - | samtools view -@ "$cpus" -b - > "$output2"
 
 	if [ "$format" = "NU" ]; then
-	samtools view -@ "$cpus" -h "$output2" \
-		| awk awk '$1 ~ /^@/ {print}
-                   (($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163)) || (($2 == 355 || $2 == 403) || ($2 == 339 || $2 == 419))  {print}' > "$output3"
+        samtools view -@ "$cpus" -h "$output2" \
+            | awk '$1 ~ /^@/ {print}
+                    (($2 == 147 || $2 == 99) || ($2 == 83 || $2 == 163)) || (($2 == 355 || $2 == 403) || ($2 == 339 || $2 == 419))  {print}' > "$output3"
     elif [ "$format" = "PE" ]; then
 	    samtools view -@ "$cpus" -q 2 -h "$output2" \
             | awk '$1 ~ /^@/ {print}
