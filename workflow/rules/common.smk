@@ -30,6 +30,10 @@ NORMALIZE = config["normalize"]
 
 PAIRS = [1, 2]
 
+# Get mutation types to track
+MutTypes = config["mut_tracks"]
+Mutation_Types = MutTypes.split(",")
+
 
 ### Functions for returning input to first rules
 
@@ -53,6 +57,7 @@ def get_input_fastqs(wildcards):
 
 
 ### FeatureCounts parameters
+
 
 
 ## All of the files to merge

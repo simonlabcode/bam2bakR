@@ -62,7 +62,7 @@ rule all:
         expand(
             "results/tracks/{sample}.{mut}.{id}.{strand}.tdf",
             sample=SAMP_NAMES,
-            mut=config["mut_tracks"],
+            mut=Mutation_Types,
             id=[0, 1, 2, 3, 4, 5],
             strand=["pos", "min"],
         ),

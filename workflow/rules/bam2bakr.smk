@@ -233,7 +233,7 @@ rule maketdf:
         temp("results/tracks/{sample}_success.txt"),
         expand(
             "results/tracks/{{sample}}.{mut}.{id}.{strand}.tdf",
-            mut=config["mut_tracks"],
+            mut=Mutation_Types,
             id=[0, 1, 2, 3, 4, 5],
             strand=["pos", "min"],
         ),
