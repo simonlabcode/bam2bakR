@@ -59,7 +59,6 @@ def get_input_fastqs(wildcards):
 ### FeatureCounts parameters
 
 
-
 ## All of the files to merge
 def get_merge_input(wildcards):
     MERGE_INPUT = []
