@@ -114,9 +114,7 @@ else:
 ## Get extra parameters for exon calling
 
 if FORMAT == "PE":
-    FC_EXONS_PARAMS = (
-        " -R CORE -g gene_id -J -p --countReadPairs"
-    )
+    FC_EXONS_PARAMS = " -R CORE -g gene_id -J -p --countReadPairs"
 
 else:
     FC_EXONS_PARAMS = " -R CORE -g gene_id -J"
