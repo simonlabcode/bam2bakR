@@ -15,11 +15,11 @@ configfile: "config/config.yaml"
 
 
 if "fc_genes_extra" not in config:
-    config["fc_genes_extra"] = ""
+    config["fc_genes_extra"] = "--primary"
 
 
 if "fc_exons_extra" not in config:
-    config["fc_exons_extra"] = ""
+    config["fc_exons_extra"] = "--nonOverlap 5 --primary"
 
 
 ##### setup report #####

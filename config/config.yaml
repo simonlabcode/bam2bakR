@@ -75,10 +75,10 @@ remove_tags: False
 # !!DO NOT REDUNDANTLY SPECIFY AUTOMATICALLY SPECIFIED PARAMETERS!!
 
 # Parameters for assignment of reads to genes
-fc_genes_extra: ""
+fc_genes_extra: "--primary"
 
 # Parameters for assignment of reads to exons
-fc_exons_extra: ""
+fc_exons_extra: "--nonOverlap 5 --primary"
 
 
 ##### Parameters that are only relevant if bam2bakr is False #####

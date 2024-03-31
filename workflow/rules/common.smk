@@ -105,18 +105,18 @@ else:
 ## Get extra parameters for gene calling
 
 if FORMAT == "PE":
-    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript -p --countReadPairs  --nonOverlap 0 --primary"
+    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript -p --countReadPairs"
 
 else:
-    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript  --nonOverlap 0 --primary"
+    FC_GENES_PARAMS = " -R CORE -g gene_id -t transcript"
 
 
 ## Get extra parameters for exon calling
 
 if FORMAT == "PE":
     FC_EXONS_PARAMS = (
-        " -R CORE -g gene_id -J -p --countReadPairs --nonOverlap 0 --primary"
+        " -R CORE -g gene_id -J -p --countReadPairs"
     )
 
 else:
-    FC_EXONS_PARAMS = " -R CORE -g gene_id -J  --nonOverlap 0 --primary"
+    FC_EXONS_PARAMS = " -R CORE -g gene_id -J"
