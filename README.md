@@ -4,10 +4,11 @@
 
 There is now a [single website](https://pipelinedocs.readthedocs.io/en/latest/) that hosts documentation for all of the Snakemake workflows that I have and will develop, including bam2bakR. Information relevant to bam2bakR on this website includes:
 
-1. [Instructions](https://pipelinedocs.readthedocs.io/en/latest/deploy/) on how to deploy and run any of these pipelines. [Instructions](https://pipelinedocs.readthedocs.io/en/latest/simon/) specific to Yale HPC (and somewhat more generally systems that use a SLURM scheduler) are also available.
-2. [Details](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/configuration/) about configuring bam2bakR.
-3. [Description](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/output/) of all output produced by bam2bakR.
-4. [FAQs](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/faqs/).
+1. [Introduction](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/intro/) to bam2bakR, its required input, and its key output.
+2. [Instructions](https://pipelinedocs.readthedocs.io/en/latest/deploy/) on how to deploy and run any of these pipelines. [Instructions](https://pipelinedocs.readthedocs.io/en/latest/simon/) specific to Yale HPC (and somewhat more generally systems that use a SLURM scheduler) are also available.
+3. [Details](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/configuration/) about configuring bam2bakR.
+4. [Description](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/output/) of all output produced by bam2bakR.
+5. [FAQs](https://pipelinedocs.readthedocs.io/en/latest/bam2bakR/faqs/).
 
 ## Pipeline summary
 
