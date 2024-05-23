@@ -104,7 +104,7 @@ m <- master %>%
 # Filter only for spikeins. gene_name (or other identifier must contain universal character string opt$spikename)
 if (opt$spikename != "") {
     m <- m %>%
-            filter(grepl(opt$spikename, gene))
+            filter(grepl(opt$spikename, Geneid))
 
     print(paste0("* Calculating normalization factors from spikeins with name *", opt$spikename))
 }
