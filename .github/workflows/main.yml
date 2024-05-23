@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - featurecount
+      - develop
   pull_request:
     branches_ignore: []
 
