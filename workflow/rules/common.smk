@@ -67,13 +67,18 @@ def get_merge_input(wildcards):
         expand("results/counts/{SID}_counts.csv.gz", SID=wildcards.sample)
     )
 
-    MERGE_INPUT.extend(
-        expand("results/featurecounts_genes/{SID}.featureCounts", SID=wildcards.sample)
-    )
+    if config["features"]["genes"]:
 
-    MERGE_INPUT.extend(
-        expand("results/featurecounts_exons/{SID}.featureCounts", SID=wildcards.sample)
-    )
+
+        MERGE_INPUT.extend(
+            expand("results/featurecounts_genes/{SID}.featureCounts", SID=wildcards.sample)
+        )
+
+    if config["features"]["exons"]:
+
+        MERGE_INPUT.extend(
+            expand("results/featurecounts_exons/{SID}.featureCounts", SID=wildcards.sample)
+        )
 
     return MERGE_INPUT
 
