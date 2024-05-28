@@ -44,6 +44,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+    - name: Test workflow (bam)
+      uses: snakemake/snakemake-github-action@v1.25.1
+      with:
+        directory: .test
+        snakefile: workflow/Snakefile
+        args: "--configfile .test/configs/bam2bakR.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
     - name: Test workflow (star)
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
@@ -56,9 +62,3 @@ jobs:
         directory: .test
         snakefile: workflow/Snakefile
         args: "--configfile .test/configs/nogenes.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
-    - name: Test workflow (bam)
-      uses: snakemake/snakemake-github-action@v1.25.1
-      with:
-        directory: .test
-        snakefile: workflow/Snakefile
-        args: "--configfile .test/configs/bam2bakR.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
