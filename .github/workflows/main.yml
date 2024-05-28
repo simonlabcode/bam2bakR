@@ -49,7 +49,7 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--configfile .test/configs/nogenes.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache --delete-all-output"
+        args: "--configfile .test/configs/nogenes.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
     - name: Test workflow (bam)
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
