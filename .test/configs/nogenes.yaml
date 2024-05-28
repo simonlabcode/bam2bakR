@@ -13,6 +13,16 @@ samples:
   WT_ctl: data/bams/WT_nos4U.bam
 
 
+## Paths to data to process
+# path to directory containing fastq files if bam2bakr is False
+  # fastq files can be either gzipped or unzipped
+  # Each set of fastq files must be in a different directory
+# path to bam files if bam2bakr is True
+samples:
+  WT_1: data/WT1
+  WT_2: data/WT2
+  WT_ctl: data/WTctl
+
 ## example of what samples will look like for fastq input
 # samples:
 #   WT_1: data/fastq/WT_1
@@ -23,13 +33,13 @@ samples:
 #   KO_ctl: data/fastq/KO_ctl
 
 # location of annotation gtf file
-annotation: data/annotation/GRCh38.gtf
+annotation: data/annotation/genome.gtf
 
 # -s4U control sample IDs
 control_samples: ['WT_ctl']
 
 # location of genome fasta file
-genome_fasta: data/genome/GRCh38.fa
+genome_fasta: data/genome/genome.fasta
 
 ##### Parameters that are always relevant #####
 
@@ -44,7 +54,7 @@ strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs.
 
 
 # Type of browser tracks to generate
-mut_tracks: "TC,GA" # ("TC", "GA", "TC,GA")
+mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 
 # Minimum base quality to call mutation
 minqual: 40
@@ -61,7 +71,6 @@ WSL: 1
 
 # Are there jI and jM tags in your bam file?
 remove_tags: False
-
 
 features:
   genes: False
