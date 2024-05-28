@@ -26,7 +26,7 @@ samples:
 annotation: data/annotation/GRCh38.gtf
 
 # -s4U control sample IDs
-control_samples: ['WT_ctl', 'KO_ctl']
+control_samples: ['WT_ctl']
 
 # location of genome fasta file
 genome_fasta: data/genome/GRCh38.fa
