@@ -89,11 +89,9 @@ keepcols = ["sample", "sj", "rname"]
 
 
 if config["features"]["genes"]:
-
     keepcols.append("GF")
 
 if config["features"]["exons"]:
-
     keepcols.append("XF")
 
 
