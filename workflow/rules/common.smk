@@ -68,16 +68,17 @@ def get_merge_input(wildcards):
     )
 
     if config["features"]["genes"]:
-
-
         MERGE_INPUT.extend(
-            expand("results/featurecounts_genes/{SID}.featureCounts", SID=wildcards.sample)
+            expand(
+                "results/featurecounts_genes/{SID}.featureCounts", SID=wildcards.sample
+            )
         )
 
     if config["features"]["exons"]:
-
         MERGE_INPUT.extend(
-            expand("results/featurecounts_exons/{SID}.featureCounts", SID=wildcards.sample)
+            expand(
+                "results/featurecounts_exons/{SID}.featureCounts", SID=wildcards.sample
+            )
         )
 
     return MERGE_INPUT
@@ -87,10 +88,13 @@ def get_merge_input(wildcards):
 keepcols = ["sample", "sj", "rname"]
 
 
-keepcols.append("GF")
+if config["features"]["genes"]:
 
+    keepcols.append("GF")
 
-keepcols.append("XF")
+if config["features"]["exons"]:
+
+    keepcols.append("XF")
 
 
 keepcols = ",".join(keepcols)

@@ -23,8 +23,7 @@ if "fc_exons_extra" not in config:
 
 
 if "features" not in config:
-    config["features"]["genes"] = True
-    config["features"]["exons"] = True
+    config["features"] = {"genes": True, "exons": True}
 
 
 if "genes" not in config["features"]:
