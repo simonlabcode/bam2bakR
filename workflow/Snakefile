@@ -22,6 +22,17 @@ if "fc_exons_extra" not in config:
     config["fc_exons_extra"] = "--nonOverlap 5 --primary"
 
 
+if "features" not in config:
+    config["features"] = {"genes": True, "exons": True}
+
+
+if "genes" not in config["features"]:
+    config["features"]["genes"] = True
+
+
+if "exons" not in config["features"]:
+    config["features"]["exons"] = True
+
 ##### setup report #####
 
 

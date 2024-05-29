@@ -204,8 +204,8 @@ rule merge_features_and_muts:
     output:
         "results/merge_features_and_muts/{sample}_counts.csv.gz",
     params:
-        genes_included=True,
-        exons_included=True,
+        genes_included=config["features"]["genes"],
+        exons_included=config["features"]["exons"],
         exonbins_included=False,
         transcripts_included=False,
         rscript=workflow.source_path("../scripts/merge_features_and_muts.R"),

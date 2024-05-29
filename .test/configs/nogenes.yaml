@@ -12,6 +12,7 @@ samples:
   WT_2: data/bams/WT_replicate_2.bam
   WT_ctl: data/bams/WT_nos4U.bam
 
+
 ## example of what samples will look like for fastq input
 # samples:
 #   WT_1: data/fastq/WT_1
@@ -43,7 +44,7 @@ strandedness: "R" # (F, R); F means read 1 represents original RNA sequence (vs.
 
 
 # Type of browser tracks to generate
-mut_tracks: "TC,GA" # ("TC", "GA", "TC,GA")
+mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 
 # Minimum base quality to call mutation
 minqual: 40
@@ -60,6 +61,10 @@ WSL: 1
 
 # Are there jI and jM tags in your bam file?
 remove_tags: False
+
+features:
+  genes: False
+  exons: True
 
 ##### Parameters that are only relevant if bam2bakr is False #####
 
