@@ -59,6 +59,9 @@ if(opt$genes){
   genes_file <- list.files("./results/featurecounts_genes/",
                            pattern = sample, full.names = TRUE)[1]
   
+  message("genes_file is:")
+  print(exons_file)
+
   genes <- fread(genes_file)
   
   colnames(genes) <- c("qname", "status", "nhits", "GF")
@@ -81,6 +84,9 @@ if(opt$exons){
   
   exons_file <- list.files("./results/featurecounts_exons/",
                            pattern = sample, full.names = TRUE)[1]
+  
+  message("exons_file is:")
+  print(exons_file)
   
   exons <- fread(exons_file)
   
