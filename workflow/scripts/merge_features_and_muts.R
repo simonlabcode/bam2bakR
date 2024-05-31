@@ -37,7 +37,7 @@ opt <- parse_args(opt_parser) # Load options from command line.
 
 # Combine tables --------------------------------------------------------------
 
-sample <- paste0(opt$sample, "_counts")
+sample <- paste0("^", opt$sample, "_counts")
 
 print(paste0("sample is: ", sample))
 
