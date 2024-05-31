@@ -60,7 +60,7 @@ if(opt$genes){
                            pattern = sample, full.names = TRUE)[1]
   
   message("genes_file is:")
-  print(exons_file)
+  print(genes_file)
 
   genes <- fread(genes_file)
   
