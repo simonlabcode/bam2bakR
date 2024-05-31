@@ -76,8 +76,8 @@ remove_tags: False
 
 # Which features would you like to assign reads to?
 features:
-    genes: True
-    exons: True
+  genes: True
+  exons: True
 		
 # Parameters for assignment of reads to genes
 fc_genes_extra: "--primary"
