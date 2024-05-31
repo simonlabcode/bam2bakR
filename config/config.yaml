@@ -8,12 +8,12 @@ bam2bakr: True
 # path to bam files if bam2bakr is True
 ## example of what samples could look like for bam input
 samples:
-	WT_1: data/bam/WT_replicate_1.bam
-	WT_2: data/bam/WT_replicate_2.bam
-	WT_ctl: data/bam/WT_nos4U.bam
-	KO_1: data/bam/KO_replicate_1.bam
-	KO_2: data/bam/KO_replicate_2.bam
-	KO_ctl: data/bam/KO_nos4U.bam
+  WT_1: data/bams/WT_replicate_1.bam
+  WT_2: data/bams/WT_replicate_2.bam
+  WT_ctl: data/bams/WT_nos4U.bam
+  KO_1: data/bams/KO_replicate_1.bam
+  KO_2: data/bams/KO_replicate_2.bam
+  KO_ctl: data/bams/KO_nos4U.bam
 
 
 ## example of what samples will look like for fastq input
@@ -26,20 +26,20 @@ samples:
 #   KO_ctl: data/fastq/KO_ctl
 
 # location of annotation gtf file
-annotation: data/annotation/GRCh38.gtf
+annotation: data/annotation/genome.gtf
 
 # -s4U control sample IDs
 control_samples: ['WT_ctl', 'KO_ctl']
 
 # location of genome fasta file
-genome_fasta: data/genome/GRCh38.fa
+genome_fasta: data/genome/genome.fasta
 
 ##### Parameters that are always relevant #####
 
 # Format of reads
 FORMAT: "PE" # (PE, SE, NU)
-					# [SE - single end reads]
-					# [NU - including non-unique] (not tested)
+                    # [SE - single end reads]
+                    # [NU - including non-unique] (not tested)
 
 
 # Strandedness of reads
@@ -53,7 +53,7 @@ mut_tracks: "TC" # ("TC", "GA", "TC,GA")
 minqual: 40
 
 # String common to spike-in gene_ids in annotation gtf
-# If you have no spike-ins, then this should be "\"\"", i.e., an empty string ("")
+  # If you have no spike-ins, then this should be "\"\"", i.e., an empty string ("")
 spikename: "\"\""
 
 # If True, tracks will be normalized
@@ -65,26 +65,9 @@ WSL: 1
 # Are there jI and jM tags in your bam file?
 remove_tags: False
 
-
-### Optional parameters for featureCounts
-# Parameters automatically specified:
-  # Genes: -R -f -g gene_id -t transcript
-  # Exons: -R -g gene_id -J
-# If FORMAT = "PE", then "-p --countReadPairs" is also automatically set
-#
-# !!DO NOT REDUNDANTLY SPECIFY AUTOMATICALLY SPECIFIED PARAMETERS!!
-
-# Which features would you like to assign reads to?
 features:
-    genes: True
-    exons: True
-		
-# Parameters for assignment of reads to genes
-fc_genes_extra: "--primary"
-
-# Parameters for assignment of reads to exons
-fc_exons_extra: "--nonOverlap 5 --primary"
-
+  genes: True
+  exons: True
 
 ##### Parameters that are only relevant if bam2bakr is False #####
 
@@ -108,7 +91,7 @@ build_star: False
 
 # If use_hisat3n TRUE, then this specifies path to hisat_3n executable
 hisat3n_path: hisat-3n
-# If hisat-3n is on your PATH, this will just be hisat-3n
+  # If hisat-3n is on your PATH, this will just be hisat-3n
 
 # Add a 'chr' to each chromosome number during alignment. [Useful when aliner index is number-based, but GTF annotation is chr-based]
 chr_tag: True
@@ -124,14 +107,13 @@ adapter: "-a AGATCGGAAGAGC -A AGATCGGAAGAGC"
 
 # Optional code to pass to cutadapt
 cutadapt_extra: "--minimum-length 20"
-# No additional parameters are passed, so this can include any of cutadapt's optional parameters
+  # No additional parameters are passed, so this can include any of cutadapt's optional parameters
 
 # Extra parameters to be passed to STAR
 star_extra: "--outFilterMismatchNmax 20"
-# Already passing: "--outSAMtype BAM SortedByCoordinate --outSAMattributes NH HI AS NM MD --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile config["annotation"]
-# Including any of the already set parameters will yield an error.
+  # Already passing: "--outSAMtype BAM SortedByCoordinate --outSAMattributes NH HI AS NM MD --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile config["annotation"]
+  # Including any of the already set parameters will yield an error.
 
 # Extra parameters to be passed to Hisat2
 hisat2_extra: "--mp 1,0"
-# No additional parameters are passed, so this can include any of hisat2's optional parameters
-
+  # No additional parameters are passed, so this can include any of hisat2's optional parameters
