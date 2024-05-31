@@ -54,7 +54,7 @@ minqual: 40
 
 # String common to spike-in gene_ids in annotation gtf
   # If you have no spike-ins, then this should be "\"\"", i.e., an empty string ("")
-spikename: "MSTRG"
+spikename: "\"\""
 
 # If True, tracks will be normalized
 normalize: True
