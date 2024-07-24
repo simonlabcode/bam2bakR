@@ -62,9 +62,29 @@ WSL: 1
 # Are there jI and jM tags in your bam file?
 remove_tags: False
 
+# Features to assign reads to
+  # genes = anywhere in an annotated gene body
+  # exons = in exclusively exonic regions of a gene
 features:
-  genes: False
+  genes: True
   exons: True
+
+
+
+### Other featureCounts parameters
+# Parameters automatically specified:
+  # Genes: -R -f -g gene_id -t transcript
+  # Exons: -R -g gene_id -J
+# If PE = True, then "-p --countReadPairs" is also automatically set
+#
+# !!DO NOT REDUNDANTLY SPECIFY AUTOMATICALLY SPECIFIED PARAMETERS!!
+
+# Parameters for assignment of reads to genes
+fc_genes_extra: "--primary"
+
+# Parameters for assignment of reads to exons
+fc_exons_extra: "--nonOverlap 0 --primary"
+
 
 ##### Parameters that are only relevant if bam2bakr is False #####
 
