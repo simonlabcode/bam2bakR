@@ -16,12 +16,12 @@ dependencies:
   - bcftools = 1.12
   - igvtools =2.3.93
   - bc
-  - r-base
+  - r-base =4.3.1
   - r-optparse =1.7.3
-  - r-dplyr
-  - r-readr
-  - r-tidyr
+  - r-dplyr =1.1.4
+  - r-readr =2.1.5
+  - r-tidyr =1.3.0
   - r-mass =7.3.58.1
   - bioconductor-edger =3.36.0
-  - r-r.utils
-  - r-data.table
+  - r-r.utils =2.12.3
+  - r-data.table =1.14.10
