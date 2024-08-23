@@ -58,7 +58,16 @@ muts_file <- list.files(path = "./results/counts/",
                         pattern = sample,
                         full.names = TRUE)[1]
 
-muts <- fread(muts_file)
+if(use_readr){
+
+  muts <- read_csv(muts_file)
+
+
+}else{
+
+  muts <- fread(muts_file)
+
+}
 
 
 
