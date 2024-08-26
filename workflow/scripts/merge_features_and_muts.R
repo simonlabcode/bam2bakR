@@ -82,16 +82,8 @@ if(opt$genes){
   message("genes_file is:")
   print(genes_file)
 
-  if(use_readr){
+  genes <- fread(genes_file)
 
-    genes <- read_csv(genes_file)
-
-
-  }else{
-
-    genes <- fread(genes_file)
-
-  }
   
   colnames(genes) <- c("qname", "status", "nhits", "GF")
   
@@ -117,16 +109,8 @@ if(opt$exons){
   message("exons_file is:")
   print(exons_file)
   
-  if(use_readr){
+  exons <- fread(exons_file)
 
-    exons <- read_csv(exons_file)
-
-
-  }else{
-
-    exons <- fread(exons_file)
-
-  }
   
   colnames(exons) <- c("qname", "status", "nhits", "XF")
   
@@ -148,15 +132,8 @@ if(opt$exonbins){
   exonbins_file <- list.files("./results/featurecounts_exonbins/",
                            pattern = sample, full.names = TRUE)[1]
   
-  if(use_readr){
+  exonbins <- fread(exonbins_file)
 
-    exonbins <- read_csv(exonbins_file)
-
-  }else{
-
-    exonbins <- fread(exonbins_file)
-
-  }
   
   colnames(exonbins) <- c("qname", "status", "nhits", "exon_bin")
   
@@ -181,16 +158,8 @@ if(opt$transcripts){
   transcripts_file <- list.files("./results/featurecounts_transcripts/",
                               pattern = sample, full.names = TRUE)[1]
   
-  if(use_readr){
+  transcripts <- fread(transcripts_file)
 
-    transcripts <- read_csv(transcripts_file)
-
-
-  }else{
-
-    transcripts <- fread(transcripts_file)
-
-  }
   
   colnames(transcripts) <- c("qname", "status", "nhits", "transcripts")
   
