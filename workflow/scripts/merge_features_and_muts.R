@@ -61,6 +61,7 @@ muts_file <- list.files(path = "./results/counts/",
 if(use_readr){
 
   muts <- read_csv(muts_file)
+  muts <- setDT(muts)
 
 
 }else{
