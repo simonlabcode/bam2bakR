@@ -213,7 +213,7 @@ rule merge_features_and_muts:
         "logs/merge_features_and_muts/{sample}.log",
     threads: 20
     conda:
-        "../envs/full.yaml"
+        "../envs/rstuff.yaml"
     shell:
         """
         chmod +x {params.rscript}
