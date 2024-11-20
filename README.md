@@ -1,5 +1,9 @@
 # Welcome to bam2bakR version 3.0.0!
 
+# Update: fastq2EZbakR, the successor to bam2bakR, is out now! (10/14/2024)
+
+If you are currently using bam2bakR, we highly suggest checking out [fastq2EZbakR]([https://github.com/isaacvock/EZbakR](https://github.com/isaacvock/fastq2EZbakR)), a more flexible alternative with additional functionality. fastq2EZbakR can do everything bam2bakR can, and a lot more! fastq2EZbakR is accompanied by a similar improvement/extension of bakR, called [EZbakR](https://github.com/isaacvock/EZbakR). Check out [our preprint](https://www.biorxiv.org/content/10.1101/2024.10.14.617411v1) for more details. While we will continue to maintain bam2bakR, all future development will occur on fastq2EZbakR. In fact, in the near future, bam2bakR will simply be a fastq2EZbakR wrapper, but with less functionality.
+
 ## Running bam2bakR
 
 There is now a [single website](https://pipelinedocs.readthedocs.io/en/latest/) that hosts documentation for all of the Snakemake workflows that I have and will develop, including bam2bakR. Information relevant to bam2bakR on this website includes:
