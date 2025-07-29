@@ -66,7 +66,7 @@ remove_tags: False
   # genes = anywhere in an annotated gene body
   # exons = in exclusively exonic regions of a gene
 features:
-  genes: True
+  genes: False
   exons: True
 
 

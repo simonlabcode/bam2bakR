@@ -125,3 +125,24 @@ if FORMAT == "PE":
 
 else:
     FC_EXONS_PARAMS = " -R CORE -g gene_id -J"
+
+
+### TRACK NORMALIZATION HELPERS
+
+# What is input for normalization?
+if config.get("use_exons_only", True):
+    NORMALIZATION_INPUT = expand(
+        "results/featurecounts_exons/{sample}.featureCounts", sample=SAMP_NAMES
+    )
+
+else:
+    NORMALIZATION_INPUT = expand(
+        "results/featurecounts_genes/{sample}.featureCounts", sample=SAMP_NAMES
+    )
+
+# Are exons being used?
+if config.get("use_exons_only", True):
+    NORMALIZATION_EXTRA = ""
+
+else:
+    NORMALIZATION_EXTRA = "--use_genes"

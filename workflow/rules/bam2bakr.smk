@@ -87,9 +87,7 @@ if NORMALIZE:
 
     rule normalize:
         input:
-            expand(
-                "results/featurecounts_exons/{sample}.featureCounts", sample=SAMP_NAMES
-            ),
+            NORMALIZATION_INPUT,
         output:
             "results/normalization/scale",
         log:
@@ -98,12 +96,13 @@ if NORMALIZE:
         params:
             rscript=workflow.source_path("../scripts/normalize.R"),
             spikename=config["spikename"],
+            extra=NORMALIZATION_EXTRA,
         conda:
             "../envs/full.yaml"
         shell:
             r"""
             chmod +x {params.rscript}
-            {params.rscript} --dirs ./results/featurecounts_exons/ --output {output} --spikename {params.spikename} 1> {log} 2>&1
+            {params.rscript} {params.extra} --output {output} --spikename {params.spikename} 1> {log} 2>&1
             """
 
 else:

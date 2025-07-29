@@ -59,6 +59,9 @@ spikename: "\"\""
 # If True, tracks will be normalized
 normalize: True
 
+# Only use exonic reads for normalization? If not, then all reads mapping to annotated genes will be used
+use_exons_only: True
+
 # Are you using the Windows subsystem for linux? 0 = Yes, 1 = No
 WSL: 1
 
