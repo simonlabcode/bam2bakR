@@ -68,7 +68,8 @@ features:
   genes: True
   exons: True
 
-
+# Only use exonic reads for normalization? If not, then all reads mapping to annotated genes will be used
+use_exons_only: False
 
 ### Other featureCounts parameters
 # Parameters automatically specified:
